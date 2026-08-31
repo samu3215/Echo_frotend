@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head'); %>
+<body class="bg-light">
+
+    <div class="container-fluid p-0 min-vh-100 d-flex flex-column flex-md-row">
+        
+        <!-- SIDEBAR (Solo visible en pantallas medianas y grandes: Desktop / Tablet) -->
+        <aside class="barra-lateral-escritorio d-none d-md-flex flex-column justify-content-between p-3 text-white">
+            <div>
+                <!-- Espacio para Logo de Escritorio (Vacío) -->
+                <div class="contenedor-logo-escritorio mb-4 text-center">
+                    <img src="" alt="" class="img-fluid logo-aplicacion">
+                </div>
+
+                <!-- Opciones de Navegación del Menú Izquierdo -->
+                <nav class="nav flex-column gap-2">
+                    <a href="/inicio" class="nav-link text-white active fw-semibold d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-house-door fs-5"></i>
+                        <span>Inicio</span>
+                    </a>
+                    <a href="/buscar" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-search fs-5"></i>
+                        <span>Buscar</span>
+                    </a>
+                    <a href="/amigos" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-people fs-5"></i>
+                        <span>Amigos</span>
+                    </a>
+                    <a href="/notificaciones" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span>Notificaciones</span>
+                    </a>
+                    <a href="/mensajes" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-chat-dots fs-5"></i>
+                        <span>Mensajes</span>
+                    </a>
+                    <a href="/crear" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                        <i class="bi bi-plus-circle fs-5"></i>
+                        <span>Crear</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Perfil en Sidebar -->
+            <div class="pt-3 border-top border-white-50">
+                <a href="/perfil" class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded-pill opcion-menu">
+                    <i class="bi bi-person-circle fs-4"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- HEADER MÓVIL (Solo visible en pantallas pequeñas) -->
+        <header class="header-movil d-flex d-md-none align-items-center justify-content-between px-3 py-2 text-white sticky-top">
+            <!-- Espacio reservado para el Logo en Móvil (Sin imagen) -->
+            <div class="contenedor-logo-movil"></div>
+
+            <!-- Iconos de la derecha del Header -->
+            <div class="d-flex align-items-center gap-3">
+                <a href="/amigos" class="text-white text-decoration-none">
+                    <i class="bi bi-people fs-4"></i>
+                </a>
+                <a href="/notificaciones" class="text-white text-decoration-none">
+                    <i class="bi bi-bell fs-4"></i>
+                </a>
+                <a href="/mensajes" class="text-white text-decoration-none">
+                    <i class="bi bi-chat-dots fs-4"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL (Vacío por el momento) -->
+        <main class="contenido-principal flex-grow-1 p-3 pb-5 pb-md-3">
+            <!-- Espacio para publicaciones futuras -->
+        </main>
+
+        <!-- FOOTER MÓVIL (Navegación inferior en celular) -->
+        <footer class="footer-movil d-flex d-md-none justify-content-around align-items-center py-2 text-white fixed-bottom">
+            <a href="/inicio" class="text-white text-decoration-none">
+                <i class="bi bi-house-door fs-3"></i>
+            </a>
+            <a href="/buscar" class="text-white text-decoration-none">
+                <i class="bi bi-search fs-3"></i>
+            </a>
+            <a href="/crear" class="text-white text-decoration-none">
+                <i class="bi bi-plus-lg fs-2"></i>
+            </a>
+            <a href="/perfil" class="text-white text-decoration-none">
+                <i class="bi bi-person fs-3"></i>
+            </a>
+        </footer>
+
+    </div>
+
+</body>
+</html>

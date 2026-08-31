@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<%- include('../partials/head'); %>
+</head>
+
+<body class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+
+    <main class="auth-card p-4 p-sm-5 my-auto">
+        <div class="logo-container mb-3">
+            <img src="/img/echo.png" alt="" class="img-fluid" id="app-logo">
+        </div>
+
+        <h1 class="h3 fw-semibold text-center mb-4">Bienvenido</h1>
+
+        <div class="d-grid gap-3 mb-4">
+            <a href="/registro/usu" class="btn btn-purple shadow-sm">
+                Registrarse como Usuario
+            </a>
+            <a href="/registro/empres" class="btn btn-purple shadow-sm">
+                Registrarse como Empresa
+            </a>
+        </div>
+
+        <div class="text-center">
+            <span class="text-muted small">¿Ya tienes cuenta?</span>
+            <a href="/login" class="link-purple small ms-1">Iniciar Sesión</a>
+        </div>
+    </main>
+</body>
+</html>

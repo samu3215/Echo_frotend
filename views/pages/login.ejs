@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head'); %>
+<body class="min-vh-100 d-flex align-items-center justify-content-center py-4 px-3">
+
+    <main class="tarjeta-registro p-4 p-md-5 my-auto">
+        <!-- Logo Responsivo (Vacío) -->
+        <div class="contenedor-logo mb-3 text-center">
+            <img src="img/echo.png" alt="" class="img-fluid logo-aplicacion">
+        </div>
+
+        <h1 class="h3 fw-semibold text-center mb-4">Bienvenido</h1>
+
+        <form action="/login" method="POST">
+            <div class="mb-3">
+                <label class="form-label etq-campo">Usuario o correo</label>
+                <input type="text" name="nombre_usuario" class="form-control entrada-personalizada" placeholder="Usuario" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label etq-campo">Contraseña</label>
+                <input type="password" name="password" class="form-control entrada-personalizada" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="btn btn-morado w-100 mt-3 shadow-sm">
+                Iniciar Sesion
+            </button>
+        </form>
+
+        <!-- Bloque para mostrar errores del backend -->
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger mt-3 py-2 text-center small" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <div class="text-center mt-4 pt-2 border-top">
+            <div class="mb-2">
+                <a href="#" class="text-muted small text-decoration-none">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div>
+                <span class="text-muted small">¿No tienes cuenta?</span>
+                <a href="/registro/seleccion" class="enlace-morado small ms-1">Registrarse</a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

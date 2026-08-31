@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<%- include('../partials/head'); %>
+</head>
+
+<body class="min-vh-100 d-flex align-items-center justify-content-center py-4 px-3">
+
+    <main class="contenedor-autenticacion tarjeta-registro p-4 p-md-5 my-auto">
+        <!-- Logo Responsivo -->
+        <div class="contenedor-logo mb-3 text-center">
+            <img src="/img/echo.png" alt="" class="img-fluid logo-aplicacion">
+        </div>
+
+        <h1 class="h3 fw-semibold text-center mb-1">
+            <%= tipo === 'usu' ? 'Registra tu Usuario' : 'Registra tu Negocio' %>
+        </h1>
+        <p class="text-center text-muted small mb-4">
+            Únete a la comunidad de <%= tipo === 'usu' ? 'usuarios' : 'negocios locales' %>
+        </p>
+
+        <form action="/registro" method="POST">
+            <!-- Campo oculto para el tipo de URL -->
+            <input type="hidden" name="tipo_url" value="<%= tipo %>">
+
+            <!-- Campos exclusivos para ciudadano/usuario -->
+            <% if (tipo === 'usu') { %>
+                <div class="mb-3">
+                    <label class="form-label etq-campo">Nombre</label>
+                    <input type="text" name="nombre" class="form-control entrada-personalizada" placeholder="Tu Nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label etq-campo">Apellido</label>
+                    <input type="text" name="apellido" class="form-control entrada-personalizada" placeholder="Tu Apellido" required>
+                </div>
+            <% } %>
+
+            <!-- Campos exclusivos para negocios locales -->
+            <% if (tipo === 'empres') { %>
+                <div class="mb-3">
+                    <label class="form-label etq-campo">Nombre del Negocio</label>
+                    <input type="text" name="nombre_negocio" class="form-control entrada-personalizada" placeholder="EJ: Cafe Mirador" required>
+                </div>
+            <% } %>
+
+            <!-- Nombre de usuario (común) -->
+            <div class="mb-3">
+                <label class="form-label etq-campo">Usuario</label>
+                <input type="text" name="nombre_usuario" class="form-control entrada-personalizada" placeholder="EJ: Cafemirador" required>
+            </div>
+
+            <!-- Dirección (exclusiva empresarial) -->
+            <% if (tipo === 'empres') { %>
+                <div class="mb-3">
+                    <label class="form-label etq-campo">Dirección del local</label>
+                    <input type="text" name="direccion" class="form-control entrada-personalizada" placeholder="Calle, Número, Ciudad" required>
+                </div>
+            <% } %>
+
+            <!-- Teléfono (común a ambos, obligatorio solo si es empresa) -->
+            <div class="mb-3">
+                <label class="form-label etq-campo">Teléfono</label>
+                <input type="text" name="telefono" class="form-control entrada-personalizada" placeholder="+57 300 1234 4567" <%= tipo === 'empres' ? 'required' : '' %>>
+            </div>
+
+            <!-- Correo electrónico (común) -->
+            <div class="mb-3">
+                <label class="form-label etq-campo">Correo electrónico</label>
+                <input type="email" name="email" class="form-control entrada-personalizada" placeholder="Contacto@tunegocio.com" required>
+            </div>
+
+            <!-- Contraseña (común) -->
+            <div class="mb-3">
+                <label class="form-label etq-campo">Contraseña</label>
+                <input type="password" name="password" class="form-control entrada-personalizada" placeholder="Mínimo 8 caracteres" required>
+            </div>
+
+            <!-- Botón dinámico según el tipo -->
+            <button type="submit" class="btn btn-morado w-100 mt-4 shadow-sm">
+                <%= tipo === 'usu' ? 'Registrar Usuario' : 'Registrar Negocio' %>
+            </button>
+        </form>
+
+        <!-- Bloque de errores del backend -->
+        <% if (error) { %>
+            <div class="alert alert-danger mt-3 py-2 text-center small" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- Enlaces inferiores -->
+        <div class="text-center mt-4 pt-2 border-top">
+            <div class="mb-2">
+                <span class="text-muted small">¿Ya tienes cuenta?</span>
+                <a href="/login" class="enlace-morado small ms-1">Iniciar Sesion</a>
+            </div>
+            <div>
+                <% if (tipo === 'empres') { %>
+                    <span class="text-muted small">¿No tienes un negocio?</span>
+                    <a href="/registro/usu" class="enlace-morado small ms-1">crea una cuenta personal</a>
+                <% } else { %>
+                    <span class="text-muted small">¿Tienes un negocio?</span>
+                    <a href="/registro/empres" class="enlace-morado small ms-1">registra tu negocio</a>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
