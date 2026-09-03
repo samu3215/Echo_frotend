@@ -1,14 +1,16 @@
 const usuarioApi = require('../api/usuario');
+const mensajesBakend = require('../utils/mensajes');
+const jwtUtils = require('../utils/jwt');
 
-const mostrarInicio = (req, res) => {
-    res.render('pages/inicio')
-}
+exports.mostrarInicio = (req, res) => {
+    res.render('pages/inicio');
+};
 
-const selecFormulario = (req, res) => {
+exports.selecFormulario = (req, res) => {
     res.render('pages/registro'); 
 };
 
-const mostrarFormulario = (req, res) => {
+exports.mostrarFormulario = (req, res) => {
     const tipo = req.params.tipo;
     
     if (tipo !== 'usu' && tipo !== 'empres') {
@@ -18,56 +20,50 @@ const mostrarFormulario = (req, res) => {
     res.render('pages/formulario', { tipo, error: null });
 };
 
-const procesarRegistro = async (req, res) => {
+exports.procesarRegistro = async (req, res) => {
     const payload = req.body;
-    
-    // Convertimos el tipo de la URL al formato exacto que pide el backend
     payload.tipo_usuario = payload.tipo_url === 'usu' ? 'normal' : 'empresarial';
 
     try {
-        await usuarioApi.crearUsuario(payload);
-        res.redirect('/login');
+        const respuesta = await usuarioApi.crearUsuario(payload);
+        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
+        
+        return res.render('pages/login', { 
+            exito: resultado.mensaje 
+        });
 
     } catch (error) {
-        // Extraer mensajes de error del backend si existen
-        const mensajeError = error.response?.data ? JSON.stringify(error.response.data) : 'Error en el registro';
+        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);
         
-        res.render('pages/formulario', { 
+        return res.render('pages/formulario', { 
             tipo: payload.tipo_url, 
-            error: mensajeError 
+            error: resultado.mensaje 
         });
     }
 };
 
-
-const mostrarLogin = (req, res) => {
+exports.mostrarLogin = (req, res) => {
     res.render('pages/login', { error: null });
 };
 
-const procesarLogin = async (req, res) => {
+exports.procesarLogin = async (req, res) => {
     const credenciales = {
         identificador: req.body.nombre_usuario, 
         password: req.body.password
     };
 
     try {
-
         const respuesta = await usuarioApi.loginUsuario(credenciales);
-        const token = respuesta.data.token;
+        
+        jwtUtils.guardarTokenCookie(res, respuesta.data.token);
 
-        res.cookie('jwt_echo', token, {
-            httpOnly: true, // Evita que scripts maliciosos lean el token
-            secure: process.env.NODE_ENV === 'production', 
-            maxAge: 24 * 60 * 60 * 1000 // Expira en 1 día (igual que tu backend)
-        });
-   
         res.redirect('/inicio'); 
 
     } catch (error) {
-        // Extraemos el mensaje de error de Django ("Credenciales inválidas" o "Cuenta desactivada")
-        const mensajeError = error.response?.data?.error || 'Error al intentar iniciar sesión.';     
-        res.render('pages/login', { error: mensajeError });
+        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);     
+        
+        return res.render('pages/login', { 
+            error: resultado.mensaje 
+        });
     }
 };
-
-module.exports = { selecFormulario, mostrarFormulario, procesarRegistro, mostrarLogin, procesarLogin, mostrarInicio };

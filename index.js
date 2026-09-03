@@ -15,6 +15,11 @@ app.use(cookieParser());
 const usuarioRouter = require('./routes/usuario.router');
 app.use('/', usuarioRouter);
 
+app.use((req, res, next) => {
+    res.locals.error = null;
+    res.locals.exito = null;
+    next();
+});
 
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, () => {

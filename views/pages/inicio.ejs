@@ -8,11 +8,8 @@
 
     <div class="contenedor-principal-interfaz">
         
-        <!-- SIDEBAR ESCRITORIO -->
         <aside class="barra-lateral-escritorio">
             <div>
-                
-
                 <nav class="menu-navegacion-escritorio">
                     <a href="/inicio" class="opcion-menu-lateral activo">
                         <i class="bi bi-house-door fs-5"></i>
@@ -68,10 +65,11 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="area-contenido-principal">
-            <!-- Espacio reservado para publicaciones -->
+            <%- include('../partials/alertas'); %>
+
         </main>
 
-        <!-- FOOTER MÓVIL -->
+
         <footer class="barra-inferior-movil">
             <a href="/inicio" class="enlace-icono-movil">
                 <i class="bi bi-house-door"></i>
