@@ -1,0 +1,10 @@
+<div class="contenedor-seccion-vacia text-center py-5">
+    <% if (usuarioPerfil.me_gusta && usuarioPerfil.me_gusta.length > 0) { %>
+
+    <% } else { %>
+        <div class="mensaje-vacio">
+            <i class="bi bi-heartbreak display-4 text-muted mb-2 d-block"></i>
+            <p class="text-muted fw-semibold m-0">No hay publicaciones guardadas de momento</p>
+        </div>
+    <% } %>
+</div>

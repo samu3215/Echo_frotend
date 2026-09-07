@@ -1,0 +1,33 @@
+<!-- ENCABEZADO MÓVIL -->
+<header class="encabezado-superior-movil">
+    <a href="/notificaciones" class="enlace-icono-movil">
+        <i class="bi bi-bell"></i>
+    </a>
+
+    <a href="/comunidades" class="enlace-icono-movil">
+        <i class="bi bi-people"></i>
+    </a>
+</header>
+
+<!-- BARRA INFERIOR MÓVIL -->
+<footer class="barra-inferior-movil">
+    <a href="/inicio" class="enlace-icono-movil">
+        <i class="bi bi-house-door"></i>
+    </a>
+    <a href="/buscar" class="enlace-icono-movil">
+        <i class="bi bi-search"></i>
+    </a>
+    <a href="/crear" class="enlace-icono-movil">
+        <i class="bi bi-plus-lg"></i>
+    </a>
+    
+    <% if (usuarioLogueado) { %>
+        <a href="/perfil/<%= usuarioLogueado.nombre_usuario %>" class="enlace-icono-movil">
+            <i class="bi bi-person"></i>
+        </a>
+    <% } else { %>
+        <a href="/login" class="enlace-icono-movil">
+            <i class="bi bi-box-arrow-in-right fs-4"></i>
+        </a>
+    <% } %>
+</footer>

@@ -1,0 +1,20 @@
+<div class="seccion-bloque">
+    <% if (negocios && negocios.length > 0) { %>
+        <% negocios.forEach(negocio => { %>
+            <div class="tarjeta">
+                <a href="/perfil/<%= negocio.nombre_usuario %>" class="enlace-usuario">
+                    <div class="contenedor-avatar">
+                        <img src="<%= negocio.foto_perfil || '/img/avatar.png' %>" class="avatar-busqueda" alt="Negocio">
+                    </div>
+                    <div class="info-usuario">
+                        <span class="titulo text-truncate"><%= negocio.nombre_negocio || negocio.nombre %></span>
+                        <small class="username text-truncate">@<%= negocio.nombre_usuario %></small>
+                    </div>
+                </a>
+                <button class="btn-accion-busqueda">Seguir</button>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p class="mensaje-vacio">No se encontraron negocios.</p>
+    <% } %>
+</div>

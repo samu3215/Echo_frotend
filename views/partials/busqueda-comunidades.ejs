@@ -1,0 +1,15 @@
+<div class="seccion-bloque">
+    <% if (comunidades && comunidades.length > 0) { %>
+        <% comunidades.forEach(comunidad => { %>
+            <div class="tarjeta tarjeta-resultado d-flex align-items-center justify-content-between p-3 border rounded mb-2 bg-white">
+                <a href="/comunidades/<%= comunidad.id %>" class="text-decoration-none text-dark flex-grow-1">
+                    <span class="titulo fw-bold d-block"><%= comunidad.nombre %></span>
+                    <small class="text-muted"><%= comunidad.descripcion || 'Sin descripción' %></small>
+                </a>
+                <button class="btn btn-outline-primary btn-sm">Unirse</button>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p class="text-muted">No se encontraron comunidades.</p>
+    <% } %>
+</div>

@@ -1,4 +1,3 @@
-
 :root {
   --morado-principal: #8338ec;
   --morado-hover: #6c2bd9;
@@ -85,38 +84,21 @@ body.cuerpo-inicio {
 }
 
 .encabezado-superior-movil {
-  background-color: var(--morado-principal);
+  background-color: var(--fondo-interfaz);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  color: #ffffff;
+  padding: 0.75rem 1.25rem;
   position: sticky;
   top: 0;
   z-index: 1020;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @media (min-width: 768px) {
   .encabezado-superior-movil {
     display: none !important;
   }
-}
-
-.espacio-logo-movil {
-  width: 45px;
-  height: 45px;
-}
-
-.contenedor-acciones-movil {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.enlace-icono-movil {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1.5rem;
 }
 
 .area-contenido-principal {
@@ -132,19 +114,20 @@ body.cuerpo-inicio {
 }
 
 .barra-inferior-movil {
-  background-color: var(--morado-principal);
+  background-color: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 1030;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
 }
 
 @media (min-width: 768px) {
@@ -152,3 +135,24 @@ body.cuerpo-inicio {
     display: none !important;
   }
 }
+
+.enlace-icono-movil {
+  color: var(--morado-principal);
+  text-decoration: none;
+  font-size: 1.35rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.enlace-icono-movil.activo {
+  background-color: var(--morado-principal);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(131, 56, 236, 0.3);
+}
+
+

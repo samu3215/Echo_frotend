@@ -1,0 +1,14 @@
+<div class="seccion-bloque">
+    <% if (publicaciones && publicaciones.length > 0) { %>
+        <div class="grid-publicaciones d-flex flex-wrap gap-3">
+            <% publicaciones.forEach(pub => { %>
+                <div class="tarjeta tarjeta-publicacion border rounded p-2 bg-white" style="width: 200px;">
+                    <img src="<%= pub.url_media %>" alt="Publicación" class="img-fluid rounded mb-2">
+                    <span class="titulo fw-bold d-block text-truncate"><%= pub.titulo || 'Publicación' %></span>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <p class="text-muted">No hay publicaciones disponibles.</p>
+    <% } %>
+</div>

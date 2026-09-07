@@ -1,0 +1,243 @@
+:root {
+    --color-primario: #8338ec;
+    --color-primario-suave: #f1e8ff;
+    --color-texto-principal: #2b2b2b;
+    --color-texto-secundario: #6c757d;
+    --color-borde: #8338ec;
+}
+
+.contenedor-perfil-tarjeta {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem;
+    position: relative;
+}
+
+.header-perfil-acciones {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-icono-config {
+    color: var(--color-texto-secundario);
+    font-size: 1.6rem;
+}
+
+.perfil-encabezado {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.contenedor-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.avatar-perfil, .avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    background-color: var(--color-primario-suave);
+    color: var(--color-primario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.nombre-pantalla {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-texto-principal);
+    margin: 0;
+}
+
+.icono-verificado {
+    color: var(--color-primario);
+    font-size: 1.1rem;
+}
+
+.nombre-usuario {
+    color: var(--color-texto-secundario);
+    font-size: 0.9rem;
+    display: block;
+}
+
+.descripcion-perfil {
+    color: var(--color-texto-principal);
+    font-size: 0.9rem;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+.perfil-estadisticas {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin: 1.2rem 0;
+}
+
+.item-estadistica {
+    display: flex;
+    flex-direction: column;
+}
+
+.numero-estadistica {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primario);
+}
+
+.etiqueta-estadistica {
+    font-size: 0.8rem;
+    color: var(--color-texto-secundario);
+}
+
+
+.perfil-acciones-principales {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.btn-seguir, .btn-calificar {
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.btn-editar-perfil {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-primario);
+    color: #ffffff;
+    border: none;
+    padding: 6px 22px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+
+.contenedor-pestanas-perfil {
+    display: flex;
+    width: 100%;
+    border: 1.5px solid var(--color-borde);
+    border-radius: 12px;
+    padding: 3px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+}
+
+.pestana-perfil {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    color: var(--color-primario);
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.icono-pestana {
+    font-size: 1.2rem;
+}
+
+.pestana-perfil.activa {
+    background-color: var(--color-primario);
+    color: #ffffff;
+}
+
+@media (max-width: 480px) {
+    .contenedor-perfil-tarjeta {
+        padding: 0.5rem;
+    }
+}
+
+.contenedor-seccion-vacia {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    width: 100%;
+}
+
+.mensaje-vacio {
+    padding: 1rem;
+    max-width: 100%;
+}
+
+
+
+/* ==========================================
+   ESTILOS DEL MODAL DE EDITAR PERFIL
+   ========================================== */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem 1.25rem;
+}
+
+.modal-body {
+    max-height: 75vh; /* Fuerza el scroll interno fluido */
+    overflow-y: auto;
+    padding: 1.25rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #f0f0f0;
+    padding: 0.75rem 1.25rem;
+}
+
+/* Avatar dentro del modal */
+.contenedor-avatar-edicion {
+    position: relative;
+    display: inline-block;
+}
+
+.imagen-avatar-previa {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+}
+
+.btn-subir-avatar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--color-primario, #8338ec);
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.btn-subir-avatar:hover {
+    transform: scale(1.05);
+}

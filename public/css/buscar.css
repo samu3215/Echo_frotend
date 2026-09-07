@@ -1,0 +1,159 @@
+
+.contenedor-buscador {
+  position: relative;
+  width: 100%;
+}
+
+.icono-lupa {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.campo-entrada-buscador {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.8rem;
+  border-radius: 50px;
+  border: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.campo-entrada-buscador:focus {
+  border-color: #8338ec;
+  background-color: #ffffff;
+}
+
+
+.contenedor-pestañas {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.contenedor-pestañas .pagina {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.contenedor-pestañas .pagina:hover {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+.contenedor-pestañas .pagina.activa {
+  background-color: #8338ec;
+  color: #ffffff;
+}
+
+.icono-pestaña {
+  font-size: 1rem;
+}
+
+.tarjeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  margin-bottom: 0.6rem;
+  gap: 0.85rem;
+}
+
+.tarjeta.filtro {
+  display: none !important;
+}
+
+.enlace-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+}
+
+
+.contenedor-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #f0f0f2;
+  border: 1px solid #e2e2e8;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-busqueda {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.info-usuario {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.titulo {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #212529;
+}
+
+.username {
+  font-size: 0.82rem;
+  color: #6c757d;
+}
+
+.btn-accion-busqueda {
+  background-color: transparent;
+  color: #8338ec;
+  border: 1.5px solid #8338ec;
+  border-radius: 50px;
+  padding: 0.35rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-accion-busqueda:hover {
+  background-color: #8338ec;
+  color: #ffffff;
+}
+
+.mensaje-vacio {
+  color: #6c757d;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}

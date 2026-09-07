@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/buscar.css">
+</head>
+
+<body class="cuerpo-inicio">
+
+    <div class="contenedor-principal-interfaz">
+        
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+
+        <main class="area-contenido-principal">
+            <%- include('../partials/alertas'); %>
+
+            <div class="contenedor-buscador mb-4">
+                <i class="bi bi-search icono-lupa"></i>
+                <input type="text" id="buscador" placeholder="Buscar..." class="campo-entrada-buscador" autocomplete="off">
+            </div>
+
+
+            <div class="contenedor-pestañas mb-4">
+                <a href="/buscar?seccion=publicaciones" class="pagina">
+                    <i class="bi bi-image icono-pestaña"></i>
+                    <span>Publicaciones</span>
+                </a>
+                <a href="/buscar?seccion=usuarios" class="pagina">
+                    <i class="bi bi-person icono-pestaña"></i>
+                    <span>Personas</span>
+                </a>
+                <a href="/buscar?seccion=comunidades" class="pagina">
+                    <i class="bi bi-people-fill icono-pestaña"></i>
+                    <span>Comunidades</span>
+                </a>
+                <a href="/buscar?seccion=negocios" class="pagina">
+                    <i class="bi bi-shop icono-pestaña"></i>
+                    <span>Negocios</span>
+                </a>
+            </div>
+
+            <div id="contenedor-seccion-actual">
+                <% if (secciones === 'usuarios') { %>
+                    <%- include('../partials/busqueda-usuarios'); %>
+                <% } else if (secciones === 'comunidades') { %>
+                    <%- include('../partials/busqueda-comunidades'); %>
+                <% } else if (secciones === 'negocios') { %>
+                    <%- include('../partials/busqueda-negocios'); %>
+                <% } else { %>
+                    <%- include('../partials/busqueda-publicaciones'); %>
+                <% } %>
+            </div>
+        </main>
+
+    </div>
+    <script src="/js/ubicacion.js"></script>
+    <script src="/js/buscador.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="modalEditarLabel">Editar Perfil</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+
+          <%- include('../partials/alertas'); %>
+          
+          <div class="mb-4 text-center">
+              <div class="contenedor-avatar-edicion">
+                <img id="vista-previa" src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" data-original-src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" class="imagen-avatar-previa shadow-sm">
+
+                  <label for="foto_perfil" class="btn-subir-avatar">
+                      <i class="bi bi-camera-fill"></i>
+                  </label>
+              </div>
+              <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="d-none" onchange="previsualizarImagen(event)">
+              
+              <!-- Botón para quitar la imagen seleccionada -->
+              <div id="contenedor-btn-quitar" class="mt-2 d-none">
+                  <button type="button" class="btn btn-sm btn-outline-danger" onclick="quitarImagenSeleccionada()">
+                      <i class="bi bi-trash"></i> Quitar foto nueva
+                  </button>
+              </div>
+          </div>
+
+          <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
+              <div class="mb-3">
+                  <label class="form-label small fw-semibold">Nombre del Negocio</label>
+                  <input type="text" name="nombre_negocio" class="form-control" value="<%= usuarioPerfil.nombre_negocio || '' %>">
+              </div>
+              <div class="mb-3">
+                  <label class="form-label small fw-semibold">Dirección</label>
+                  <input type="text" name="direccion" class="form-control" value="<%= usuarioPerfil.direccion || '' %>">
+              </div>
+          <% } else { %>
+              <div class="mb-3">
+                  <label class="form-label small fw-semibold">Nombre</label>
+                  <input type="text" name="nombre" class="form-control" value="<%= usuarioPerfil.nombre || '' %>">
+              </div>
+              <div class="mb-3">
+                  <label class="form-label small fw-semibold">Apellido</label>
+                  <input type="text" name="apellido" class="form-control" value="<%= usuarioPerfil.apellido || '' %>">
+              </div>
+          <% } %>
+
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Usuario</label>
+              <input type="text" name="nombre_usuario" class="form-control" value="<%= usuarioPerfil.nombre_usuario || '' %>">
+          </div>
+
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Teléfono</label>
+              <input type="text" name="telefono" class="form-control" value="<%= usuarioPerfil.telefono || '' %>">
+          </div>
+
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Correo electrónico</label>
+              <input type="email" name="email" class="form-control" value="<%= usuarioPerfil.email || '' %>">
+          </div>
+
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Descripción</label>
+              <textarea name="descripcion" class="form-control" rows="3"><%= usuarioPerfil.descripcion || '' %></textarea>
+          </div>
+
+          <hr class="my-4">
+          <h6 class="mb-3 fw-bold">Cambiar Contraseña <span class="text-muted fw-normal fs-6">(Opcional)</span></h6>
+          
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Nueva Contraseña</label>
+              <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para no cambiar">
+          </div>
+          
+          <div class="mb-3">
+              <label class="form-label small fw-semibold">Confirmar Contraseña</label>
+              <input type="password" name="confirmar_password" class="form-control" placeholder="Repite la nueva contraseña">
+          </div>
+
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

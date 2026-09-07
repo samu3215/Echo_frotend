@@ -1,69 +1,61 @@
 const usuarioApi = require('../api/usuario');
+const publicacionApi = require('../api/publicaciones')
 const mensajesBakend = require('../utils/mensajes');
-const jwtUtils = require('../utils/jwt');
 
-exports.mostrarInicio = (req, res) => {
-    res.render('pages/inicio');
-};
+exports.mostrarPerfil = async (req, res) => {
+    const nombreUsu = req.params.nombre_usuario
 
-exports.selecFormulario = (req, res) => {
-    res.render('pages/registro'); 
-};
+    try{
+        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
+        const seccion = req.query.seccion || 'publicaciones';
 
-exports.mostrarFormulario = (req, res) => {
-    const tipo = req.params.tipo;
+        res.render('pages/perfil', {
+            usuarioPerfil,
+            seccion: seccion,
+            exito: req.query.exito || null, 
+            error: req.query.error || null
+        });
+
+    }catch(error){
+        res.render('pages/perfil',{
+            error: 'el usuario solicitado no existe'
+        })
+    }
     
-    if (tipo !== 'usu' && tipo !== 'empres') {
-        return res.redirect('/');
+};
+
+exports.actualizarPerfil = async (req,res) =>{
+    const nombreUsuActual = req.params.nombre_usuario
+    const cuerpito = req.body
+    const token = req.cookies.jwt_echo
+
+    if (!token) {
+        return res.redirect(`/login?error=Debes iniciar sesión para editar tu perfil`);
     }
 
-    res.render('pages/formulario', { tipo, error: null });
-};
+    try{
 
-exports.procesarRegistro = async (req, res) => {
-    const payload = req.body;
-    payload.tipo_usuario = payload.tipo_url === 'usu' ? 'normal' : 'empresarial';
+        if (!cuerpito.password) {
+            delete cuerpito.password;
+            delete cuerpito.confirmar_password;
+        }
 
-    try {
-        const respuesta = await usuarioApi.crearUsuario(payload);
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-        
-        return res.render('pages/login', { 
-            exito: resultado.mensaje 
-        });
+        if(req.file){
+            const respuestaMultimedia = await publicacionApi.subirArchivo(req.file, 'perfiles')
+            cuerpito.foto_perfil = respuestaMultimedia.data.url
+        }
 
-    } catch (error) {
-        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);
-        
-        return res.render('pages/formulario', { 
-            tipo: payload.tipo_url, 
-            error: resultado.mensaje 
-        });
+        await usuarioApi.actualizarUsuario(nombreUsuActual, cuerpito, token)
+
+        const nuevoNombre = cuerpito.nombre_usuario || nombreUsuActual
+
+        return res.redirect(`/perfil/${nuevoNombre}?exito=Perfil actualizado con éxito`)
+
+
+    }catch(error) {
+        console.error("Error en actualizarPerfil:", error.response?.data || error.message);
+        const mensaje = error.response?.data?.detail || error.response?.data?.error || 'Ocurrió un error';
+        return res.redirect(`/perfil/${nombreUsuActual}?error=${mensaje}`);
     }
-};
+}
 
-exports.mostrarLogin = (req, res) => {
-    res.render('pages/login', { error: null });
-};
-
-exports.procesarLogin = async (req, res) => {
-    const credenciales = {
-        identificador: req.body.nombre_usuario, 
-        password: req.body.password
-    };
-
-    try {
-        const respuesta = await usuarioApi.loginUsuario(credenciales);
-        
-        jwtUtils.guardarTokenCookie(res, respuesta.data.token);
-
-        res.redirect('/inicio'); 
-
-    } catch (error) {
-        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);     
-        
-        return res.render('pages/login', { 
-            error: resultado.mensaje 
-        });
-    }
-};

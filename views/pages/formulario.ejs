@@ -1,74 +1,117 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<%- include('../partials/head'); %>
+    <%- include('../partials/head'); %>
 </head>
 
 <body class="cuerpo-autenticacion">
     <main class="tarjeta-autenticacion">
         <div class="contenedor-logo-aplicacion">
-            <img src="/img/echo.png" alt="" class="imagen-logo-aplicacion">
+            <img src="/img/echo.png" alt="Echo Logo" class="imagen-logo-aplicacion">
         </div>
 
         <h1 class="titulo-autenticacion">
             <%= tipo === 'usu' ? 'Registra tu Usuario' : 'Registra tu Negocio' %>
         </h1>
-        <p class="subtitulo-autenticacion">
-            Únete a la comunidad de <%= tipo === 'usu' ? 'usuarios' : 'negocios locales' %>
-        </p>
 
-        <form action="/registro" method="POST">
+        <p class="subtitulo-autenticacion">Crea tu cuenta para comenzar</p>
+
+        <!-- Indicador de pasos -->
+        <div class="indicador-pasos">
+            <span class="paso-bullet activo" id="bullet-1">1</span>
+            <div class="linea-paso"></div>
+            <span class="paso-bullet" id="bullet-2">2</span>
+        </div>
+
+        <form action="/registro" method="POST" enctype="multipart/form-data" id="form-registro">
             <input type="hidden" name="tipo_url" value="<%= tipo %>">
 
-            <% if (tipo === 'usu') { %>
-                <div class="grupo-campo">
-                    <label class="etiqueta-campo">Nombre</label>
-                    <input type="text" name="nombre" class="campo-entrada" placeholder="Tu Nombre" required>
-                </div>
-                <div class="grupo-campo">
-                    <label class="etiqueta-campo">Apellido</label>
-                    <input type="text" name="apellido" class="campo-entrada" placeholder="Tu Apellido" required>
-                </div>
-            <% } %>
+            <!-- PASO 1 -->
+            <div id="paso-1" class="bloque-paso">
+                <% if (tipo === 'usu') { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Nombre</label>
+                        <input type="text" name="nombre" class="campo-entrada" placeholder="Tu Nombre" required>
+                    </div>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Apellido</label>
+                        <input type="text" name="apellido" class="campo-entrada" placeholder="Tu Apellido" required>
+                    </div>
+                <% } %>
 
-            <% if (tipo === 'empres') { %>
-                <div class="grupo-campo">
-                    <label class="etiqueta-campo">Nombre del Negocio</label>
-                    <input type="text" name="nombre_negocio" class="campo-entrada" placeholder="EJ: Cafe Mirador" required>
-                </div>
-            <% } %>
+                <% if (tipo === 'empres') { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Nombre del Negocio</label>
+                        <input type="text" name="nombre_negocio" class="campo-entrada" placeholder="EJ: Cafe Mirador" required>
+                    </div>
+                <% } %>
 
-           
-            <div class="grupo-campo">
-                <label class="etiqueta-campo">Usuario</label>
-                <input type="text" name="nombre_usuario" class="campo-entrada" placeholder="EJ: Cafemirador" required>
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Usuario</label>
+                    <input type="text" name="nombre_usuario" class="campo-entrada" placeholder="EJ: Cafemirador" required>
+                </div>
+
+                <% if (tipo === 'empres') { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Dirección del local</label>
+                        <input type="text" name="direccion" class="campo-entrada" placeholder="Calle, Número, Ciudad" required>
+                    </div>
+                <% } %>
+
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Teléfono</label>
+                    <input type="text" name="telefono" class="campo-entrada" placeholder="+57 300 1234 4567" <%= tipo === 'empres' ? 'required' : '' %>>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Correo electrónico</label>
+                    <input type="email" name="email" class="campo-entrada" placeholder="Contacto@tunegocio.com" required>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Contraseña</label>
+                    <input type="password" name="password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Verificar Contraseña</label>
+                    <input type="password" name="confirmar_password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required>
+                </div>
+
+                <button type="button" class="boton-principal" onclick="siguientePaso()">
+                    Siguiente
+                </button>
             </div>
 
-            <% if (tipo === 'empres') { %>
-                <div class="grupo-campo">
-                    <label class="etiqueta-campo">Dirección del local</label>
-                    <input type="text" name="direccion" class="campo-entrada" placeholder="Calle, Número, Ciudad" required>
+            <!-- PASO 2 -->
+            <div id="paso-2" class="bloque-paso d-none">
+                <p class="subtitulo-autenticacion">Paso opcional: añade tu foto y descripción</p>
+
+                <div class="grupo-campo text-center">
+                    <label class="etiqueta-campo mb-2">Foto de Perfil</label>
+                    <div class="contenedor-avatar-subida">
+                        <img id="vista-previa" src="/img/avatar.webp" alt="Previsualización" class="imagen-avatar-previa">
+                        <label for="foto_perfil" class="boton-selector-foto">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
+                        <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="d-none" onchange="previsualizarImagen(event)">
+                    </div>
                 </div>
-            <% } %>
 
-            <div class="grupo-campo">
-                <label class="etiqueta-campo">Teléfono</label>
-                <input type="text" name="telefono" class="campo-entrada" placeholder="+57 300 1234 4567" <%= tipo === 'empres' ? 'required' : '' %>>
+                <div class="grupo-campo">
+                    <label class="etiqueta-campo">Descripción</label>
+                    <textarea name="descripcion" class="campo-entrada campo-textarea" rows="3" placeholder="Añade una breve biografía o descripción..."></textarea>
+                </div>
+
+                <div class="contenedor-botones-pasos">
+                    <button type="button" class="boton-secundario" onclick="anteriorPaso()">
+                        Atrás
+                    </button>
+                    <button type="submit" class="boton-principal">
+                        <%= tipo === 'usu' ? 'Registrar Usuario' : 'Registrar Negocio' %>
+                    </button>
+                </div>
             </div>
-
-            <div class="grupo-campo">
-                <label class="etiqueta-campo">Correo electrónico</label>
-                <input type="email" name="email" class="campo-entrada" placeholder="Contacto@tunegocio.com" required>
-            </div>
-
-            <div class="grupo-campo">
-                <label class="etiqueta-campo">Contraseña</label>
-                <input type="password" name="password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required>
-            </div>
-
-            <button type="submit" class="boton-principal">
-                <%= tipo === 'usu' ? 'Registrar Usuario' : 'Registrar Negocio' %>
-            </button>
         </form>
 
         <%- include('../partials/alertas'); %>
@@ -90,5 +133,6 @@
         </div>
     </main>
 
+    <script src="/js/formulario.js"></script>
 </body>
 </html>
