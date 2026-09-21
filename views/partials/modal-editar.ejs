@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
 <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
     <div class="modal-content">
@@ -6,26 +8,41 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
-      <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>" method="POST" enctype="multipart/form-data">
+      <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>" method="POST" enctype="multipart/form-data" id="form-editar-perfil">
         <div class="modal-body">
 
           <%- include('../partials/alertas'); %>
           
-          <div class="mb-4 text-center">
+          <!-- Vista del Avatar -->
+          <div id="seccion-avatar-normal" class="mb-4 text-center">
               <div class="contenedor-avatar-edicion">
-                <img id="vista-previa" src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" data-original-src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" class="imagen-avatar-previa shadow-sm">
+                <img id="vista-previa" 
+                     src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" 
+                     data-original-src="<%= usuarioPerfil.foto_perfil || '/img/avatar.webp' %>" 
+                     class="imagen-avatar-previa shadow-sm">
 
-                  <label for="foto_perfil" class="btn-subir-avatar">
+                  <label for="foto_perfil" class="btn-subir-avatar" title="Cambiar foto">
                       <i class="bi bi-camera-fill"></i>
                   </label>
               </div>
-              <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="d-none" onchange="previsualizarImagen(event)">
-              
-              <!-- Botón para quitar la imagen seleccionada -->
+              <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="d-none">
+
               <div id="contenedor-btn-quitar" class="mt-2 d-none">
-                  <button type="button" class="btn btn-sm btn-outline-danger" onclick="quitarImagenSeleccionada()">
-                      <i class="bi bi-trash"></i> Quitar foto nueva
+                  <button type="button" id="btn-quitar-foto" class="btn btn-sm btn-outline-danger rounded-pill">
+                      <i class="bi bi-trash-fill me-1"></i> Quitar foto nueva
                   </button>
+              </div>
+          </div>
+
+          <!-- Módulo Editor/Recortador de Imagen -->
+          <div id="seccion-editor-imagen" class="d-none mb-4">
+              <p class="small fw-semibold text-center mb-2">Ajusta la imagen dentro del círculo:</p>
+              <div class="contenedor-recorte-modal text-center">
+                  <img id="imagen-para-recortar" src="" alt="Previsualización">
+              </div>
+              <div class="d-flex justify-content-center gap-2 mt-3">
+                  <button type="button" id="btn-cancelar-recorte" class="btn btn-sm btn-secondary">Cancelar</button>
+                  <button type="button" id="btn-confirmar-recorte" class="btn btn-sm btn-primary">Guardar</button>
               </div>
           </div>
 
@@ -69,8 +86,8 @@
               <textarea name="descripcion" class="form-control" rows="3"><%= usuarioPerfil.descripcion || '' %></textarea>
           </div>
 
-          <hr class="my-4">
-          <h6 class="mb-3 fw-bold">Cambiar Contraseña <span class="text-muted fw-normal fs-6">(Opcional)</span></h6>
+          <hr class="my-4" style="border-color: #f1e8ff;">
+          <h6 class="mb-3 fw-bold text-dark">Cambiar Contraseña</h6>
           
           <div class="mb-3">
               <label class="form-label small fw-semibold">Nueva Contraseña</label>
@@ -92,3 +109,5 @@
     </div>
   </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>

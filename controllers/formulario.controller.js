@@ -6,10 +6,24 @@ const publicacionesApi = require('../api/publicaciones')
 
 
 exports.selecFormulario = (req, res) => {
+
+    const token = req.cookies.jwt_echo
+
+    if (token){
+        return res.redirect(`/inicio?exito=ya estas registrado`)
+    }
+
     res.render('pages/registro'); 
 };
 
 exports.mostrarFormulario = (req, res) => {
+
+    const token = req.cookies.jwt_echo
+
+    if (token){
+        return res.redirect(`/inicio?exito=ya estas resgistrado`)
+    }
+    
     const tipo = req.params.tipo;
     
     if (tipo !== 'usu' && tipo !== 'empres') {
@@ -20,18 +34,20 @@ exports.mostrarFormulario = (req, res) => {
 };
 
 exports.procesarRegistro = async (req, res) => {
-    const payload = req.body;
-    payload.tipo_usuario = payload.tipo_url === 'usu' ? 'normal' : 'empresarial';
+
+    const cuerpito = req.body;
+
+    cuerpito.tipo_usuario = cuerpito.tipo_url === 'usu' ? 'normal' : 'empresarial';
 
     try {
 
         if (req.file) {
             const respuestaMultimedia = await publicacionesApi.subirArchivo(req.file, 'perfiles');
-            payload.foto_perfil = respuestaMultimedia.data.url;
+            cuerpito.foto_perfil = respuestaMultimedia.data.url;
         }
 
 
-        const respuesta = await usuarioApi.crearUsuario(payload);
+        const respuesta = await usuarioApi.crearUsuario(cuerpito);
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
         
         return res.render('pages/login', { 
@@ -42,14 +58,26 @@ exports.procesarRegistro = async (req, res) => {
         const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);
         
         return res.render('pages/formulario', { 
-            tipo: payload.tipo_url, 
+            tipo: cuerpito.tipo_url, 
             error: resultado.mensaje 
         });
     }
 };
 
 exports.mostrarLogin = (req, res) => {
-    res.render('pages/login', { error: null });
+
+    const token = req.cookies.jwt_echo
+
+    if (token){
+        return res.redirect(`/inicio?exito=Ya estas logueado`)
+    }
+    const error = req.query.error || null;
+    const exito = req.query.exito || null;
+
+    res.render('pages/login', { 
+        error: error,
+        exito: exito 
+    });
 };
 
 exports.procesarLogin = async (req, res) => {

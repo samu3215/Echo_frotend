@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/modal.css">
+</head>
+
+<body class="cuerpo-inicio">
+
+    <div class="contenedor-principal-interfaz">
+        
+
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+
+
+        <main class="area-contenido-principal">
+            <%- include('../partials/alertas'); %>
+
+            <% if(usuarioLogueado) { %>
+                <form action="/logout/" method="POST">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
+                        Cerrar Sesion
+                    </button>
+                </form>
+                <form action="/eliminar-cuenta" method="POST">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
+                        Eliminar Usuario
+                    </button>
+                </form>
+            <% } %>
+
+        </main>
+
+    </div>
+
+    <%- include('../partials/modal-confirmacion') %>
+    <script src="/js/ubicacion.js"></script>
+    <script src="/js/confirmacion.js"></script>
+</body>
+</html>

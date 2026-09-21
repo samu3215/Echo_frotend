@@ -1,14 +1,20 @@
 const usuarioApi = require('../api/usuario');
 
 exports.mostrarInicio = (req, res) => {
-    res.render('pages/inicio');
+    const error = req.query.error || null;
+    const exito = req.query.exito || null;
+
+    res.render('pages/inicio', {
+        exito,
+        error
+    });
 };
 
 exports.mostrarBusqueda = async (req, res) => {
 
     try {
 
-        const secciones = req.query.seccion || 'publicaciones';
+        const seccion = req.query.seccion || 'publicaciones';
 
         const listUsuarios = await usuarioApi.listarUsuarios()
 
@@ -16,7 +22,7 @@ exports.mostrarBusqueda = async (req, res) => {
         const negocios = listUsuarios.filter(u => u.tipo_usuario === 'empresarial');
 
         res.render('pages/buscar', {
-            secciones: secciones,
+            seccion: seccion,
             usuarios: usuarios,     
             comunidades: [],  
             publicaciones: [],      

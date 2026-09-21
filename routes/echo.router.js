@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const formularioController = require('../controllers/formulario.controllers')
+const formularioController = require('../controllers/formulario.controller')
 const usuarioController = require('../controllers/usuario.controller');
-const publicacionController = require('../controllers/publicacion.controllers')
-const comunidadController = require('../controllers/comunidad.controllers')
+const publicacionController = require('../controllers/publicacion.controller')
+const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
 
 
@@ -22,6 +22,9 @@ router.post('/login', formularioController.procesarLogin);
 
 router.get('/perfil/:nombre_usuario', usuarioController.mostrarPerfil)
 router.post('/perfil/:nombre_usuario', cargarArchivo.single('foto_perfil'), usuarioController.actualizarPerfil)
+router.get('/configuracion/', usuarioController.mostrarConfiguracion)
+router.post('/logout/', usuarioController.cerrarSesion)
+router.post('/eliminar-cuenta', usuarioController.eliminarUsuario)
 
 //////
 

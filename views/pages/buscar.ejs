@@ -41,12 +41,18 @@
             </div>
 
             <div id="contenedor-seccion-actual">
-                <% if (secciones === 'usuarios') { %>
+                <% if (seccion === 'usuarios') { %>
+
                     <%- include('../partials/busqueda-usuarios'); %>
-                <% } else if (secciones === 'comunidades') { %>
+
+                <% } else if (seccion === 'comunidades') { %>
+
                     <%- include('../partials/busqueda-comunidades'); %>
-                <% } else if (secciones === 'negocios') { %>
+
+                <% } else if (seccion === 'negocios') { %>
+
                     <%- include('../partials/busqueda-negocios'); %>
+
                 <% } else { %>
                     <%- include('../partials/busqueda-publicaciones'); %>
                 <% } %>

@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 });
 
 app.use(datosLogueado.datosUsuarioLogueado)
+console.log(datosLogueado.datosUsuarioLogueado)
 
 const usuarioRouter = require('./routes/echo.router');
 app.use('/', usuarioRouter);

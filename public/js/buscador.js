@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     paginas.forEach(pagina => {
         const enlace = pagina.getAttribute('href');
 
-        if (urlActual.includes(enlace)) {
+        if (urlActual.includes(enlace) || (!urlActual.includes('?seccion=') && enlace.includes('seccion=publicaciones'))) {
             pagina.classList.add('activa');
         } else {
             pagina.classList.remove('activa');
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    
     if (urlActual.includes('q=')) {
         const textoGuardado = urlActual.split('q=')[1];
         if (buscador && textoGuardado) {
