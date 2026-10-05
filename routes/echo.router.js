@@ -4,6 +4,7 @@ const formularioController = require('../controllers/formulario.controller')
 const usuarioController = require('../controllers/usuario.controller');
 const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
+const calificacionController = require('../controllers/calificacion.controller') 
 const cargarArchivo = require('../middlewares/subir')
 
 
@@ -43,6 +44,8 @@ router.get('/notificaciones', publicacionController.mostrarNotificaciones)
 router.get('/comunidades', comunidadController.mostrarComunidades)
 //////
 
-
+//// Calificaciones
+router.post('/perfil/:nombre_usuario/calificar', calificacionController.procesarCalificacion);
+////////////
 
 module.exports = router;

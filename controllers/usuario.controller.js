@@ -10,12 +10,20 @@ exports.mostrarPerfil = async (req, res) => {
     try{
         const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
         const seccion = req.query.seccion || 'publicaciones';
+        const usuarioLogueado = res.locals.usuarioLogueado;
+        const usuarioYaCalifico = Boolean(
+            usuarioLogueado &&
+            usuarioPerfil &&
+            Array.isArray(usuarioPerfil.resenas) &&
+            usuarioPerfil.resenas.some((reseña) => reseña.usuario && reseña.usuario.nombre_usuario === usuarioLogueado.nombre_usuario)
+        );
 
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
-            exito: req.query.exito || null, 
-            error: req.query.error || null
+            exito: req.query.exito || null,
+            error: req.query.error || null,
+            usuarioYaCalifico
         });
 
     }catch(error){

@@ -44,6 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
             quitarImagenSeleccionada();
         });
     }
+
+    const estrellas = document.querySelectorAll('.estrella-calificacion');
+    if (estrellas.length) {
+        estrellas.forEach((estrella) => {
+            estrella.addEventListener('click', () => {
+                const valorSeleccionado = Number(estrella.dataset.value);
+                const radios = document.querySelectorAll('input[name="puntuacion"]');
+
+                radios.forEach((radio) => {
+                    radio.checked = Number(radio.value) === valorSeleccionado;
+                });
+
+                estrellas.forEach((item) => {
+                    item.classList.toggle('activa', Number(item.dataset.value) <= valorSeleccionado);
+                });
+            });
+        });
+    }
+
 });
 
 function iniciarEditorImagen(evento) {

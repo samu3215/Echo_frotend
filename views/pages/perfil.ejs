@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/css/perfil.css">
 </head>
 
-<body class="cuerpo-inicio">
+<body class="cuerpo-inicio" data-usuario-actual="<%= usuarioLogueado ? usuarioLogueado.nombre_usuario : 'Tú' %>">
 
     <div class="contenedor-principal-interfaz">
         
@@ -85,7 +85,15 @@
                         <button class="btn-seguir">Seguir</button>
                         
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
-                            <button class="btn-calificar">Calificar</button>
+                            <% if (usuarioYaCalifico) { %>
+                                <button type="button" class="btn-calificar" disabled title="Ya dejaste una reseña para esta empresa">
+                                    Ya reseñaste
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-calificar" data-bs-toggle="modal" data-bs-target="#modalCalificar">
+                                    Calificar
+                                </button>
+                            <% } %>
                         <% } %>
 
                     <% } %>
@@ -134,6 +142,7 @@
     </div>
 
     <%- include('../partials/modal-editar'); %>
+    <%- include('../partials/modal-calificacion'); %>
     <script src="/js/ubicacion.js"></script>
     <script src="/js/perfil.js"></script>
 
