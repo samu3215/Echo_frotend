@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/crear.css">
+    <style>
+        /* Switch Morado */
+        .form-check-input:checked {
+            background-color: var(--morado-principal) !important;
+            border-color: var(--morado-principal) !important;
+        }
+    </style>
+</head>
+
+<body class="cuerpo-inicio">
+    <div class="contenedor-principal-interfaz">
+        
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+        
+        <!-- flex-grow-1 asegura que ocupe el espacio disponible sin caerse -->
+        <main class="area-contenido-principal d-flex flex-column align-items-center pt-4 flex-grow-1">
+            <div class="w-100 mx-auto" style="max-width: <%= (publicacion.archivos && publicacion.archivos.length > 0) ? '950px' : '550px' %>">
+                <%- include('../partials/alertas'); %>
+            </div>
+            
+            <div class="tarjeta-creador shadow-sm estado-detalles <%= (publicacion.archivos && publicacion.archivos.length > 0) ? 'tamano-completo' : 'tamano-solo-texto' %> mx-auto" id="contenedor-tarjeta">
+                
+                <div class="creador-header border-bottom d-flex justify-content-between align-items-center p-3">
+                    <a href="javascript:history.back()" class="btn btn-link text-dark p-0 text-decoration-none">
+                        <i class="bi bi-arrow-left fs-4 txt"></i>
+                    </a>
+                    <h6 class="m-0 fw-bold mx-auto txt">Editar publicación</h6>
+                    
+                    <!-- Botón que abre el modal en lugar de enviar el form directamente -->
+                    <button type="button" class="btn btn-link text-primary p-0 fw-bold text-decoration-none txt" id="btn-abrir-modal-guardar">
+                        Guardar
+                    </button>
+                </div>
+
+                <form id="form-editar-publicacion" action="/editar/<%= publicacion.id %>" method="POST" class="m-0 contenedor-form">
+                    
+                    <div class="w-100">
+                        <div class="row m-0 w-100 fila-principal">
+                            
+                            <% if (publicacion.archivos && publicacion.archivos.length > 0) { %>
+                                <div id="columna-media" class="col-md-7 p-0 bg-oscuro-media position-relative d-flex flex-column justify-content-between">
+                                    <div id="carruselEditarMedia" class="carousel slide flex-grow-1 d-flex align-items-center w-100" data-bs-interval="false">
+                                        <div class="carousel-inner h-100 w-100" id="contenedor-media-preview">
+                                            
+                                            <% publicacion.archivos.sort((a,b)=>a.orden-b.orden).forEach((archivo, index) => { %>
+                                                <div class="carousel-item h-100 <%= index === 0 ? 'active' : '' %>" data-id="<%= archivo.id %>">
+                                                    <% if (archivo.tipo_media === 'video') { %>
+                                                        <video src="<%= archivo.url_media %>" class="media-fit" controls></video>
+                                                    <% } else { %>
+                                                        <img src="<%= archivo.url_media %>" class="media-fit" alt="Media">
+                                                    <% } %>
+                                                </div>
+                                            <% }); %>
+
+                                        </div>
+                                        <% if (publicacion.archivos.length > 1) { %>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carruselEditarMedia" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon shadow-sm rounded-circle p-2 bg-dark bg-opacity-50"></span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carruselEditarMedia" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon shadow-sm rounded-circle p-2 bg-dark bg-opacity-50"></span>
+                                            </button>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="gestor-miniaturas p-2 d-flex gap-2 overflow-x-auto align-items-center" id="contenedor-gestor-miniaturas">
+                                        <div class="d-flex gap-2" id="contenedor-miniaturas">
+                                            
+                                            <% publicacion.archivos.sort((a,b)=>a.orden-b.orden).forEach((archivo, index) => { %>
+                                                <div class="miniatura-item shadow-sm <%= index === 0 ? 'activa' : '' %>" draggable="true" data-id="<%= archivo.id %>">
+                                                    <input type="hidden" name="archivo_id" value="<%= archivo.id %>">
+                                                    <input type="hidden" name="archivo_orden" class="input-archivo-orden" value="<%= index + 1 %>">
+                                                    <% if (archivo.tipo_media === 'video') { %>
+                                                        <video src="<%= archivo.url_media %>" class="miniatura-img"></video>
+                                                    <% } else { %>
+                                                        <img src="<%= archivo.url_media %>" class="miniatura-img">
+                                                    <% } %>
+                                                </div>
+                                            <% }); %>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <div id="columna-formulario" class="<%= (publicacion.archivos && publicacion.archivos.length > 0) ? 'col-md-5 border-start' : 'col-12' %> p-0 d-flex flex-column bg-white columna-detalles transition-width">
+                                <div class="p-3 d-flex align-items-center gap-2 border-bottom">
+                                    <img src="<%= (typeof usuarioLogueado !== 'undefined' && usuarioLogueado.foto_perfil) ? usuarioLogueado.foto_perfil : '/img/avatar.webp' %>" class="avatar-sm rounded-circle" alt="Avatar">
+                                    <span class="fw-bold text-dark"><%= (typeof usuarioLogueado !== 'undefined') ? usuarioLogueado.nombre_usuario : 'Usuario' %></span>
+                                </div>
+                                
+                                <div class="p-3 d-flex flex-column flex-grow-1">
+                                    <textarea name="descripcion" id="input-descripcion" class="form-control border-0 p-0 shadow-none" placeholder="Escribe tu publicación..." maxlength="2200"><%= publicacion.descripcion %></textarea>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-2 border-bottom pb-3 text-muted small">
+                                        <i class="bi bi-emoji-smile fs-5 cursor-pointer"></i>
+                                        <span id="contador-caracteres"><%= publicacion.descripcion ? publicacion.descripcion.length : 0 %>/2200</span>
+                                    </div>
+
+                                    <div class="py-3 d-flex justify-content-between align-items-center">
+                                        <label for="desactivar_comentarios" class="mb-0 fw-semibold text-dark">Desactivar comentarios</label>
+                                        <div class="form-check form-switch m-0">
+                                            <!-- Si NO están activados, marcamos el switch -->
+                                            <input class="form-check-input" type="checkbox" role="switch" id="desactivar_comentarios" name="desactivar_comentarios" <%= !publicacion.comentarios_activados ? 'checked' : '' %>>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de confirmación de Guardado -->
+    <div class="modal fade" id="modalConfirmarGuardar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow p-3 text-center">
+                <h6 class="fw-bold mb-3 mt-2">¿Guardar cambios?</h6>
+                <p class="small text-muted mb-4">Se aplicarán las modificaciones a tu publicación.</p>
+                <div class="d-flex justify-content-center gap-2 mb-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-bold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                    <!-- Este botón ejecuta el submit del form -->
+                    <button type="submit" form="form-editar-publicacion" class="btn btn-sm text-white rounded-pill px-4 fw-bold shadow-none btn-confirmar-guardar" style="background-color: #8338ec;">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/editar.js"></script>
+</body>
+</html>

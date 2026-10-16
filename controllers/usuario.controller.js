@@ -1,32 +1,52 @@
 const usuarioApi = require('../api/usuario');
-const publicacionApi = require('../api/publicaciones')
 const mensajesBakend = require('../utils/mensajes');
 const jwtUtils = require('../utils/jwt');
+const cloudinary = require('../services/cloudinary')
+const publicacionApi = require('../api/publicaciones')
+const publicacionesController = require('../controllers/publicacion.controller')
 
 
 exports.mostrarPerfil = async (req, res) => {
     const nombreUsu = req.params.nombre_usuario
+    const token = req.cookies.jwt_echo
+    const seccion = req.query.seccion || 'publicaciones'
+    
 
     try{
         const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
-        const seccion = req.query.seccion || 'publicaciones';
+
+        let publicaciones = [];
+        let tieneSiguiente = false;
+
+        if (seccion === 'publicaciones') {
+
+            const respuestaPubs = await publicacionApi.listarPublicacionesUsuario(nombreUsu, 1, token)
+            
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaPubs.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaPubs.data.next ? true : false;
+        }
+
+        if (seccion === 'likes') {
+            const respuestaLikes = await publicacionApi.listarPublicacionesLikesUsuario(nombreUsu, 1, token)
+
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaLikes.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaLikes.data.next ? true : false;
+        }
 
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
+            publicaciones: publicaciones, 
+            tieneSiguiente,
             exito: req.query.exito || null, 
             error: req.query.error || null
         });
 
     }catch(error){
 
-        res.render('pages/perfil',{
-            
-            usuarioPerfil: null,
-            seccion: 'publicaciones',
-            exito: null,
-            error: 'El usuario solicitado no existe'
-        })
+        const respuesta = error.response ? error.response.data : error;
+        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
+        return res.redirect(`/inicio/?error=${encodeURIComponent(resultado.mensaje)}`);
     }
     
 };
@@ -48,8 +68,9 @@ exports.actualizarPerfil = async (req,res) =>{
         }
 
         if(req.file){
-            const respuestaMultimedia = await publicacionApi.subirArchivo(req.file, 'perfiles')
-            cuerpito.foto_perfil = respuestaMultimedia.data.url
+            
+            const respuestaMultimedia = await cloudinary.subirArchivoCloudinary(req.file, 'perfiles', true)
+            cuerpito.foto_perfil = respuestaMultimedia
         }
 
         const respuesta = await usuarioApi.actualizarUsuario(nombreUsuActual, cuerpito, token)
@@ -68,12 +89,9 @@ exports.actualizarPerfil = async (req,res) =>{
 
 
     }catch(error) {
+
         const respuesta = error.response ? error.response.data : error;
-
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-    
-
         return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}`);
     }
 }
@@ -130,7 +148,6 @@ exports.eliminarUsuario = async (req,res) =>{
     try{
 
         const respuesta = await usuarioApi.eliminarUsuarios(usuarioEliminado, token)
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta)
         const mensajeRes = resultado.mensaje || 'cuenta eliminada correctamente'
         
@@ -144,10 +161,9 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
     catch(error){
+
         const respuesta = error.response ? error.response.data : error;
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-
         return res.redirect(`/configuracion/?error=${encodeURIComponent(resultado.mensaje)}`)
 
     }

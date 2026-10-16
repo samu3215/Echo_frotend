@@ -1,0 +1,224 @@
+:root {
+    --morado-principal: #8338ec;
+    --morado-hover: #6c2bd9;
+}
+
+.text-primary { color: var(--morado-principal) !important; }
+
+.btn-primario-echo {
+    background-color: var(--morado-principal);
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primario-echo:hover {
+    background-color: var(--morado-hover);
+    color: #ffffff;
+}
+
+/* Tarjeta y Transiciones */
+.tarjeta-creador {
+    width: 100%;
+    background-color: #f3f2f4;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: max-width 0.3s ease;
+}
+
+.contenedor-form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.creador-header {
+    height: 60px;
+    flex-shrink: 0;
+    background-color: var(--morado-principal);
+}
+
+/* Estados de tamaño */
+.tamano-upload { max-width: 650px; min-height: 60vh; }
+.tamano-media { max-width: 650px; min-height: 60vh; }
+.tamano-completo { max-width: 950px; min-height: 60vh; }
+.tamano-solo-texto { max-width: 550px; min-height: auto !important; }
+
+/* En modo solo texto, quitamos el forzado de altura completa */
+.tamano-solo-texto .fila-principal {
+    height: auto !important;
+}
+
+.tamano-solo-texto .columna-detalles {
+    height: auto !important;
+}
+
+.zona-drop {
+    min-height: 550px;
+    border: 2px dashed transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.zona-drop.arrastrando {
+    background-color: rgba(131, 56, 236, 0.05);
+    border-color: var(--morado-principal);
+}
+
+.cursor-pointer { cursor: pointer; }
+
+/* Previsualización Media */
+.bg-oscuro-media {
+    background-color: #1a1a1a;
+    min-height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.media-fit {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #1a1a1a;
+}
+
+/* Gestor de miniaturas y DRAG & DROP */
+.gestor-miniaturas {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 12px;
+    padding: 10px !important;
+    backdrop-filter: blur(4px);
+}
+
+.miniatura-item {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: grab;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    flex-shrink: 0;
+    background-color: #000;
+}
+
+.miniatura-item:active { cursor: grabbing; }
+
+.miniatura-item.activa { border-color: var(--morado-principal); }
+.miniatura-item.drag-over { transform: scale(1.1); border-color: #ffffff; opacity: 0.8; }
+.miniatura-item.dragging { opacity: 0.5; }
+
+.miniatura-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.btn-eliminar-miniatura {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.miniatura-btn-add {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+
+.txt{
+    color: #ffffff !important;
+}
+
+.txt1:hover{
+    background-color: var(--morado-hover);
+    border-color: var(--morado-hover);
+}
+
+.txt1{
+    background-color: var(--morado-principal);
+    border-color: var(--morado-principal);
+}
+
+.miniatura-btn-add:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+/* Columna Formulario y Textarea Autoajustable */
+.columna-detalles {
+    border-left: 1px solid #e5e7eb;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+/* Área de texto que crece sola */
+textarea#input-descripcion {
+    resize: none;
+    font-size: 0.95rem;
+    overflow-y: hidden; /* Oculta la barra scroll */
+    min-height: 150px; /* Tamaño por defecto */
+    max-height: 400px; /* Límite antes de hacer scroll */
+    transition: height 0.1s ease;
+}
+
+textarea#input-descripcion:focus { outline: none; }
+
+@media (max-width: 767px) {
+    .bg-oscuro-media {
+        min-height: 45vh;
+        aspect-ratio: auto;
+    }
+    .columna-detalles {
+        border-left: none;
+        border-top: 1px solid #e5e7eb;
+    }
+    .tarjeta-creador {
+        min-height: 90vh;
+    }
+    #paso-contenedor-principal > .fila-principal {
+        flex-direction: column;
+    }
+}
+
+
+.estado-detalles .btn-eliminar-miniatura,
+.estado-detalles .miniatura-btn-add {
+    display: none !important;
+}
+
+/* Desactivamos el cursor de agarre para indicar que ya no se pueden ordenar */
+.estado-detalles .miniatura-item {
+    cursor: pointer !important;
+}
+
+/* Switch Morado */
+.form-check-input:checked {
+    background-color: var(--morado-principal) !important;
+    border-color: var(--morado-principal) !important;
+}

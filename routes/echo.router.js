@@ -6,17 +6,12 @@ const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
 
-
-
 // routes formulario y login
 router.get('/', formularioController.selecFormulario);
 router.get('/registro/:tipo', formularioController.mostrarFormulario);
 router.post('/registro', cargarArchivo.single('foto_perfil'), formularioController.procesarRegistro);
 router.get('/login', formularioController.mostrarLogin);
 router.post('/login', formularioController.procesarLogin);
-
-//////
-
 
 // routes  usuarios
 
@@ -26,18 +21,27 @@ router.get('/configuracion/', usuarioController.mostrarConfiguracion)
 router.post('/logout/', usuarioController.cerrarSesion)
 router.post('/eliminar-cuenta', usuarioController.eliminarUsuario)
 
-//////
-
-
 // routes publicaciones
 
 router.get('/inicio', publicacionController.mostrarInicio)
 router.get('/buscar', publicacionController.mostrarBusqueda)
-router.get('/crear', publicacionController.mostrarCreacionPublicaciones)
+
+
+router.get('/crear', publicacionController.mostrarCreacionPublicaciones);
+router.post('/publicaciones/crear', cargarArchivo.array('archivos', 8), publicacionController.crearPublicacion);
+router.get('/editar/:id', publicacionController.mostrarEditar);
+router.post('/editar/:id', publicacionController.editarPublicacion);
+router.post('/publicaciones/eliminar/:id', publicacionController.eliminarPublicacion);
+
+
+// acciones de publicaciones
+router.post('/publicaciones/:id/like', publicacionController.darLike);
+router.get('/cargar-mas-publicaciones', publicacionController.cargarMasPublicaciones);
+router.post('/publicaciones/:id/comentar', publicacionController.crearComentario);
+router.patch('/publicaciones/comentarios/editar/:id', publicacionController.editarComentario)
+router.delete('/publicaciones/comentarios/eliminar/:id', publicacionController.eliminarComentario)
+
 router.get('/notificaciones', publicacionController.mostrarNotificaciones)
-
-//////
-
 
 // routes comunidades 
 router.get('/comunidades', comunidadController.mostrarComunidades)
