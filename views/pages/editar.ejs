@@ -3,13 +3,6 @@
 <head>
     <%- include('../partials/head-inicio'); %>
     <link rel="stylesheet" href="/css/crear.css">
-    <style>
-        /* Switch Morado */
-        .form-check-input:checked {
-            background-color: var(--morado-principal) !important;
-            border-color: var(--morado-principal) !important;
-        }
-    </style>
 </head>
 
 <body class="cuerpo-inicio">
@@ -18,9 +11,8 @@
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
         
-        <!-- flex-grow-1 asegura que ocupe el espacio disponible sin caerse -->
         <main class="area-contenido-principal d-flex flex-column align-items-center pt-4 flex-grow-1">
-            <div class="w-100 mx-auto" style="max-width: <%= (publicacion.archivos && publicacion.archivos.length > 0) ? '950px' : '550px' %>">
+            <div class="w-100 mx-auto <%= (publicacion.archivos && publicacion.archivos.length > 0) ? 'contenedor-ancho' : 'contenedor-estrecho' %>">
                 <%- include('../partials/alertas'); %>
             </div>
             
@@ -32,7 +24,6 @@
                     </a>
                     <h6 class="m-0 fw-bold mx-auto txt">Editar publicación</h6>
                     
-                    <!-- Botón que abre el modal en lugar de enviar el form directamente -->
                     <button type="button" class="btn btn-link text-primary p-0 fw-bold text-decoration-none txt" id="btn-abrir-modal-guardar">
                         Guardar
                     </button>
@@ -106,7 +97,6 @@
                                     <div class="py-3 d-flex justify-content-between align-items-center">
                                         <label for="desactivar_comentarios" class="mb-0 fw-semibold text-dark">Desactivar comentarios</label>
                                         <div class="form-check form-switch m-0">
-                                            <!-- Si NO están activados, marcamos el switch -->
                                             <input class="form-check-input" type="checkbox" role="switch" id="desactivar_comentarios" name="desactivar_comentarios" <%= !publicacion.comentarios_activados ? 'checked' : '' %>>
                                         </div>
                                     </div>
@@ -127,7 +117,6 @@
                 <p class="small text-muted mb-4">Se aplicarán las modificaciones a tu publicación.</p>
                 <div class="d-flex justify-content-center gap-2 mb-2">
                     <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-bold shadow-none" data-bs-dismiss="modal">Cancelar</button>
-                    <!-- Este botón ejecuta el submit del form -->
                     <button type="submit" form="form-editar-publicacion" class="btn btn-sm text-white rounded-pill px-4 fw-bold shadow-none btn-confirmar-guardar" style="background-color: #8338ec;">Guardar</button>
                 </div>
             </div>

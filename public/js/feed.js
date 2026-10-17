@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Inicializar carruseles: Bloqueo infinito y ocultar flecha izquierda de inicio
     const carousels = document.querySelectorAll('.carousel');
     carousels.forEach(c => {
         new bootstrap.Carousel(c, { wrap: false });
@@ -8,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prevBtn) prevBtn.style.visibility = 'hidden'; 
     });
 
-    // Evento de transición del Carrusel (Indicador y Flechas)
+
     document.addEventListener('slid.bs.carousel', function (e) {
         const carousel = e.target;
         const totalItems = carousel.querySelectorAll('.carousel-item').length;
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.addEventListener('click', async (e) => {
         
-        // --- MENÚ 3 PUNTOS DE PUBLICACIÓN ---
+
         const btnOpciones = e.target.closest('.btn-opciones-post');
         if (btnOpciones) {
             const idPost = btnOpciones.getAttribute('data-id');
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- ABRIR MODAL CONFIRMAR ELIMINACIÓN DE PUBLICACIÓN ---
+
         if (e.target.closest('#btn-abrir-confirmar-eliminar-post')) {
             const modalOpciones = bootstrap.Modal.getInstance(document.getElementById('modalOpcionesPost'));
             if (modalOpciones) modalOpciones.hide();
@@ -88,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 200);
         }
 
-        // --- BOTÓN "IR A LA PUBLICACIÓN" ---
+
         if (e.target.closest('#btn-ir-post')) {
             e.preventDefault();
             const idPost = e.target.closest('#btn-ir-post').getAttribute('data-id');
@@ -186,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fotoPerfil = data.comentario?.usuario?.foto_perfil || '/img/avatar.webp';
                     const idComentario = data.comentario?.id;
 
-                    // HTML Completo e idéntico al renderizado inicial por EJS
+                    
                     const nuevoComentarioHTML = `
                         <div class="d-flex mb-3 contenedor-comentario-entero" id="caja-comentario-${idComentario}" data-post-id="${idPost}">
                             <a href="/perfil/${nombreUsuario}">
@@ -234,3 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+window.toggleMute = function(btn) {
+    const video = btn.previousElementSibling;
+    const icon = btn.querySelector('i');
+
+    if (video && video.tagName === 'VIDEO') {
+        video.muted = !video.muted;
+        
+        if (video.muted) {
+            icon.classList.remove('bi-volume-up-fill');
+            icon.classList.add('bi-volume-mute-fill');
+        } else {
+            icon.classList.remove('bi-volume-mute-fill');
+            icon.classList.add('bi-volume-up-fill');
+        }
+    }
+};
+

@@ -3,12 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalErrorValidacion = new bootstrap.Modal(document.getElementById('modalErrorValidacion'));
     const textoErrorValidacion = document.getElementById('texto-error-validacion');
 
-    // Referencias Principales
     const tarjetaCreador = document.getElementById('contenedor-tarjeta');
     const inputArchivos = document.getElementById('input-archivos');
     const inputArchivosExtra = document.getElementById('input-archivos-extra');
     
-    // Contenedores / Secciones
     const zonaDrop = document.getElementById('paso-1-upload');
     const pasoContenedorPrincipal = document.getElementById('paso-contenedor-principal');
     const columnaMedia = document.getElementById('columna-media');
@@ -16,15 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const contenedorMedia = document.getElementById('contenedor-media-preview');
     const contenedorMiniaturas = document.getElementById('contenedor-miniaturas');
     
-    // Carrusel y controles
     const carruselElement = document.getElementById('carruselCrearMedia');
     const btnPrevCarrusel = document.getElementById('btn-prev-carrusel');
     const btnNextCarrusel = document.getElementById('btn-next-carrusel');
     
-    // Botones Header y Formulario
     const btnVolver = document.getElementById('btn-volver');
     const btnSiguiente = document.getElementById('btn-siguiente');
-    const btnAbrirModalCrear = document.getElementById('btn-abrir-modal-crear'); // NUEVO BOTÓN
+    const btnAbrirModalCrear = document.getElementById('btn-abrir-modal-crear'); 
     const tituloCreador = document.getElementById('titulo-creador');
     const btnSoloTexto = document.getElementById('btn-solo-texto');
     
@@ -32,14 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDescripcion = document.getElementById('input-descripcion');
     const contadorCaracteres = document.getElementById('contador-caracteres');
 
-    // Modales Bootstrap
     const modalConfirmarDescarte = new bootstrap.Modal(document.getElementById('modalConfirmarDescarte'));
     const btnConfirmarDescarte = document.getElementById('btn-confirmar-descarte');
     
     const modalConfirmarEliminarArchivo = new bootstrap.Modal(document.getElementById('modalConfirmarEliminarArchivo'));
     const btnConfirmarEliminarArchivo = document.getElementById('btn-confirmar-eliminar-archivo');
 
-    const modalConfirmarCrear = new bootstrap.Modal(document.getElementById('modalConfirmarCrear')); // NUEVO MODAL
+    const modalConfirmarCrear = new bootstrap.Modal(document.getElementById('modalConfirmarCrear')); 
 
     let archivosLocales = []; 
     let estadoActual = 'upload'; 
@@ -311,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NUEVA LÓGICA DEL MODAL Y SUBMIT ---
     if (btnAbrirModalCrear) {
         btnAbrirModalCrear.addEventListener('click', () => {
             modalConfirmarCrear.show();

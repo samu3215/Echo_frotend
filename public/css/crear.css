@@ -17,7 +17,7 @@
     color: #ffffff;
 }
 
-/* Tarjeta y Transiciones */
+
 .tarjeta-creador {
     width: 100%;
     background-color: #f3f2f4;
@@ -40,13 +40,13 @@
     background-color: var(--morado-principal);
 }
 
-/* Estados de tamaño */
+
 .tamano-upload { max-width: 650px; min-height: 60vh; }
 .tamano-media { max-width: 650px; min-height: 60vh; }
 .tamano-completo { max-width: 950px; min-height: 60vh; }
 .tamano-solo-texto { max-width: 550px; min-height: auto !important; }
 
-/* En modo solo texto, quitamos el forzado de altura completa */
+
 .tamano-solo-texto .fila-principal {
     height: auto !important;
 }
@@ -68,7 +68,7 @@
 
 .cursor-pointer { cursor: pointer; }
 
-/* Previsualización Media */
+
 .bg-oscuro-media {
     background-color: #1a1a1a;
     min-height: 550px;
@@ -84,7 +84,7 @@
     background-color: #1a1a1a;
 }
 
-/* Gestor de miniaturas y DRAG & DROP */
+
 .gestor-miniaturas {
     position: absolute;
     bottom: 15px;
@@ -166,7 +166,7 @@
 
 .miniatura-btn-add:hover { background-color: rgba(255, 255, 255, 0.1); }
 
-/* Columna Formulario y Textarea Autoajustable */
+
 .columna-detalles {
     border-left: 1px solid #e5e7eb;
 }
@@ -177,13 +177,13 @@
     object-fit: cover;
 }
 
-/* Área de texto que crece sola */
+
 textarea#input-descripcion {
     resize: none;
     font-size: 0.95rem;
-    overflow-y: hidden; /* Oculta la barra scroll */
-    min-height: 150px; /* Tamaño por defecto */
-    max-height: 400px; /* Límite antes de hacer scroll */
+    overflow-y: hidden; 
+    min-height: 150px; 
+    max-height: 400px; 
     transition: height 0.1s ease;
 }
 
@@ -212,13 +212,21 @@ textarea#input-descripcion:focus { outline: none; }
     display: none !important;
 }
 
-/* Desactivamos el cursor de agarre para indicar que ya no se pueden ordenar */
+
 .estado-detalles .miniatura-item {
     cursor: pointer !important;
 }
 
-/* Switch Morado */
+
 .form-check-input:checked {
     background-color: var(--morado-principal) !important;
     border-color: var(--morado-principal) !important;
+}
+
+.contenedor-ancho {
+  max-width: 950px;
+}
+
+.contenedor-estrecho {
+  max-width: 550px;
 }

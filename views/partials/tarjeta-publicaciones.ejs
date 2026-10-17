@@ -1,6 +1,6 @@
-<div class="card tarjeta-publicacion shadow-sm border-0 mb-4" data-post-id="<%= post.id %>">
+<div class="card tarjeta-publicacion shadow-sm mb-4" data-post-id="<%= post.id %>">
     
-    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center p-3">
+    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-3">
         <div class="d-flex align-items-center">
             <a href="/perfil/<%= post.nombreAutorSeguro || 'Usuario' %>" class="text-decoration-none text-dark d-flex align-items-center">
                 <img src="<%= post.fotoSegura %>" class="avatar-post rounded-circle shadow-sm me-2">
@@ -18,16 +18,18 @@
         </button>
     </div>
 
-    <!-- Carrusel: Con deslizamiento táctil forzado (data-bs-touch="true") -->
     <% if (post.archivos && post.archivos.length > 0) { %>
         <div id="carrusel-post-<%= post.id %>" class="carousel slide bg-oscuro-post position-relative" data-bs-touch="true" data-bs-ride="false" data-bs-wrap="false">
             <div class="carousel-inner">
                 <% post.archivos.sort((a, b) => a.orden - b.orden).forEach((archivo, index) => { %>
-                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                    <div class="carousel-item <%= index === 0 ? 'active' : '' %> position-relative">
                         <% if (archivo.tipo_media === 'video') { %>
-                            <video src="<%= archivo.url_media %>" class="d-block w-100 media-post" autoplay muted loop playsinline></video>
+                            <video src="<%= archivo.url_media %>" class="media-post" autoplay muted loop playsinline></video>
+                            <button type="button" class="btn-mute-flotante" onclick="toggleMute(this)">
+                                <i class="bi bi-volume-mute-fill"></i>
+                            </button>
                         <% } else { %>
-                            <img src="<%= archivo.url_media %>" class="d-block w-100 media-post" alt="Media">
+                            <img src="<%= archivo.url_media %>" class="media-post" alt="Media">
                         <% } %>
                     </div>
                 <% }); %>
@@ -98,16 +100,17 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content bg-white text-dark flex-lg-row overflow-hidden shadow" style="height: 85vh; max-height: 85vh; border-radius: 12px;">
             
-            <div class="w-lg-60 bg-black d-flex align-items-center justify-content-center position-relative">
+            <div class="w-lg-60 d-flex align-items-center justify-content-center position-relative">
                 <% if (post.archivos && post.archivos.length > 0) { %>
                     <div id="carrusel-modal-<%= post.id %>" class="carousel slide w-100 h-100 d-flex align-items-center position-relative" data-bs-touch="true" data-bs-ride="false" data-bs-wrap="false">
                         <div class="carousel-inner h-100 d-flex align-items-center">
                             <% post.archivos.sort((a, b) => a.orden - b.orden).forEach((archivo, index) => { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %> w-100">
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %> w-100 h-100 d-flex justify-content-center align-items-center">
                                     <% if (archivo.tipo_media === 'video') { %>
-                                        <video src="<%= archivo.url_media %>" class="d-block w-100 media-modal" autoplay muted loop playsinline controls></video>
+                                       
+                                        <video src="<%= archivo.url_media %>" class="media-modal" autoplay muted loop playsinline controls></video>
                                     <% } else { %>
-                                        <img src="<%= archivo.url_media %>" class="d-block w-100 media-modal" alt="Media">
+                                        <img src="<%= archivo.url_media %>" class="media-modal" alt="Media">
                                     <% } %>
                                 </div>
                             <% }); %>
@@ -125,7 +128,7 @@
                         <% } %>
                     </div>
                 <% } else { %>
-                    <div class="text-white text-center w-100">Publicación de solo texto</div>
+                    <div class="text-dark text-center w-100">Publicación de solo texto</div>
                 <% } %>
             </div>
 
@@ -206,8 +209,7 @@
     </div>
 </div>
 
-
-<!-- 1. Modal Elegir Opciones -->
+<!-- Modal Elegir Opciones -->
 <div class="modal fade" id="modalOpcionesComentario" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.5); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow">
@@ -226,7 +228,7 @@
     </div>
 </div>
 
-<!-- 2. Modal Confirmar Eliminar -->
+<!-- Modal Confirmar Eliminar -->
 <div class="modal fade" id="modalConfirmarEliminarCom" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.6); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow p-3 text-center">
@@ -240,7 +242,7 @@
     </div>
 </div>
 
-<!-- 3. Modal Editar Comentario (NUEVO) -->
+<!-- Modal Editar Comentario -->
 <div class="modal fade" id="modalEditarComentario" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.6); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow p-3">

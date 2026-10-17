@@ -4,9 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAbrirModalGuardar = document.getElementById('btn-abrir-modal-guardar');
     const modalConfirmarGuardar = new bootstrap.Modal(document.getElementById('modalConfirmarGuardar'));
     
-    // ============================================
-    // 1. Textarea Autoajustable y Contador
-    // ============================================
+
     const inputDescripcion = document.getElementById('input-descripcion');
     const contadorCaracteres = document.getElementById('contador-caracteres');
 
@@ -33,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         redimensionarYContar(); 
     }
 
-    // ============================================
-    // 2. Lógica Drag & Drop (Orden de archivos)
-    // ============================================
+
     const contenedorMiniaturas = document.getElementById('contenedor-miniaturas');
     const carruselInner = document.getElementById('contenedor-media-preview');
     let itemArrastrado = null;
@@ -116,9 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ============================================
-    // 3. Modales y Spinner al Guardar
-    // ============================================
+
     if (btnAbrirModalGuardar) {
         btnAbrirModalGuardar.addEventListener('click', () => {
             modalConfirmarGuardar.show();
