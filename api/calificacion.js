@@ -11,3 +11,23 @@ exports.crearCalificacion = async (datos, token) => {
     
     return respuesta;
 };
+
+exports.editarCalificacion = async (id, datos, token) => {
+    const respuesta = await axios.patch(`${BACKEND_URL}/calificaciones/${id}/`, datos, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return respuesta;
+};
+
+exports.eliminarCalificacion = async (id, token) => {
+    const respuesta = await axios.delete(`${BACKEND_URL}/calificaciones/${id}/`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return respuesta;
+};

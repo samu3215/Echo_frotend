@@ -23,7 +23,8 @@ exports.mostrarPerfil = async (req, res) => {
             seccion: seccion,
             exito: req.query.exito || null,
             error: req.query.error || null,
-            usuarioYaCalifico
+            usuarioYaCalifico,
+            mostrarModalEditar: req.query.modal_editar === '1'
         });
 
     }catch(error){
@@ -82,7 +83,7 @@ exports.actualizarPerfil = async (req,res) =>{
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
     
 
-        return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}`);
+        return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}&modal_editar=1`);
     }
 }
 
@@ -160,3 +161,20 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
 }
+
+exports.toggleSeguir = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Debes iniciar sesión para seguir a otra cuenta.' });
+    }
+
+    try {
+        const respuesta = await usuarioApi.seguirUsuario(req.params.nombre_usuario, token);
+        return res.json(respuesta);
+    } catch (error) {
+        const respuesta = error.response ? error.response.data : { error: 'No se pudo actualizar el seguimiento.' };
+        const statusCode = error.response ? error.response.status : 500;
+        return res.status(statusCode).json(respuesta);
+    }
+};

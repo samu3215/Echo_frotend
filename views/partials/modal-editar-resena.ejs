@@ -1,0 +1,37 @@
+<div class="modal fade" id="modalEditarResena" tabindex="-1" aria-labelledby="modalEditarResenaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarResenaLabel">Editar reseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form id="formEditarResena" class="formulario-calificacion" method="POST">
+                <div class="modal-body">
+                    <div class="selector-estrellas" role="radiogroup" aria-label="Selecciona la calificación">
+                        <% for (let i = 5; i >= 1; i--) { %>
+                            <input type="radio" name="puntuacion" id="editar-resena-<%= i %>" value="<%= i %>" class="d-none">
+                            <label for="editar-resena-<%= i %>" class="estrella-calificacion" data-value="<%= i %>" aria-label="<%= i %> estrellas">
+                                <i class="bi bi-star-fill"></i>
+                            </label>
+                        <% } %>
+                    </div>
+
+                    <textarea
+                        name="descripcion"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Actualiza tu experiencia con esta empresa..."
+                        required
+                        minlength="10"
+                    ></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

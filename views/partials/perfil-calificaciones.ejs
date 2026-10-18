@@ -26,7 +26,7 @@
     <% if (reseñas.length > 0) { %>
         <div class="lista-resenas">
             <% reseñas.forEach((resena) => { %>
-                <article class="tarjeta-resena">
+                <article class="tarjeta-resena" data-resena-id="<%= resena.id %>">
                     <div class="resena-cabecera">
                         <div class="resena-usuario">
                             <% if (resena.usuario && resena.usuario.foto_perfil) { %>
@@ -43,11 +43,36 @@
                             </div>
                         </div>
 
-                        <div class="resena-estrellas" aria-label="Calificación de <%= resena.usuario && resena.usuario.nombre_usuario ? resena.usuario.nombre_usuario : 'Usuario' %>">
-                            <% for (let i = 1; i <= 5; i++) { %>
-                                <i class="bi <%= i <= Number(resena.puntuacion || 0) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                        <div class="resena-acciones">
+                            <% if (usuarioLogueado && resena.usuario && usuarioLogueado.nombre_usuario === resena.usuario.nombre_usuario) { %>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary btn-editar-resena"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarResena"
+                                    data-resena-id="<%= resena.id %>"
+                                    data-puntuacion="<%= resena.puntuacion || 0 %>"
+                                    data-descripcion="<%= resena.descripcion || '' %>"
+                                    data-perfil-usuario="<%= usuarioPerfil.nombre_usuario %>"
+                                >
+                                    <i class="bi bi-pencil-square"></i>
+                                    Editar
+                                </button>
+
+                                <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>/resenas/<%= resena.id %>/eliminar" method="POST" class="d-inline">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
+                                        <i class="bi bi-trash3"></i>
+                                        Eliminar
+                                    </button>
+                                </form>
                             <% } %>
                         </div>
+                    </div>
+
+                    <div class="resena-estrellas" aria-label="Calificación de <%= resena.usuario && resena.usuario.nombre_usuario ? resena.usuario.nombre_usuario : 'Usuario' %>">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <i class="bi <%= i <= Number(resena.puntuacion || 0) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                        <% } %>
                     </div>
 
                     <p class="resena-texto"><%= resena.descripcion || 'Sin comentarios adicionales.' %></p>

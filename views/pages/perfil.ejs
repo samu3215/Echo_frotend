@@ -82,7 +82,14 @@
 
                     <% } else { %>
 
-                        <button class="btn-seguir">Seguir</button>
+                        <button
+                            class="btn-seguir <%= usuarioPerfil.esta_siguiendo ? 'activo' : '' %>"
+                            data-usuario="<%= usuarioPerfil.nombre_usuario %>"
+                            data-siguiendo="<%= usuarioPerfil.esta_siguiendo ? 'true' : 'false' %>"
+                            <%= (!usuarioLogueado || usuarioLogueado.nombre_usuario === usuarioPerfil.nombre_usuario) ? 'disabled' : '' %>
+                        >
+                            <%= usuarioPerfil.esta_siguiendo ? 'Siguiendo' : 'Seguir' %>
+                        </button>
                         
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
                             <% if (usuarioYaCalifico) { %>
@@ -143,17 +150,20 @@
 
     <%- include('../partials/modal-editar'); %>
     <%- include('../partials/modal-calificacion'); %>
+    <%- include('../partials/modal-editar-resena'); %>
+    <%- include('../partials/modal-confirmacion'); %>
     <script src="/js/ubicacion.js"></script>
     <script src="/js/perfil.js"></script>
+    <script src="/js/confirmacion.js"></script>
 
 
-    <% if (typeof error !== 'undefined' && error) { %>
+    <% if (typeof mostrarModalEditar !== 'undefined' && mostrarModalEditar) { %>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
                 modalEditar.show();
             });
         </script>
-    <% } %> 
+    <% } %>
 </body>
 </html>
