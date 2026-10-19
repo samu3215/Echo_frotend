@@ -1,0 +1,381 @@
+
+.contenedor-feed-comunidades {
+    width: 100%;
+    max-width: 470px;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+
+.contenedor-pestañas-comunidad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto; 
+    scrollbar-width: none;
+}
+.contenedor-pestañas-comunidad::-webkit-scrollbar { display: none; }
+
+.pestaña-comunidad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: 12px;
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.pestaña-comunidad:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.pestaña-comunidad.activa {
+    background-color: #8338ec;
+    color: #ffffff;
+}
+
+@media (max-width: 380px) {
+    .pestaña-comunidad { font-size: 0.7rem; padding: 0.5rem; }
+}
+
+.contenedor-buscador-comunidad {
+    position: relative;
+    width: 100%;
+}
+
+.icono-lupa-comunidad {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.campo-entrada-comunidad {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.8rem;
+    border-radius: 12px; 
+    border: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.campo-entrada-comunidad:focus {
+    border-color: #8338ec;
+    background-color: #ffffff;
+}
+
+
+.contenedor-categorias-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem; 
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+}
+
+.contenedor-categorias-scroll::-webkit-scrollbar {
+    display: none; 
+}
+
+.chip-categoria {
+    flex-shrink: 0; 
+    padding: 0.45rem 1rem;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chip-categoria:hover {
+    border-color: #8338ec;
+    color: #8338ec;
+    background-color: #f8f9fa;
+}
+
+.chip-categoria.activo {
+    background: #8338ec;
+    color: #ffffff;
+    border-color: #8338ec;
+}
+
+
+.seccion-vacia-comunidades {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    width: 100%;
+    grid-column: 1 / -1; 
+}
+
+.cuadricula-comunidades {
+    display: flex; 
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.tarjeta-comunidad {
+    background-color: #fdfdfd;
+    border: 1px solid #e8e8e8; 
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+}
+.tarjeta-comunidad:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(131, 56, 236, 0.15);
+    border-color: #d1baf4;
+}
+
+.enlace-comunidad {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.tarjeta-cuerpo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.2rem 0.5rem;
+}
+
+.contenedor-logo-comunidad {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: #f4f4f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid #8338ec; 
+}
+
+.logo-comunidad {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tarjeta-pie {
+    padding: 0.6rem 0.8rem;
+    border-top: 1px solid #f0e6ff;
+    text-align: center;
+    background-color: #ffffff;
+    margin-top: auto;
+}
+
+.nombre-comunidad {
+    color: #212529;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.1rem;
+}
+
+.descripcion-comunidad {
+    font-size: 0.75rem;
+    margin-bottom: 0.1rem;
+}
+
+.miembros-comunidad {
+    font-size: 0.7rem;
+    display: block;
+}
+
+
+.contenedor-portada-comunidad {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Coincide exactamente con el Cropper */
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    position: relative;
+}
+
+.portada-comunidad {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-subir-portada {
+    position: absolute;
+    bottom: -15px;
+    right: 20px;
+    background-color: #8338ec;
+    color: #ffffff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(131, 56, 236, 0.3);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 10;
+}
+
+.btn-subir-portada:hover {
+    transform: scale(1.1);
+    background-color: #6d28d9;
+}
+
+.contenedor-recorte-portada {
+    max-width: 100%;
+    height: 250px;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.cropper-bg {
+    background-image: none !important;
+    background-color: #1a1a1a !important;
+}
+
+/* Para el drag-to-scroll de escritorio */
+.contenedor-categorias-scroll.active {
+    cursor: grabbing !important;
+    cursor: -webkit-grabbing !important;
+}
+.contenedor-categorias-scroll {
+    cursor: grab;
+}
+
+/* ========================================== */
+/* SELECTOR DE CATEGORÍAS (PÍLDORAS)          */
+/* ========================================== */
+.grid-categorias-seleccion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-outline-categoria {
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #495057;
+    border-radius: 20px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.btn-check:checked + .btn-outline-categoria {
+    background-color: #f1e8ff;
+    border-color: #8338ec;
+    color: #8338ec;
+    font-weight: 600;
+}
+
+.btn-outline-categoria:hover {
+    border-color: #8338ec;
+    color: #8338ec;
+}
+
+/* Utilidad general para botones primarios */
+.btn-morado-echo {
+    background-color: #8338ec;
+    border: none;
+}
+.btn-morado-echo:hover {
+    background-color: #6d28d9;
+}
+
+
+/* Estilos para la nueva tarjeta con portada horizontal */
+.tarjeta-portada-banner {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Garantiza una vista amplia y sin recortes raros */
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #f1e8ff;
+    border-top: 1px solid #f1e8ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imagen-portada-tarjeta {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.descripcion-comunidad {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Trunca la descripción a máximo 2 líneas con "..." al final */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.placeholder-tarjeta-comunidad {
+    font-size: 2.5rem;
+    color: #ced4da;
+}
+
+.btn-accion-comunidad {
+    border-radius: 8px;
+    transition: all 0.2s;
+    padding: 0.55rem; /* Un poco más alto para que sea fácil de tocar en móvil */
+}
+
+.btn-outline-morado {
+    border: 1.5px solid #8338ec;
+    color: #8338ec;
+    background-color: transparent;
+}
+
+.btn-outline-morado:hover {
+    background-color: #8338ec;
+    color: #ffffff;
+}
+
+.chip-categoria {
+    user-select: none;
+    -webkit-user-drag: none;
+}

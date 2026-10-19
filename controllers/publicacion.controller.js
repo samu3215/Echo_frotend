@@ -2,7 +2,8 @@ const usuarioApi = require('../api/usuario')
 const publicacionApi = require('../api/publicaciones')
 const cloudinary = require('../services/cloudinary')
 const mensajesBakend = require('../utils/mensajes')
-
+const comunidadApi = require('../api/comunidad')
+const comunidadController = require('../controllers/comunidad.controller')
 
 
 exports.formatearPublicaciones = (publicaciones, usuarioLogueado) => {
@@ -265,8 +266,11 @@ exports.mostrarBusqueda = async (req, res) => {
         const listUsuarios = await usuarioApi.listarUsuarios();
         const usuarios = listUsuarios.filter(u => u.tipo_usuario === 'normal')
         const negocios = listUsuarios.filter(u => u.tipo_usuario === 'empresarial')
-
+        const queryBuscador = req.query.q || '';
+        const categoriaActual = req.query.categoria || '';
+        
         let publicaciones = []
+        let comunidades = []
         let tieneSiguiente = false
 
         if (seccion === 'publicaciones') {
@@ -275,18 +279,30 @@ exports.mostrarBusqueda = async (req, res) => {
             tieneSiguiente = respuestaPubs.data.next ? true : false
         }
 
+        if (seccion === 'comunidades') {
+            const paramsComunidad = {
+                page: 1,
+                categoria: categoriaActual,
+                buscar: queryBuscador 
+            };
+            const respuestaCom = await comunidadApi.listarComunidades(paramsComunidad, token);
+            comunidades = comunidadController.formatearComunidades(respuestaCom.data.results || [], res.locals.usuarioLogueado);
+            tieneSiguiente = respuestaCom.data.next ? true : false;
+        }
+
         res.render('pages/buscar', {
             seccion: seccion,
             usuarios: usuarios,     
-            comunidades: [],  
+            comunidades: comunidades,  
             publicaciones: publicaciones,      
             negocios: negocios,
             tieneSiguiente,
+            queryBuscador: queryBuscador,     
+            categoriaActual: categoriaActual,
             error: null
         });
     
     } catch (error) {
-        console.error("DETALLE DEL ERROR EN AXIOS:", error.response?.data || error.message);
         res.render('pages/buscar', {
             seccion: seccion,
             publicaciones: [],
@@ -294,6 +310,8 @@ exports.mostrarBusqueda = async (req, res) => {
             comunidades: [],
             negocios: [],
             tieneSiguiente: false,
+            queryBuscador: queryBuscador,
+            categoriaActual: categoriaActual,
             error: req.query.error  || 'No se pudieron cargar los datos'
         })
     }

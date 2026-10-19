@@ -44,7 +44,20 @@ router.delete('/publicaciones/comentarios/eliminar/:id', publicacionController.e
 router.get('/notificaciones', publicacionController.mostrarNotificaciones)
 
 // routes comunidades 
-router.get('/comunidades', comunidadController.mostrarComunidades)
+
+router.get('/comunidades', comunidadController.mostrarComunidades);
+router.get('/comunidades/cargar-mas', comunidadController.cargarMasComunidades);
+
+router.get('/comunidades/crear', comunidadController.mostrarCrearComunidad);
+router.post('/comunidades/crear', cargarArchivo.array('archivos', 1), comunidadController.crearComunidad);
+router.get('/comunidades/:id/editar', comunidadController.mostrarEditarComunidad);
+router.post('/comunidades/:id/editar', cargarArchivo.array('archivos', 1), comunidadController.editarComunidad);
+router.post('/comunidades/:id/eliminar', comunidadController.eliminarComunidad);
+
+router.post('/comunidades/:id/unirse', comunidadController.unirseOAbandonarComunidad);
+router.get('/comunidades/:id/chat', comunidadController.mostrarChat);
+
+module.exports = router;
 //////
 
 

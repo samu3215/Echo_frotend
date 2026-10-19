@@ -4,6 +4,8 @@ const jwtUtils = require('../utils/jwt');
 const cloudinary = require('../services/cloudinary')
 const publicacionApi = require('../api/publicaciones')
 const publicacionesController = require('../controllers/publicacion.controller')
+const comunidadApi = require('../api/comunidad')
+const comunidadController = require('../controllers/comunidad.controller')
 
 
 exports.mostrarPerfil = async (req, res) => {
@@ -13,10 +15,12 @@ exports.mostrarPerfil = async (req, res) => {
     
 
     try{
-        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
 
-        let publicaciones = [];
-        let tieneSiguiente = false;
+        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
+        let publicaciones = []
+        let comunidadesCreadas = []
+        let comunidadesUnidas = []
+        let tieneSiguiente = false  
 
         if (seccion === 'publicaciones') {
 
@@ -33,11 +37,26 @@ exports.mostrarPerfil = async (req, res) => {
             tieneSiguiente = respuestaLikes.data.next ? true : false;
         }
 
+       
+
+        if (seccion === 'comunidades') {
+            // Trae las comunidades creadas por el usuario del perfil visitado
+            const respuestaCreadas = await comunidadApi.listarComunidades({ usuario: nombreUsu }, token);
+            
+            // Trae las comunidades a las que está unido el usuario del perfil visitado
+            const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true', usuario: nombreUsu }, token);
+
+            comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado);
+            comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado);
+        }
+
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
             publicaciones: publicaciones, 
             tieneSiguiente,
+            comunidadesCreadas: comunidadesCreadas,
+            comunidadesUnidas: comunidadesUnidas,
             exito: req.query.exito || null, 
             error: req.query.error || null
         });
