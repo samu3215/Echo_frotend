@@ -1,0 +1,15 @@
+<% if (comunidades && comunidades.length > 0) { %>
+    <% comunidades.forEach(comunidad => { %>
+        <%- include('../partials/tarjeta-comunidad', { comunidad: comunidad }) %>
+    <% }); %>
+
+    <% if (typeof tieneSiguiente !== 'undefined' && tieneSiguiente) { %>
+        <div id="scroll-trigger-comunidad" class="w-100 text-center my-4" 
+             data-categoria="<%= filtrosActuales.categoria || '' %>"
+             data-buscar="<%= filtrosActuales.buscar || '' %>"
+             data-unidas="<%= filtrosActuales.unidas || '' %>"
+             data-usuario="<%= filtrosActuales.usuario || '' %>">
+            <div class="spinner-border text-primary" role="status" style="color: #8338ec !important;"></div>
+        </div>
+    <% } %>
+<% } %>

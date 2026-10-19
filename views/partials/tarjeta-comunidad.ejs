@@ -1,0 +1,65 @@
+<div class="tarjeta-comunidad mb-3 d-flex flex-column">
+    
+    <!-- Toda la parte superior redirige al chat -->
+    <a href="/comunidades/<%= comunidad.id %>/chat" class="enlace-comunidad text-decoration-none text-dark flex-grow-1">
+        
+        <!-- Encabezado -->
+        <div class="d-flex align-items-center justify-content-between p-3 pb-2">
+            <div class="d-flex align-items-center">
+                <img src="<%= (comunidad.usuario && comunidad.usuario.foto_perfil) ? comunidad.usuario.foto_perfil : '/img/avatar.webp' %>" 
+                     class="rounded-circle shadow-sm me-2" 
+                     style="width: 32px; height: 32px; object-fit: cover;" 
+                     alt="Dueño">
+                <span class="fw-bold small text-dark"><%= (comunidad.usuario && comunidad.usuario.nombre_usuario) ? comunidad.usuario.nombre_usuario : 'Usuario' %></span>
+            </div>
+
+            <% if (comunidad.categoria) { %>
+                <span class="badge rounded-pill text-capitalize fw-bold" 
+                      style="background-color: #f1e8ff; color: #8338ec; font-size: 0.75rem; padding: 0.4em 0.8em;">
+                    <%= comunidad.categoria %>
+                </span>
+            <% } %>
+        </div>
+
+        <!-- Portada Horizontal -->
+        <div class="tarjeta-portada-banner">
+            <% if (comunidad.fotoSegura && comunidad.fotoSegura !== '/img/avatar.webp' && comunidad.fotoSegura !== '/img/default-comunidad.webp') { %>
+                <img src="<%= comunidad.fotoSegura %>" alt="<%= comunidad.nombre %>" class="imagen-portada-tarjeta">
+            <% } else { %>
+                <div class="placeholder-tarjeta-comunidad text-center w-100 h-100 d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-people" style="color: #8338ec; font-size: 3.5rem;"></i>
+                </div>
+            <% } %>
+        </div>
+        
+        <!-- Cuerpo: Nombre, Descripción, Miembros -->
+        <div class="p-3 pb-0">
+            <h5 class="nombre-comunidad fw-bold mb-1 text-dark"><%= comunidad.nombre %></h5>
+            
+            <% if (comunidad.descripcion) { %>
+                <p class="descripcion-comunidad text-muted small mb-2"><%= comunidad.descripcion %></p>
+            <% } %>
+
+            <span class="miembros-comunidad text-muted small mb-3 fw-semibold">
+                <i class="bi bi-people-fill me-1"></i><%= comunidad.totalMiembros %> miembros
+            </span>
+        </div>
+    </a>
+
+    <!-- Footer con Botones (Fuera del enlace principal) -->
+    <div class="p-3 pt-2 mt-auto">
+        <% if (comunidad.esDueno || comunidad.estoy_unido) { %>
+            <a href="/comunidades/<%= comunidad.id %>/chat" class="btn btn-sm w-100 fw-bold btn-accion-comunidad btn-morado-echo text-white">
+                Entrar
+            </a>
+        <% } else { %>
+            <!-- Formulario nativo para la petición HTTP POST -->
+            <form action="/comunidades/<%= comunidad.id %>/unirse" method="POST" class="m-0 p-0">
+                <button type="submit" class="btn btn-sm w-100 fw-bold btn-accion-comunidad btn-outline-morado">
+                    Unirse
+                </button>
+            </form>
+        <% } %>
+    </div>
+
+</div>

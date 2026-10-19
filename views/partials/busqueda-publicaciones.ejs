@@ -1,17 +1,22 @@
-<div class="seccion-bloque">
-    <% if (publicaciones && publicaciones.length > 0) { %>
-        <div class="grid-publicaciones d-flex flex-wrap gap-3">
-            <% publicaciones.forEach(pub => { %>
-                <div class="tarjeta tarjeta-publicacion border rounded p-2 bg-white" style="width: 200px;">
-                    <img src="<%= pub.url_media %>" alt="Publicación" class="img-fluid rounded mb-2">
-                    <span class="titulo fw-bold d-block text-truncate"><%= pub.titulo || 'Publicación' %></span>
-                </div>
-            <% }); %>
-        </div>
+<div class="contenedor-feed" style="max-width: 470px; margin: 0 auto;">
+    <% if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) { %>
+        
+        <% publicaciones.forEach(pub => { %>
+            <%- include('../partials/tarjeta-publicaciones', { post: pub }) %>
+        <% }); %>
+
+        <% if (tieneSiguiente) { %>
+            <div id="scroll-trigger" class="text-center my-4" data-origen="inicio" data-usuario="">
+                <div class="spinner-border text-primary" role="status" style="color: #8338ec !important;"></div>
+            </div>
+        <% } %>
+
     <% } else { %>
-        <div class="mensaje-vacio">
-            <i class="bi bi-card-image display-4 text-muted mb-2 d-block"></i>
-            <p class="text-muted fw-semibold m-0">No hay publicaciones de momento</p>
+        <div class="contenedor-seccion-vacia text-center py-5">
+            <div class="mensaje-vacio">
+                <i class="bi bi-card-image display-4 text-muted mb-2 d-block"></i>
+                <p class="text-muted fw-semibold m-0">No se encontraron publicaciones</p>
+            </div>
         </div>
     <% } %>
 </div>

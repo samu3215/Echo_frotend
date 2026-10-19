@@ -1,0 +1,5 @@
+<% if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) { %>
+    <% publicaciones.forEach(pub => { %>
+        <%- include('./tarjeta-publicaciones', { post: pub }) %>
+    <% }); %>
+<% } %>

@@ -16,7 +16,6 @@ exports.loginUsuario = async (credenciales) => {
 };
 
 
-
 exports.listarUsuario = async(nombreUsuario)=>{
     const respuesta = await api.get(`/usuarios/${nombreUsuario}/`);
     return respuesta.data;

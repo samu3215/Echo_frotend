@@ -1,10 +1,46 @@
-<div class="contenedor-seccion-vacia text-center py-5">
-    <% if (usuarioPerfil.comunidades && usuarioPerfil.comunidades.length > 0) { %>
+<!-- Navegación de Pestañas -->
+<ul class="nav nav-pills mb-4 justify-content-center gap-2" id="pills-tab-comunidades" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill px-4 fw-bold" id="tab-creadas" data-bs-toggle="pill" data-bs-target="#panel-creadas" type="button" role="tab" style="border: 1px solid #8338ec; color: #8338ec; background: transparent;">
+            Creadas
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill px-4 fw-bold" id="tab-unidas" data-bs-toggle="pill" data-bs-target="#panel-unidas" type="button" role="tab" style="border: 1px solid #8338ec; color: #8338ec; background: transparent;">
+            Unidas
+        </button>
+    </li>
+</ul>
 
-    <% } else { %>
-        <div class="mensaje-vacio">
-            <i class="bi bi-people-fill display-4 text-muted mb-2 d-block"></i>
-            <p class="text-muted fw-semibold m-0">No hay comunidades de momento</p>
+<!-- Contenedor de Paneles -->
+<div class="tab-content" id="pills-tabContent-comunidades">
+    
+    <div class="tab-pane fade show active" id="panel-creadas" role="tabpanel">
+        <div class="cuadricula-comunidades">
+            <% if (typeof comunidadesCreadas !== 'undefined' && comunidadesCreadas.length > 0) { %>
+                <%- include('solo-tarjetas-comunidad', { comunidades: comunidadesCreadas, filtrosActuales: { usuario: usuarioPerfil.nombre_usuario } }) %>
+            <% } else { %>
+                <div class="text-center text-muted py-4 w-100">No ha creado ninguna comunidad.</div>
+            <% } %>
         </div>
-    <% } %>
+    </div>
+
+    <div class="tab-pane fade" id="panel-unidas" role="tabpanel">
+        <div class="cuadricula-comunidades">
+            <% if (typeof comunidadesUnidas !== 'undefined' && comunidadesUnidas.length > 0) { %>
+                <%- include('solo-tarjetas-comunidad', { comunidades: comunidadesUnidas, filtrosActuales: { unidas: 'true', usuario: usuarioPerfil.nombre_usuario } }) %>
+            <% } else { %>
+                
+                <div class="text-center text-muted py-4 w-100">No se ha unido a ninguna comunidad.</div>
+            <% } %>
+        </div>
+    </div>
+
 </div>
+
+<style>
+    #pills-tab-comunidades .nav-link.active {
+        background-color: #8338ec !important;
+        color: #ffffff !important;
+    }
+</style>

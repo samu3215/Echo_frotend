@@ -3,15 +3,15 @@
 <head>
     <%- include('../partials/head-inicio'); %>
     <link rel="stylesheet" href="/css/buscar.css">
+    <link rel="stylesheet" href="/css/tarjeta-publicacion.css">
+    <link rel="stylesheet" href="/css/comunidades.css">
 </head>
 
 <body class="cuerpo-inicio">
-
     <div class="contenedor-principal-interfaz">
-        
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
-
+        
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
@@ -19,7 +19,6 @@
                 <i class="bi bi-search icono-lupa"></i>
                 <input type="text" id="buscador" placeholder="Buscar..." class="campo-entrada-buscador" autocomplete="off">
             </div>
-
 
             <div class="contenedor-pestañas mb-4">
                 <a href="/buscar?seccion=publicaciones" class="pagina">
@@ -56,11 +55,17 @@
                 <% } else { %>
                     <%- include('../partials/busqueda-publicaciones'); %>
                 <% } %>
+
             </div>
         </main>
-
     </div>
+
+    <%- include('../partials/modal-opciones-post'); %>
+    
     <script src="/js/ubicacion.js"></script>
     <script src="/js/buscador.js"></script>
+    <script src="/js/feed.js"></script>
+    <script src="/js/comentarios.js"></script>
+    <script src="/js/comunidades.js"></script>
 </body>
 </html>

@@ -1,12 +1,10 @@
-const usuarioApi = require('../api/usuario');
-const mensajesBakend = require('../utils/mensajes');
-const jwtUtils = require('../utils/jwt');
-const publicacionesApi = require('../api/publicaciones')
-
+const usuarioApi = require('../api/usuario')
+const mensajesBakend = require('../utils/mensajes')
+const jwtUtils = require('../utils/jwt')
+const cloudinary = require('../services/cloudinary')
 
 
 exports.selecFormulario = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
@@ -17,7 +15,6 @@ exports.selecFormulario = (req, res) => {
 };
 
 exports.mostrarFormulario = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
@@ -34,18 +31,15 @@ exports.mostrarFormulario = (req, res) => {
 };
 
 exports.procesarRegistro = async (req, res) => {
-
     const cuerpito = req.body;
-
     cuerpito.tipo_usuario = cuerpito.tipo_url === 'usu' ? 'normal' : 'empresarial';
 
     try {
 
         if (req.file) {
-            const respuestaMultimedia = await publicacionesApi.subirArchivo(req.file, 'perfiles');
-            cuerpito.foto_perfil = respuestaMultimedia.data.url;
+            const urlSegura = await cloudinary.subirArchivoCloudinary(req.file, 'perfiles', true);
+            cuerpito.foto_perfil = urlSegura;
         }
-
 
         const respuesta = await usuarioApi.crearUsuario(cuerpito);
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
@@ -65,12 +59,12 @@ exports.procesarRegistro = async (req, res) => {
 };
 
 exports.mostrarLogin = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
         return res.redirect(`/inicio?exito=Ya estas logueado`)
     }
+
     const error = req.query.error || null;
     const exito = req.query.exito || null;
 
@@ -87,10 +81,9 @@ exports.procesarLogin = async (req, res) => {
     };
 
     try {
-        const respuesta = await usuarioApi.loginUsuario(credenciales);
-        
-        jwtUtils.guardarTokenCookie(res, respuesta.data.token);
 
+        const respuesta = await usuarioApi.loginUsuario(credenciales);
+        jwtUtils.guardarTokenCookie(res, respuesta.data.token);
         res.redirect('/inicio'); 
 
     } catch (error) {
