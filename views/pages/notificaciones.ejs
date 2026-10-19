@@ -373,8 +373,7 @@
 
 </head>
 
-
-<body class="cuerpo-inicio">
+<body class="cuerpo-inicio" data-usuario-actual="<%= usuarioLogueado ? usuarioLogueado.nombre_usuario : 'Tú' %>">
 
     <div class="contenedor-principal-interfaz">
 
@@ -387,17 +386,20 @@
 
             <%- include('../partials/alertas'); %>
 
-            <div id="notificaciones-app"></div>
+            <div class="contenedor-panel-notificaciones">
+                <div class="encabezado-notificaciones">
+                    <h1>Notificaciones</h1>
+                </div>
 
+                <div id="lista-notificaciones" class="lista-notificaciones" aria-live="polite"></div>
+            </div>
         </main>
 
     </div>
 
 
     <script src="/js/ubicacion.js"></script>
-
     <script src="/js/notificaciones.js"></script>
-
 </body>
 
 </html>
