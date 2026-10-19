@@ -1,0 +1,45 @@
+<div class="modal fade" id="modalCalificar" tabindex="-1" aria-labelledby="modalCalificarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCalificarLabel">
+                    Calificar a <%= usuarioPerfil && usuarioPerfil.nombre_negocio ? usuarioPerfil.nombre_negocio : (usuarioPerfil ? usuarioPerfil.nombre_usuario : 'esta empresa') %>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form id="formCalificar" class="formulario-calificacion" action="/perfil/<%= usuarioPerfil.nombre_usuario %>/calificar" method="POST">
+                <div class="modal-body">
+                    <% if (usuarioYaCalifico) { %>
+                        <div class="alert alert-warning mb-3">
+                            Ya dejaste una reseña para esta empresa. No puedes enviar otra.
+                        </div>
+                    <% } %>
+
+                    <div class="selector-estrellas" role="radiogroup" aria-label="Selecciona la calificación">
+                        <% for (let i = 5; i >= 1; i--) { %>
+                            <input type="radio" name="puntuacion" id="calificacion-<%= i %>" value="<%= i %>" class="d-none" <%= i === 5 ? 'checked' : '' %>>
+                            <label for="calificacion-<%= i %>" class="estrella-calificacion <%= i === 1 ? 'activa' : '' %>" data-value="<%= i %>" aria-label="<%= i %> estrellas">
+                                <i class="bi bi-star-fill"></i>
+                            </label>
+                        <% } %>
+                    </div>
+
+                    <textarea
+                        name="descripcion"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Cuéntanos sobre tu experiencia con esta empresa..."
+                        required
+                        minlength="10"
+                    ></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" <%= usuarioYaCalifico ? 'disabled' : '' %>>Enviar reseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

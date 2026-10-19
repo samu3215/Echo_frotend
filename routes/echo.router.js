@@ -4,6 +4,7 @@ const formularioController = require('../controllers/formulario.controller')
 const usuarioController = require('../controllers/usuario.controller');
 const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
+const calificacionController = require('../controllers/calificacion.controller') 
 const cargarArchivo = require('../middlewares/subir')
 
 // routes formulario y login
@@ -17,6 +18,7 @@ router.post('/login', formularioController.procesarLogin);
 
 router.get('/perfil/:nombre_usuario', usuarioController.mostrarPerfil)
 router.post('/perfil/:nombre_usuario', cargarArchivo.single('foto_perfil'), usuarioController.actualizarPerfil)
+router.post('/seguir/:nombre_usuario', usuarioController.toggleSeguir)
 router.get('/configuracion/', usuarioController.mostrarConfiguracion)
 router.post('/logout/', usuarioController.cerrarSesion)
 router.post('/eliminar-cuenta', usuarioController.eliminarUsuario)
@@ -60,6 +62,10 @@ router.get('/comunidades/:id/chat', comunidadController.mostrarChat);
 module.exports = router;
 //////
 
-
+//// Calificaciones
+router.post('/perfil/:nombre_usuario/calificar', calificacionController.procesarCalificacion);
+router.post('/perfil/:nombre_usuario/resenas/:calificacionId/editar', calificacionController.editarCalificacion);
+router.post('/perfil/:nombre_usuario/resenas/:calificacionId/eliminar', calificacionController.eliminarCalificacion);
+////////////
 
 module.exports = router;
