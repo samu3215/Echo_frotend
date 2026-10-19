@@ -33,3 +33,8 @@ exports.eliminarUsuarios = async (nombreUsuario, token) => {
     return respuesta.data
 }
 
+exports.seguirUsuario = async (nombreUsuario, token) => {
+    const respuesta = await api.post(`/usuarios/${nombreUsuario}/seguir/`, {}, envioToken(token));
+    return respuesta.data;
+};
+

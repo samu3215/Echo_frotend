@@ -11,7 +11,14 @@
                         <small class="username text-truncate">@<%= usuario.nombre_usuario %></small>
                     </div>
                 </a>
-                <button class="btn-accion-busqueda">Seguir</button>
+                <!-- <button
+                    class="btn-accion-busqueda <%= usuario.esta_siguiendo ? 'activo' : '' %>"
+                    data-usuario="<%= usuario.nombre_usuario %>"
+                    data-siguiendo="<%= usuario.esta_siguiendo ? 'true' : 'false' %>"
+                    <%= (!usuarioLogueado || usuarioLogueado.nombre_usuario === usuario.nombre_usuario) ? 'disabled' : '' %>
+                >
+                    <%= usuario.esta_siguiendo ? 'Siguiendo' : 'Seguir' %>
+                </button> -->
             </div>
         <% }); %>
     <% } else { %>

@@ -168,3 +168,20 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
 }
+
+exports.toggleSeguir = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Debes iniciar sesión para seguir a otra cuenta.' });
+    }
+
+    try {
+        const respuesta = await usuarioApi.seguirUsuario(req.params.nombre_usuario, token);
+        return res.json(respuesta);
+    } catch (error) {
+        const respuesta = error.response ? error.response.data : { error: 'No se pudo actualizar el seguimiento.' };
+        const statusCode = error.response ? error.response.status : 500;
+        return res.status(statusCode).json(respuesta);
+    }
+};

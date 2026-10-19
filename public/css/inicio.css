@@ -155,4 +155,87 @@ body.cuerpo-inicio {
   box-shadow: 0 4px 10px rgba(131, 56, 236, 0.3);
 }
 
+.contenedor-panel-notificaciones {
+  max-width: 720px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  padding: 1.25rem;
+}
+
+.encabezado-notificaciones {
+  border-bottom: 1px solid rgba(131, 56, 236, 0.15);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+}
+
+.encabezado-notificaciones h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #2b2b2b;
+}
+
+.lista-notificaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.item-notificacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: #f8f4ff;
+  border: 1px solid rgba(131, 56, 236, 0.12);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+}
+
+.icono-notificacion {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(131, 56, 236, 0.12);
+  color: var(--morado-principal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contenido-notificacion {
+  flex: 1;
+}
+
+.titulo-notificacion {
+  margin: 0 0 0.2rem;
+  color: #2b2b2b;
+  font-weight: 600;
+}
+
+.contenido-notificacion small {
+  color: #6c757d;
+}
+
+.vacio-notificaciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  min-height: 180px;
+  color: #6c757d;
+}
+
+.vacio-notificaciones i {
+  font-size: 2rem;
+  color: rgba(131, 56, 236, 0.5);
+}
+
+.vacio-notificaciones p {
+  margin: 0;
+}
+
 

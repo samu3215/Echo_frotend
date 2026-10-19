@@ -1,10 +1,90 @@
-<div class="contenedor-seccion-vacia text-center py-5">
-    <% if (usuarioPerfil.resenas && usuarioPerfil.resenas.length > 0) { %>
-        
+<% const reseñas = Array.isArray(usuarioPerfil.resenas) ? usuarioPerfil.resenas : []; %>
+<% const promedio = reseñas.length ? (reseñas.reduce((total, resena) => total + Number(resena.puntuacion || 0), 0) / reseñas.length) : 0; %>
+
+<section class="contenedor-resenas">
+    <div class="encabezado-resenas">
+        <div>
+            <p class="titulo-resenas">Reseñas</p>
+            <div class="promedio-resenas">
+                <span class="valor-promedio"><%= promedio.toFixed(1) %></span>
+                <div class="estrellas-pequeñas" aria-label="Promedio de reseñas">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                        <i class="bi <%= i <= Math.round(promedio) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <% if (usuarioLogueado && usuarioLogueado.tipo_usuario === 'normal' && usuarioLogueado.nombre_usuario !== usuarioPerfil.nombre_usuario) { %>
+            <button type="button" class="btn-resena-cta" data-bs-toggle="modal" data-bs-target="#modalCalificar">
+                <i class="bi bi-pencil-square"></i>
+                Escribir reseña
+            </button>
+        <% } %>
+    </div>
+
+    <% if (reseñas.length > 0) { %>
+        <div class="lista-resenas">
+            <% reseñas.forEach((resena) => { %>
+                <article class="tarjeta-resena" data-resena-id="<%= resena.id %>">
+                    <div class="resena-cabecera">
+                        <div class="resena-usuario">
+                            <% if (resena.usuario && resena.usuario.foto_perfil) { %>
+                                <img src="<%= resena.usuario.foto_perfil %>" alt="Foto de usuario" class="avatar-resena">
+                            <% } else { %>
+                                <div class="avatar-resena avatar-resena-placeholder">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            <% } %>
+
+                            <div>
+                                <strong><%= resena.usuario && resena.usuario.nombre_usuario ? resena.usuario.nombre_usuario : 'Usuario' %></strong>
+                                <small><%= resena.fecha_creacion ? new Date(resena.fecha_creacion).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Reciente' %></small>
+                            </div>
+                        </div>
+
+                        <div class="resena-acciones">
+                            <% if (usuarioLogueado && resena.usuario && usuarioLogueado.nombre_usuario === resena.usuario.nombre_usuario) { %>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary btn-editar-resena"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarResena"
+                                    data-resena-id="<%= resena.id %>"
+                                    data-puntuacion="<%= resena.puntuacion || 0 %>"
+                                    data-descripcion="<%= resena.descripcion || '' %>"
+                                    data-perfil-usuario="<%= usuarioPerfil.nombre_usuario %>"
+                                >
+                                    <i class="bi bi-pencil-square"></i>
+                                    Editar
+                                </button>
+
+                                <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>/resenas/<%= resena.id %>/eliminar" method="POST" class="d-inline">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
+                                        <i class="bi bi-trash3"></i>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="resena-estrellas" aria-label="Calificación de <%= resena.usuario && resena.usuario.nombre_usuario ? resena.usuario.nombre_usuario : 'Usuario' %>">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <i class="bi <%= i <= Number(resena.puntuacion || 0) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                        <% } %>
+                    </div>
+
+                    <p class="resena-texto"><%= resena.descripcion || 'Sin comentarios adicionales.' %></p>
+                </article>
+            <% }); %>
+        </div>
     <% } else { %>
-        <div class="mensaje-vacio">
-            <i class="bi bi-star-fill display-4 text-muted mb-2 d-block"></i>
-            <p class="text-muted fw-semibold m-0">No hay reseñas de momento</p>
+        <div class="contenedor-seccion-vacia text-center py-5">
+            <div class="mensaje-vacio">
+                <i class="bi bi-star-fill display-4 text-muted mb-2 d-block"></i>
+                <p class="text-muted fw-semibold m-0">No hay reseñas de momento</p>
+            </div>
         </div>
     <% } %>
-</div>
+</section>

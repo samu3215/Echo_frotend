@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/tarjeta-publicacion.css">
 </head>
 
-<body class="cuerpo-inicio">
+<body class="cuerpo-inicio" data-usuario-actual="<%= usuarioLogueado ? usuarioLogueado.nombre_usuario : 'Tú' %>">
 
     <div class="contenedor-principal-interfaz">
     
@@ -78,10 +78,25 @@
 
                     <% } else { %>
 
-                        <button class="btn-seguir">Seguir</button>
+                        <button
+                            class="btn-seguir <%= usuarioPerfil.esta_siguiendo ? 'activo' : '' %>"
+                            data-usuario="<%= usuarioPerfil.nombre_usuario %>"
+                            data-siguiendo="<%= usuarioPerfil.esta_siguiendo ? 'true' : 'false' %>"
+                            <%= (!usuarioLogueado || usuarioLogueado.nombre_usuario === usuarioPerfil.nombre_usuario) ? 'disabled' : '' %>
+                        >
+                            <%= usuarioPerfil.esta_siguiendo ? 'Siguiendo' : 'Seguir' %>
+                        </button>
                         
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
-                            <button class="btn-calificar">Calificar</button>
+                            <% if (usuarioYaCalifico) { %>
+                                <button type="button" class="btn-calificar" disabled title="Ya dejaste una reseña para esta empresa">
+                                    Ya reseñaste
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-calificar" data-bs-toggle="modal" data-bs-target="#modalCalificar">
+                                    Calificar
+                                </button>
+                            <% } %>
                         <% } %>
 
                     <% } %>
@@ -137,13 +152,13 @@
     <script src="/js/feed.js"></script>
     <script src="/js/comentarios.js"></script>
 
-    <% if (typeof error !== 'undefined' && error) { %>
+    <% if (typeof mostrarModalEditar !== 'undefined' && mostrarModalEditar) { %>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
                 modalEditar.show();
             });
         </script>
-    <% } %> 
+    <% } %>
 </body>
 </html>
