@@ -1,19 +1,389 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <%- include('../partials/head-inicio'); %>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .area-contenido-principal {
+            width: 100%;
+            min-width: 0;
+        }
+
+        #notificaciones-app {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .notificaciones-contenedor {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 30px 40px;
+        }
+
+
+        /* TITULO */
+
+        .notificaciones-titulo {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .notificaciones-titulo h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #241d2e;
+        }
+
+        .notificaciones-titulo p {
+            margin: 5px 0 0 0;
+            color: #8c8793;
+            font-size: 14px;
+        }
+
+
+        /* BOTON MARCAR TODAS */
+
+        .btn-leer-todas {
+            border: 1px solid #e6e1eb;
+            background: white;
+            color: #7633db;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-leer-todas:hover {
+            background: #f6f1fd;
+        }
+
+
+        /* FILTROS */
+
+        .filtros-notificaciones {
+            width: 100%;
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            background: white;
+            border: 1px solid #ebe8ef;
+            padding: 7px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filtro-notificacion {
+            border: none;
+            background: transparent;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #746f7b;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .filtro-notificacion:hover {
+            background: #f6f1fd;
+        }
+
+        .filtro-notificacion.activo {
+            background: #8038e9;
+            color: white;
+        }
+
+
+        /* LISTA */
+
+        .lista-notificaciones {
+            width: 100%;
+            background: white;
+            border: 1px solid #ebe8ef;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+
+        /* CABECERA */
+
+        .cabecera-notificaciones {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid #efedf1;
+            gap: 15px;
+        }
+
+        .cabecera-notificaciones strong {
+            color: #332b3c;
+        }
+
+        .cabecera-notificaciones span {
+            color: #9d98a4;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+
+        /* NOTIFICACION */
+
+        .notificacion {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            padding: 16px 22px;
+            border-bottom: 1px solid #f0eef2;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .notificacion:last-child {
+            border-bottom: none;
+        }
+
+        .notificacion:hover {
+            background: #faf8fd;
+        }
+
+        .notificacion.no-leida {
+            background: #fcfaff;
+        }
+
+        .notificacion.no-leida::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 32px;
+            background: #8339ec;
+            border-radius: 0 5px 5px 0;
+        }
+
+
+        /* AVATAR */
+
+        .avatar-notificacion {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: linear-gradient(
+                135deg,
+                #d946ef,
+                #7c3aed
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+
+        /* CONTENIDO */
+
+        .contenido-notificacion {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contenido-notificacion p {
+            margin: 0;
+            color: #6f6977;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .contenido-notificacion strong {
+            color: #332a3d;
+        }
+
+        .tiempo-notificacion {
+            margin-top: 3px !important;
+            color: #a49fa9 !important;
+            font-size: 10px !important;
+        }
+
+
+        /* ICONO */
+
+        .icono-notificacion {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 50%;
+            background: #f1e8fd;
+            color: #7d36e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* SIN NOTIFICACIONES */
+
+        .sin-notificaciones {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .sin-notificaciones h3 {
+            margin: 0 0 8px 0;
+            color: #6f6977;
+        }
+
+        .sin-notificaciones p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+        /* TABLET */
+
+        @media (max-width: 1000px) {
+
+            .notificaciones-contenedor {
+                padding: 25px;
+            }
+
+            .notificaciones-titulo h1 {
+                font-size: 29px;
+            }
+
+        }
+
+
+        /* CELULAR */
+
+        @media (max-width: 700px) {
+
+            .notificaciones-contenedor {
+                padding: 20px 15px;
+            }
+
+            .notificaciones-titulo {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .notificaciones-titulo h1 {
+                font-size: 27px;
+            }
+
+            .notificaciones-titulo p {
+                font-size: 13px;
+            }
+
+            .btn-leer-todas {
+                width: 100%;
+            }
+
+            .filtros-notificaciones {
+                overflow-x: auto;
+            }
+
+            .filtro-notificacion {
+                padding: 9px 12px;
+                font-size: 12px;
+            }
+
+            .notificacion {
+                padding: 14px 15px;
+                gap: 10px;
+            }
+
+            .avatar-notificacion {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+            }
+
+            .contenido-notificacion p {
+                font-size: 12px;
+            }
+
+            .icono-notificacion {
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                font-size: 12px;
+            }
+
+        }
+
+
+        /* CELULAR PEQUEÑO */
+
+        @media (max-width: 450px) {
+
+            .notificaciones-contenedor {
+                padding: 15px 10px;
+            }
+
+            .notificaciones-titulo h1 {
+                font-size: 24px;
+            }
+
+            .cabecera-notificaciones {
+                padding: 15px;
+            }
+
+            .notificacion {
+                padding: 12px 10px;
+            }
+
+            .avatar-notificacion {
+                width: 34px;
+                height: 34px;
+                min-width: 34px;
+                font-size: 9px;
+            }
+
+            .icono-notificacion {
+                display: none;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body class="cuerpo-inicio" data-usuario-actual="<%= usuarioLogueado ? usuarioLogueado.nombre_usuario : 'Tú' %>">
 
     <div class="contenedor-principal-interfaz">
-        
 
         <%- include('../partials/navegacion-escritorio'); %>
+
         <%- include('../partials/navegacion-movil'); %>
 
 
         <main class="area-contenido-principal">
+
             <%- include('../partials/alertas'); %>
 
             <div class="contenedor-panel-notificaciones">
@@ -26,7 +396,10 @@
         </main>
 
     </div>
+
+
     <script src="/js/ubicacion.js"></script>
     <script src="/js/notificaciones.js"></script>
 </body>
+
 </html>
