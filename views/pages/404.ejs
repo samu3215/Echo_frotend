@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/404.css">
+</head>
+
+<body class="cuerpo-inicio">
+    <div class="contenedor-principal-interfaz">
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+        
+        <main class="area-contenido-principal">
+            <div class="contenedor-error">
+                <div class="codigo-error">404</div>
+                <h1 class="titulo-error">¡Página no encontrada!</h1>
+                <p class="texto-error"><%= error %></p>
+                <a href="/inicio" class="btn-volver">Volver al inicio</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

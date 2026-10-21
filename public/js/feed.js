@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401) return window.location.href = '/login?error=Inicia sesión para dar like';
+                    if (response.status === 401) return window.location.href = '/inicio';
                     throw new Error('Fallo al guardar en DB');
                 }
 
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401) window.location.href = '/login?error=Inicia sesión para comentar';
+                    if (response.status === 401) window.location.href = '/inicio';
                     throw new Error('Error al comentar');
                 }
 

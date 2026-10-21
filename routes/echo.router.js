@@ -7,7 +7,7 @@ const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
 
 // routes formulario y login
-router.get('/', formularioController.selecFormulario);
+router.get('/formulario', formularioController.selecFormulario);
 router.get('/registro/:tipo', formularioController.mostrarFormulario);
 router.post('/registro', cargarArchivo.single('foto_perfil'), formularioController.procesarRegistro);
 router.get('/login', formularioController.mostrarLogin);
@@ -57,9 +57,8 @@ router.post('/comunidades/:id/eliminar', comunidadController.eliminarComunidad);
 router.post('/comunidades/:id/unirse', comunidadController.unirseOAbandonarComunidad);
 router.get('/comunidades/:id/chat', comunidadController.mostrarChat);
 
-module.exports = router;
-//////
-
-
+router.get('/', (req,res) => {
+    res.redirect('/inicio')
+});
 
 module.exports = router;

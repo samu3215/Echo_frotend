@@ -37,17 +37,13 @@ exports.mostrarPerfil = async (req, res) => {
             tieneSiguiente = respuestaLikes.data.next ? true : false;
         }
 
-       
-
         if (seccion === 'comunidades') {
-            // Trae las comunidades creadas por el usuario del perfil visitado
             const respuestaCreadas = await comunidadApi.listarComunidades({ usuario: nombreUsu }, token);
             
-            // Trae las comunidades a las que está unido el usuario del perfil visitado
             const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true', usuario: nombreUsu }, token);
 
-            comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado);
-            comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado);
+            comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado)
+            comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado)
         }
 
         res.render('pages/perfil', {
@@ -57,18 +53,17 @@ exports.mostrarPerfil = async (req, res) => {
             tieneSiguiente,
             comunidadesCreadas: comunidadesCreadas,
             comunidadesUnidas: comunidadesUnidas,
-            exito: req.query.exito || null, 
-            error: req.query.error || null
-        });
+            exito: res.locals.exito || null, 
+            error: res.locals.error || null
+        })
 
     }catch(error){
-
-        const respuesta = error.response ? error.response.data : error;
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-        return res.redirect(`/inicio/?error=${encodeURIComponent(resultado.mensaje)}`);
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/inicio`)
     }
     
-};
+}
 
 exports.actualizarPerfil = async (req,res) =>{
     const nombreUsuActual = req.params.nombre_usuario
@@ -76,14 +71,15 @@ exports.actualizarPerfil = async (req,res) =>{
     const token = req.cookies.jwt_echo
 
     if (!token) {
-        return res.redirect(`/login?error=Debes iniciar sesión para editar tu perfil`);
+        req.flash('error', 'Debes iniciar sesión para editar tu perfil')
+        return res.redirect(`/inicio`);
     }
 
     try{
 
         if (!cuerpito.password) {
-            delete cuerpito.password;
-            delete cuerpito.confirmar_password;
+            delete cuerpito.password
+            delete cuerpito.confirmar_password
         }
 
         if(req.file){
@@ -104,14 +100,15 @@ exports.actualizarPerfil = async (req,res) =>{
 
         const nuevoNombre = cuerpito.nombre_usuario || nombreUsuActual
 
-        return res.redirect(`/perfil/${nuevoNombre}?exito=Perfil actualizado con éxito`)
+        req.flash('exito', 'Perfil actualizado con éxito')
+        return res.redirect(`/perfil/${nuevoNombre}`)
 
 
     }catch(error) {
 
-        const respuesta = error.response ? error.response.data : error;
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-        return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}`);
+        mensajeError = mensajesBakend.extraerMensajeError(error) || 'algo salio mal intentalo de nuevo'
+        req.flash('error', mensajeError)
+        return res.redirect(`/perfil/${nombreUsuActual}`)
     }
 }
 
@@ -119,21 +116,23 @@ exports.mostrarConfiguracion = (req, res) => {
     const token = req.cookies.jwt_echo
 
     if (!token){
-        return res.redirect(`/login?error=debes iniciar sesion para acceder a ese sitio`)
+        req.flash('error', 'debes iniciar sesion para acceder a ese sitio')
+        return res.redirect(`/inicio`)
     }
 
     try {
         res.render('pages/configuracion', {
-            exito: req.query.exito || null,
-            error: req.query.error || null
-        });
+            exito: res.locals.exito || null,
+            error: res.locals.error || null
+        })
+
     } catch (error) {
         res.redender('pages/perfil',{
             exito: null,
             error:'no se pudo cargar la configuracion'
-        });
+        })
     }
-};
+}
 
 exports.cerrarSesion = async (req,res) => {
     try{
@@ -143,12 +142,12 @@ exports.cerrarSesion = async (req,res) => {
         if (res.locals) {
             res.locals.usuarioLogueado = null;
         }
-        
-        return res.redirect('/login?exito=Sesión cerrada correctamente');
+        req.flash('exito', 'Sesión cerrada correctamente')
+        return res.redirect('/login')
     }
     catch(error){
-
-        return res.redirect('/configuracion?error=Error al cerrar sesión');
+        req.flash('error', 'Error al cerrar sesión')
+        return res.redirect('/configuracion')
     }
 }
 
@@ -158,11 +157,11 @@ exports.eliminarUsuario = async (req,res) =>{
     const usuarioLogueado = res.locals.usuarioLogueado
     
     if (!token || !usuarioLogueado) {
-        return res.redirect(`/login?error=Debes iniciar sesión para editar tu perfil`);
+        req.flash('error', 'Debes iniciar sesión para editar tu perfil')
+        return res.redirect(`/login`)
     }
 
     const usuarioEliminado = usuarioLogueado.nombre_usuario
-
 
     try{
 
@@ -173,17 +172,18 @@ exports.eliminarUsuario = async (req,res) =>{
         jwtUtils.limpiarTokenCookie(res)
 
         if (res.locals) {
-            res.locals.usuarioLogueado = null;
+            res.locals.usuarioLogueado = null
         }
 
-        return res.redirect(`/login?exito=${encodeURIComponent(mensajeRes)}`)
+        req.flash('exito', mensajeRes)
+        return res.redirect(`/login`)
 
     }
     catch(error){
-
-        const respuesta = error.response ? error.response.data : error;
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-        return res.redirect(`/configuracion/?error=${encodeURIComponent(resultado.mensaje)}`)
+        
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/configuracion`)
 
     }
 }

@@ -10,30 +10,34 @@ exports.formatearPublicaciones = (publicaciones, usuarioLogueado) => {
     return publicaciones.map(post => {
         
         let nombreAutor = 'Usuario'
+
         if (post.usuario && post.usuario.nombre_usuario) {
             nombreAutor = post.usuario.nombre_usuario
+
         } else if (post.usuario) {
             nombreAutor = post.usuario
         }
 
-        let tieneMiLike = false;
+        let tieneMiLike = false
+
         if (usuarioLogueado && post.likes_publicacion && Array.isArray(post.likes_publicacion)) {
             tieneMiLike = post.likes_publicacion.some(like => {
                 return like.usuario && like.usuario.id === usuarioLogueado.user_id
             })
         }
 
-        let esDueno = false;
+        let esDueno = false
+
         if (usuarioLogueado) {
             esDueno = (usuarioLogueado.nombre_usuario === nombreAutor)
         }
 
-        let fotoSegura = '/img/avatar.webp';
+        let fotoSegura = '/img/avatar.webp'
         if (post.usuario && post.usuario.foto_perfil) {
             fotoSegura = post.usuario.foto_perfil
         }
 
-        let fechaFormateada = '';
+        let fechaFormateada = ''
         if (post.fecha_creacion) {
             fechaFormateada = new Date(post.fecha_creacion).toLocaleDateString();
         }
@@ -53,12 +57,13 @@ exports.mostrarCreacionPublicaciones = (req, res) => {
     const token = req.cookies.jwt_echo
 
     if (!token) {
-        return res.redirect('/login?error=Debes iniciar sesión para publicar')
+        req.flash('error', 'Debes iniciar sesión para publicar')
+        return res.redirect('/inicio')
     }
 
     res.render('pages/crear', {
-        error: req.query.error || null,
-        exito: req.query.exito || null
+        error: res.locals.error || null,
+        exito: res.locals.exito || null
     })
 }
 
@@ -68,7 +73,8 @@ exports.crearPublicacion = async (req, res) => {
     const usuarioLogueado = res.locals.usuarioLogueado 
 
     if (!token || !usuarioLogueado) {
-        return res.redirect('/login?error=Debes iniciar sesión para publicar')
+        req.flash('error','Debes iniciar sesión para publicar')
+        return res.redirect('/inicio')
     }
 
     try {
@@ -83,6 +89,7 @@ exports.crearPublicacion = async (req, res) => {
             
 
             for (let archivo of req.files) {
+
                 const urlSegura = await cloudinary.subirArchivoCloudinary(archivo, 'publicaciones', false)
                 const tipoMedia = archivo.mimetype.includes('video') ? 'video' : 'imagen'
                 
@@ -97,13 +104,15 @@ exports.crearPublicacion = async (req, res) => {
 
         const respuesta = await publicacionApi.crearPublicacion(datosPublicacion, token)
         const mensajeExito = respuesta.data.mensaje || 'Publicación creada exitosamente'
+        req.flash('exito', mensajeExito)
         
-        return res.redirect(`/perfil/${usuarioLogueado.nombre_usuario}?exito=${encodeURIComponent(mensajeExito)}`);
+        return res.redirect(`/inicio`)
 
     } catch (error) {
-        const dataError = error.response ? error.response.data : error
-        const resultado = mensajesBakend.normalizarRespuestaBackend(dataError)
-        return res.redirect(`/crear?error=${encodeURIComponent(resultado.mensaje)}`)
+
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/crear`)
     }
 }
 
@@ -116,100 +125,109 @@ exports.eliminarPublicacion = async (req, res) => {
     const idPublicacion = req.params.id
 
     if (!token || !usuarioLogueado) {
-        return res.redirect('/login?error=Debes iniciar sesión para realizar esta acción')
+        req.flash('error', 'Debes iniciar sesión para realizar esta acción')
+        return res.redirect('/inicio')
     }
 
     try {
         const respuesta = await publicacionApi.eliminarPublicacion(idPublicacion, token)
         const mensajeExito = respuesta.data.mensaje || 'Publicación eliminada correctamente'
 
-        return res.redirect(`/inicio?exito=${encodeURIComponent(mensajeExito)}`)
+        req.flash('exito', mensajeExito)
+        return res.redirect(`/inicio`)
         
     } catch (error) {
-        const dataError = error.response ? error.response.data : error
-        const resultado = mensajesBakend.normalizarRespuestaBackend(dataError)
-        return res.redirect(`/inicio?error=${encodeURIComponent(resultado.mensaje)}`)
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/inicio`)
     }
 }
 
 
 
 exports.mostrarEditar = async (req, res) => {
-    const token = req.cookies.jwt_echo;
-    const usuarioLogueado = res.locals.usuarioLogueado;
-    const idPublicacion = req.params.id;
+    const token = req.cookies.jwt_echo
+    const usuarioLogueado = res.locals.usuarioLogueado
+    const idPublicacion = req.params.id
     
     if (!token || !usuarioLogueado) {
-        return res.redirect('/login?error=Debes iniciar sesión para editar');
+        req.flash('error', 'Debes iniciar sesión para editar')
+        return res.redirect('/inicio')
     } 
 
     try {
 
-        const respuesta = await publicacionApi.obtenerPublicacion(idPublicacion, token);
+        const respuesta = await publicacionApi.obtenerPublicacion(idPublicacion, token)
         const publicacion = respuesta.data;
 
 
         if (publicacion.usuario.nombre_usuario !== usuarioLogueado.nombre_usuario) {
-            return res.redirect('/inicio?error=No tienes permiso para editar esta publicación');
+            req.flash('error','No tienes permiso para editar esta publicación')
+            return res.redirect('/inicio')
         }
 
         res.render('pages/editar', { 
             publicacion: publicacion,
-            error: req.query.error || null 
-        });
+            error: res.locals.error || null 
+        })
+
     } catch (error) {
-        return res.redirect('/inicio?error=No se pudo cargar la publicación a editar');
+
+        req.flash('error', 'No se pudo cargar la publicación a editar')
+        return res.redirect('/inicio')
+
     }
 }
 
 exports.editarPublicacion = async (req, res) => {
-    const token = req.cookies.jwt_echo;
-    const usuarioLogueado = res.locals.usuarioLogueado;
-    const idPublicacion = req.params.id;
+
+    const token = req.cookies.jwt_echo
+    const usuarioLogueado = res.locals.usuarioLogueado
+    const idPublicacion = req.params.id
     
     if (!token || !usuarioLogueado) {
-        return res.redirect('/login?error=Debes iniciar sesión para editar');
+        req.flash('error', 'Debes iniciar sesión para editar')
+        return res.redirect('/inicio')
     }
 
     try {
         
-        const comentariosDesactivados = req.body.desactivar_comentarios === 'on';
+        const comentariosDesactivados = req.body.desactivar_comentarios === 'on'
         
         const datosEditados = {
             descripcion: req.body.descripcion || "",
             comentarios_activados: !comentariosDesactivados 
-        };
+        }
 
         
         if (req.body.archivo_id && req.body.archivo_orden) {
-            const ids = Array.isArray(req.body.archivo_id) ? req.body.archivo_id : [req.body.archivo_id];
-            const ordenes = Array.isArray(req.body.archivo_orden) ? req.body.archivo_orden : [req.body.archivo_orden];
+            const ids = Array.isArray(req.body.archivo_id) ? req.body.archivo_id : [req.body.archivo_id]
+            const ordenes = Array.isArray(req.body.archivo_orden) ? req.body.archivo_orden : [req.body.archivo_orden]
             
             
             datosEditados.archivos = ids.map((id, i) => ({
                 id: Number(id),
                 orden: Number(ordenes[i])
-            }));
+            }))
+
         } else {
             
-            datosEditados.archivos = [];
+            datosEditados.archivos = []
         }
         
-        const respuesta = await publicacionApi.editarPublicacion(idPublicacion, datosEditados, token);
-        const mensajeExito = respuesta.data.mensaje || 'Publicación actualizada correctamente';
+        const respuesta = await publicacionApi.editarPublicacion(idPublicacion, datosEditados, token)
+        const mensajeExito = respuesta.data.mensaje || 'Publicación actualizada correctamente'
 
-        return res.redirect(`/perfil/${usuarioLogueado.nombre_usuario}?exito=${encodeURIComponent(mensajeExito)}`);
+        req.flash('exito', mensajeExito)
+        return res.redirect(`/inicio`)
         
     } catch (error) {
-        console.error("Error al editar:", error.response?.data || error.message);
-        const dataError = error.response ? error.response.data : error;
-        const resultado = mensajesBakend.normalizarRespuestaBackend(dataError);
-        return res.redirect(`/editar/${idPublicacion}?error=${encodeURIComponent(resultado.mensaje)}`);
+
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/editar/${idPublicacion}`)
     }
 }
-
-
-
 
 exports.darLike = async (req, res) => {
 
@@ -217,6 +235,7 @@ exports.darLike = async (req, res) => {
     const idPublicacion = req.params.id
 
     if (!token) {
+        req.flash('error', 'Inicia sesión para dar like');
         return res.status(401).json({ error: 'Debes iniciar sesión para dar like' })
     }
 
@@ -240,8 +259,8 @@ exports.mostrarInicio = async (req, res) => {
         const publicacionesFormateadas = exports.formatearPublicaciones(respuesta.data.results || [], res.locals.usuarioLogueado)
 
         res.render('pages/inicio', {
-            exito: req.query.exito || null,
-            error: req.query.error || null,
+            exito: res.locals.exito || null,
+            error: res.locals.error || null,
             publicaciones: publicacionesFormateadas,
             tieneSiguiente: respuesta.data.next ? true : false
         })
@@ -249,8 +268,8 @@ exports.mostrarInicio = async (req, res) => {
     } catch (error) {
         
         res.render('pages/inicio', {
-            exito: req.query.exito || null,
-            error: req.query.error || 'No se pudo cargar el feed de publicaciones.',
+            exito: res.locals.exito || null,
+            error: res.locals.error || 'No se pudo cargar el feed de publicaciones.',
             publicaciones: [],
             tieneSiguiente: false 
         })
@@ -266,15 +285,17 @@ exports.mostrarBusqueda = async (req, res) => {
         const listUsuarios = await usuarioApi.listarUsuarios();
         const usuarios = listUsuarios.filter(u => u.tipo_usuario === 'normal')
         const negocios = listUsuarios.filter(u => u.tipo_usuario === 'empresarial')
-        const queryBuscador = req.query.q || '';
-        const categoriaActual = req.query.categoria || '';
+        const queryBuscador = req.query.q || ''
+        const categoriaActual = req.query.categoria || ''
         
         let publicaciones = []
         let comunidades = []
         let tieneSiguiente = false
 
         if (seccion === 'publicaciones') {
+
             const respuestaPubs = await publicacionApi.listarPublicaciones(1, token)
+
             publicaciones = exports.formatearPublicaciones(respuestaPubs.data.results || [], res.locals.usuarioLogueado)
             tieneSiguiente = respuestaPubs.data.next ? true : false
         }
@@ -284,10 +305,12 @@ exports.mostrarBusqueda = async (req, res) => {
                 page: 1,
                 categoria: categoriaActual,
                 buscar: queryBuscador 
-            };
-            const respuestaCom = await comunidadApi.listarComunidades(paramsComunidad, token);
-            comunidades = comunidadController.formatearComunidades(respuestaCom.data.results || [], res.locals.usuarioLogueado);
-            tieneSiguiente = respuestaCom.data.next ? true : false;
+            }
+
+            const respuestaCom = await comunidadApi.listarComunidades(paramsComunidad, token)
+
+            comunidades = comunidadController.formatearComunidades(respuestaCom.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaCom.data.next ? true : false
         }
 
         res.render('pages/buscar', {
@@ -300,7 +323,7 @@ exports.mostrarBusqueda = async (req, res) => {
             queryBuscador: queryBuscador,     
             categoriaActual: categoriaActual,
             error: null
-        });
+        })
     
     } catch (error) {
         res.render('pages/buscar', {
@@ -312,7 +335,7 @@ exports.mostrarBusqueda = async (req, res) => {
             tieneSiguiente: false,
             queryBuscador: queryBuscador,
             categoriaActual: categoriaActual,
-            error: req.query.error  || 'No se pudieron cargar los datos'
+            error: res.locals.error  || 'No se pudieron cargar los datos'
         })
     }
 }
@@ -324,6 +347,7 @@ exports.crearComentario = async (req, res) => {
     const contenido = req.body.contenido
 
     if (!token) {
+        req.flash('error', 'Debes iniciar sesión para comentar')
         return res.status(401).json({ error: 'Debes iniciar sesión para comentar' })
     }
 
@@ -331,7 +355,7 @@ exports.crearComentario = async (req, res) => {
         const datos = {
             publicacion: idPublicacion,
             contenido: contenido
-        };
+        }
         const respuesta = await publicacionApi.crearComentario(datos, token)
         
         return res.status(201).json({ exito: true, comentario: respuesta.data })
@@ -367,7 +391,7 @@ exports.cargarMasPublicaciones = async (req, res) => {
             respuesta = await publicacionApi.listarPublicaciones(pagina, token)
         }
 
-        const publicacionesFormateadas = exports.formatearPublicaciones(respuesta.data.results || [], res.locals.usuarioLogueado);
+        const publicacionesFormateadas = exports.formatearPublicaciones(respuesta.data.results || [], res.locals.usuarioLogueado)
 
         const tieneSiguiente = respuesta.data.next ? true : false
 
@@ -385,28 +409,43 @@ exports.cargarMasPublicaciones = async (req, res) => {
 }
 
 exports.editarComentario = async (req, res) => {
-    const token = req.cookies.jwt_echo;
-    if (!token) return res.status(401).json({ error: 'Debes iniciar sesión' });
+
+    const token = req.cookies.jwt_echo
+
+    if (!token){
+        req.flash('error', 'debes iniciar sesion para comentar')
+        return res.status(401).json({ error: 'Debes iniciar sesión' })
+    } 
 
     try {
-        const respuesta = await publicacionApi.editarComentario(req.params.id, { contenido: req.body.contenido }, token);
-        return res.status(200).json({ exito: true, comentario: respuesta.data });
+
+        const respuesta = await publicacionApi.editarComentario(req.params.id, { contenido: req.body.contenido }, token)
+        return res.status(200).json({ exito: true, comentario: respuesta.data })
+        
     } catch (error) {
-        return res.status(400).json({ error: 'Error al editar el comentario' });
+
+        req.flash('error', 'error al editar el comentario')
+        return res.status(400).json({ error: 'Error al editar el comentario' })
     }
-};
+}
 
 exports.eliminarComentario = async (req, res) => {
     const token = req.cookies.jwt_echo;
-    if (!token) return res.status(401).json({ error: 'Debes iniciar sesión' });
+    if (!token){
+        req.flash('error', 'Debes iniciar sesión')
+        return res.status(401).json({ error: 'Debes iniciar sesión' })
+    } 
 
     try {
-        await publicacionApi.eliminarComentario(req.params.id, token);
-        return res.status(200).json({ exito: true });
+
+        await publicacionApi.eliminarComentario(req.params.id, token)
+        return res.status(200).json({ exito: true })
+
     } catch (error) {
-        return res.status(400).json({ error: 'Error al eliminar el comentario' });
+        req.flash('error','Error al eliminar el comentario' )
+        return res.status(400).json({ error: 'Error al eliminar el comentario' })
     }
-};
+}
 
 exports.mostrarNotificaciones = (req, res) => {
     res.render('pages/notificaciones')
