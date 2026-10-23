@@ -92,7 +92,7 @@ body.cuerpo-inicio {
   position: sticky;
   top: 0;
   z-index: 1020;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--morado-principal);
 }
 
 @media (min-width: 768px) {

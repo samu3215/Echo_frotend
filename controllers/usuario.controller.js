@@ -1,14 +1,54 @@
 const usuarioApi = require('../api/usuario');
-const publicacionApi = require('../api/publicaciones')
 const mensajesBakend = require('../utils/mensajes');
 const jwtUtils = require('../utils/jwt');
+const cloudinary = require('../services/cloudinary')
+const publicacionApi = require('../api/publicaciones')
+const publicacionesController = require('../controllers/publicacion.controller')
+const comunidadApi = require('../api/comunidad')
+const comunidadController = require('../controllers/comunidad.controller')
 
 
 exports.mostrarPerfil = async (req, res) => {
     const nombreUsu = req.params.nombre_usuario
+    const token = req.cookies.jwt_echo
+    const seccion = req.query.seccion || 'publicaciones'
+    
 
     try{
+
         const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
+        let publicaciones = []
+        let comunidadesCreadas = []
+        let comunidadesUnidas = []
+        let tieneSiguiente = false  
+
+        if (seccion === 'publicaciones') {
+
+            const respuestaPubs = await publicacionApi.listarPublicacionesUsuario(nombreUsu, 1, token)
+            
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaPubs.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaPubs.data.next ? true : false;
+        }
+
+        if (seccion === 'likes') {
+            const respuestaLikes = await publicacionApi.listarPublicacionesLikesUsuario(nombreUsu, 1, token)
+
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaLikes.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaLikes.data.next ? true : false;
+        }
+
+       
+
+        if (seccion === 'comunidades') {
+            // Trae las comunidades creadas por el usuario del perfil visitado
+            const respuestaCreadas = await comunidadApi.listarComunidades({ usuario: nombreUsu }, token);
+            
+            // Trae las comunidades a las que está unido el usuario del perfil visitado
+            const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true', usuario: nombreUsu }, token);
+
+            comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado);
+            comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado);
+        }
         const seccion = req.query.seccion || 'publicaciones';
         const usuarioLogueado = res.locals.usuarioLogueado;
         const usuarioYaCalifico = Boolean(
@@ -21,6 +61,12 @@ exports.mostrarPerfil = async (req, res) => {
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
+            publicaciones: publicaciones, 
+            tieneSiguiente,
+            comunidadesCreadas: comunidadesCreadas,
+            comunidadesUnidas: comunidadesUnidas,
+            exito: req.query.exito || null, 
+            error: req.query.error || null
             exito: req.query.exito || null,
             error: req.query.error || null,
             usuarioYaCalifico,
@@ -29,13 +75,9 @@ exports.mostrarPerfil = async (req, res) => {
 
     }catch(error){
 
-        res.render('pages/perfil',{
-            
-            usuarioPerfil: null,
-            seccion: 'publicaciones',
-            exito: null,
-            error: 'El usuario solicitado no existe'
-        })
+        const respuesta = error.response ? error.response.data : error;
+        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
+        return res.redirect(`/inicio/?error=${encodeURIComponent(resultado.mensaje)}`);
     }
     
 };
@@ -57,8 +99,9 @@ exports.actualizarPerfil = async (req,res) =>{
         }
 
         if(req.file){
-            const respuestaMultimedia = await publicacionApi.subirArchivo(req.file, 'perfiles')
-            cuerpito.foto_perfil = respuestaMultimedia.data.url
+            
+            const respuestaMultimedia = await cloudinary.subirArchivoCloudinary(req.file, 'perfiles', true)
+            cuerpito.foto_perfil = respuestaMultimedia
         }
 
         const respuesta = await usuarioApi.actualizarUsuario(nombreUsuActual, cuerpito, token)
@@ -77,10 +120,10 @@ exports.actualizarPerfil = async (req,res) =>{
 
 
     }catch(error) {
+
         const respuesta = error.response ? error.response.data : error;
-
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
+        return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}`);
     
 
         return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}&modal_editar=1`);
@@ -139,7 +182,6 @@ exports.eliminarUsuario = async (req,res) =>{
     try{
 
         const respuesta = await usuarioApi.eliminarUsuarios(usuarioEliminado, token)
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta)
         const mensajeRes = resultado.mensaje || 'cuenta eliminada correctamente'
         
@@ -153,10 +195,9 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
     catch(error){
+
         const respuesta = error.response ? error.response.data : error;
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-
         return res.redirect(`/configuracion/?error=${encodeURIComponent(resultado.mensaje)}`)
 
     }

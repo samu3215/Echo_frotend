@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/comunidades.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+</head>
+
+<body class="cuerpo-inicio">
+
+    <div class="contenedor-principal-interfaz">
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+
+        <main class="area-contenido-principal">
+            <%- include('../partials/alertas'); %>
+
+            <div class="contenedor-feed-comunidades">
+                
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/comunidades" class="text-dark text-decoration-none me-3">
+                        <i class="bi bi-arrow-left fs-4"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <%= modo === 'editar' ? 'Editar Comunidad' : 'Crear Nueva Comunidad' %>
+                    </h5>
+                </div>
+
+                <form action="<%= modo === 'editar' ? `/comunidades/${comunidad.id}/editar` : '/comunidades/crear' %>" 
+                      method="POST" 
+                      enctype="multipart/form-data" 
+                      class="bg-white p-4 rounded-4 border border-morado-suave shadow-sm">
+                    
+                    <!-- FOTO DE PORTADA (Rectangular) -->
+                    <div id="seccion-portada-normal" class="mb-4">
+                        <label class="form-label fw-semibold text-dark mb-2">Foto de Portada</label>
+                        
+                        <input type="hidden" name="quitar_foto" id="quitar_foto" value="false">
+
+                        <div class="position-relative w-100 mb-2">
+                            <div class="contenedor-portada-comunidad shadow-sm d-flex flex-column align-items-center justify-content-center">
+                                
+                                <!-- Si ya existe foto guardada, se muestra -->
+                                <img id="preview-foto-comunidad" 
+                                     src="<%= (modo === 'editar' && comunidad.foto_comunidad) ? comunidad.foto_comunidad : '' %>" 
+                                     class="portada-comunidad <%= (modo === 'editar' && comunidad.foto_comunidad) ? '' : 'd-none' %>">
+                                
+                                <!-- Si NO hay foto, mostramos un diseño gris limpio con icono -->
+                                <div id="placeholder-portada" class="text-center text-muted <%= (modo === 'editar' && comunidad.foto_comunidad) ? 'd-none' : '' %>">
+                                    <i class="bi bi-image mb-2" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                    <div class="small fw-semibold">Sin foto de portada</div>
+                                </div>
+                            </div>
+
+                            <label for="input-foto-comunidad" class="btn-subir-portada" title="Cambiar portada">
+                                <i class="bi bi-camera-fill"></i>
+                            </label>
+                        </div>
+                        <input type="file" id="input-foto-comunidad" name="archivos" accept="image/*" class="d-none">
+
+                        <!-- El botón para quitar solo aparece si ya hay foto guardada o subida -->
+                        <div id="contenedor-btn-quitar" class="text-center mt-3 <%= (modo === 'editar' && comunidad.foto_comunidad) ? '' : 'd-none' %>">
+                            <button type="button" id="btn-quitar-foto" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="bi bi-trash-fill me-1"></i> Quitar imagen
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- EDITOR DE IMAGEN (Cropper) -->
+                    <div id="seccion-editor-imagen" class="d-none mb-4">
+                        <p class="small fw-semibold text-center mb-2">Ajusta la imagen para la portada:</p>
+                        <div class="contenedor-recorte-portada text-center shadow-sm">
+                            <img id="imagen-para-recortar" src="" alt="Previsualización">
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button type="button" id="btn-cancelar-recorte" class="btn btn-sm btn-secondary">Cancelar</button>
+                            <button type="button" id="btn-confirmar-recorte" class="btn btn-sm btn-morado-echo text-white">Guardar Recorte</button>
+                        </div>
+                    </div>
+
+                    <!-- NOMBRE -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Nombre</label>
+                        <input type="text" name="nombre" class="form-control border-0 bg-light p-3 rounded-3 shadow-none" 
+                               placeholder="Nombre de la comunidad" 
+                               value="<%= modo === 'editar' ? comunidad.nombre : '' %>" required>
+                    </div>
+
+                    <!-- DESCRIPCIÓN -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Descripción</label>
+                        <textarea name="descripcion" class="form-control border-0 bg-light p-3 rounded-3 shadow-none" 
+                                  placeholder="Breve descripción" rows="3"><%= modo === 'editar' ? comunidad.descripcion : '' %></textarea>
+                    </div>
+
+                    <!-- CATEGORÍA (Reemplazo del Select por Píldoras Dinámicas) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark mb-2">Categoría</label>
+                        <div class="grid-categorias-seleccion">
+                            
+                            <% if (usuarioLogueado && usuarioLogueado.tipo_usuario === 'empresarial') { %>
+                                <!-- Lógica Serializer: Cuentas empresariales solo pueden crear "Negocios" -->
+                                <input type="radio" class="btn-check" name="categoria" id="cat-negocios" value="negocios" checked required>
+                                <label class="btn btn-outline-categoria w-100 text-center" for="cat-negocios">Negocios</label>
+                                <div class="text-muted small mt-2">
+                                    <i class="bi bi-info-circle"></i> Tu cuenta empresarial solo permite comunidades de negocios.
+                                </div>
+                            
+                            <% } else { %>
+                                <!-- Lógica Serializer: Cuentas normales ven todo EXCEPTO "Negocios" -->
+                                <% const categorias = [
+                                    {id: 'tecnologia', nombre: 'Tecnología'},
+                                    {id: 'videojuegos', nombre: 'Videojuegos'},
+                                    {id: 'arte', nombre: 'Arte y Diseño'},
+                                    {id: 'musica', nombre: 'Música'},
+                                    {id: 'deportes', nombre: 'Deportes'},
+                                    {id: 'educacion', nombre: 'Educación'},
+                                    {id: 'general', nombre: 'General'}
+                                ] %>
+                                <% categorias.forEach(cat => { %>
+                                    <input type="radio" class="btn-check" name="categoria" id="cat-<%= cat.id %>" value="<%= cat.id %>"
+                                        <%= modo === 'editar' && comunidad.categoria === cat.id ? 'checked' : '' %> required>
+                                    <label class="btn btn-outline-categoria" for="cat-<%= cat.id %>"><%= cat.nombre %></label>
+                                <% }) %>
+                            <% } %>
+                            
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN GUARDAR (Color Morado) -->
+                    <button type="submit" class="btn btn-morado-echo text-white fw-bold w-100 p-3 rounded-3 mt-2">
+                        <%= modo === 'editar' ? 'Guardar Cambios' : 'Crear comunidad' %>
+                    </button>
+                </form>
+
+                <!-- BOTÓN ELIMINAR (SOLO EN MODO EDITAR) -->
+                <% if (modo === 'editar') { %>
+                    <div class="mt-4 bg-white p-4 rounded-4 border border-danger border-opacity-25 shadow-sm text-center">
+                        <h6 class="fw-bold text-danger mb-2">Zona de Peligro</h6>
+                        <p class="small text-muted mb-3">Una vez que elimines una comunidad, no hay vuelta atrás.</p>
+                        <button type="button" class="btn btn-outline-danger fw-bold w-100 rounded-3" data-bs-toggle="modal" data-bs-target="#modalEliminarComunidad">
+                            Eliminar Comunidad
+                        </button>
+                    </div>
+
+                    <!-- Modal Confirmar Eliminar Comunidad -->
+                    <div class="modal fade" id="modalEliminarComunidad" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.6); z-index: 1060;">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                            <div class="modal-content border-0 shadow p-3 text-center">
+                                <h6 class="fw-bold mb-3 mt-2">¿Eliminar comunidad?</h6>
+                                <p class="small text-muted mb-4">Esta acción no se puede deshacer.</p>
+                                <form action="/comunidades/<%= comunidad.id %>/eliminar" method="POST">
+                                    <div class="d-flex justify-content-center gap-2 mb-2">
+                                        <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-bold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-none">Eliminar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <div style="height: 90px;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de Cropper JS y Lógica -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="/js/ubicacion.js"></script>
+    <script src="/js/comunidades.js"></script>
+</body>
+</html>

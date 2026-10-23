@@ -1,10 +1,25 @@
-<div class="contenedor-seccion-vacia text-center py-5">
-    <% if (usuarioPerfil.publicaciones && usuarioPerfil.publicaciones.length > 0) { %>
+<div class="contenedor-feed" style="max-width: 470px; margin: 0 auto;">
+    
+    <% if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) { %>
+        
+        <% publicaciones.forEach(pub => { %>
+            <%- include('../partials/tarjeta-publicaciones', { post: pub }) %>
+        <% }); %>
+
+        <% if (tieneSiguiente) { %>
+            <div id="scroll-trigger" class="text-center my-4" data-origen="perfil" data-usuario="<%= usuarioPerfil.nombre_usuario %>">
+                <div class="spinner-border text-primary" role="status" style="color: #8338ec !important;"></div>
+            </div>
+        <% } %>
 
     <% } else { %>
-        <div class="mensaje-vacio">
-            <i class="bi bi-card-image display-4 text-muted mb-2 d-block"></i>
-            <p class="text-muted fw-semibold m-0">No hay publicaciones de momento</p>
+        
+        <div class="contenedor-seccion-vacia text-center py-5">
+            <div class="mensaje-vacio">
+                <i class="bi bi-card-image display-4 text-muted mb-2 d-block"></i>
+                <p class="text-muted fw-semibold m-0">No hay publicaciones de momento</p>
+            </div>
         </div>
+
     <% } %>
 </div>

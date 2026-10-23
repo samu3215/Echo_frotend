@@ -1,0 +1,48 @@
+<div class="modal fade" id="modalOpcionesPost" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content modal-opciones-echo border-0 shadow">
+            <div class="list-group list-group-flush text-center w-100">
+
+                <div id="opciones-dueno-post" style="display: none;">
+                    
+                    <button type="button" class="list-group-item list-group-item-action fw-bold text-danger w-100 border-0" style="background: transparent;" id="btn-abrir-confirmar-eliminar-post">
+                        Eliminar
+                    </button>
+                    
+                    <a href="#" class="list-group-item list-group-item-action fw-semibold" id="btn-editar-post" style="color: #000;">
+                        Editar
+                    </a>
+                </div>
+                
+                <button type="button" class="list-group-item list-group-item-action fw-semibold" id="btn-compartir-post">
+                    Compartir
+                </button>
+                
+                <a href="#" class="list-group-item list-group-item-action" id="btn-ir-post">
+                    Ir a la publicación
+                </a>
+                
+                <button type="button" class="list-group-item list-group-item-action text-muted" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Modal de Confirmación para Eliminar Publicación -->
+<div class="modal fade" id="modalConfirmarEliminarPost" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow p-3 text-center rounded-4">
+            <h6 class="fw-bold mb-3 mt-2">¿Eliminar publicación?</h6>
+            <p class="small text-muted mb-4">Esta acción no se puede deshacer y la publicación desaparecerá de tu perfil.</p>
+            <form id="form-eliminar-post" method="POST" action="">
+                <div class="d-flex justify-content-center gap-2 mb-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-bold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-none">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
