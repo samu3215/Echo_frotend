@@ -46,3 +46,13 @@ router.get('/comunidades', comunidadController.mostrarComunidades)
 
 
 module.exports = router;
+
+
+
+
+
+// 1. Importar la función exacta que exporta token.js
+const { datosUsuarioLogueado } = require('../middlewares/token'); 
+
+// 2. Usarla en la ruta de configuración
+router.get('/configuracion', datosUsuarioLogueado, usuarioController.mostrarConfiguracion);

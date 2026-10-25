@@ -2,23 +2,27 @@
 <html lang="es">
 <head>
     <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/buscar.css">
+    
+    <!-- El CSS del modo oscuro DEBE ser el último de la lista -->
+    <link rel="stylesheet" href="/css/modo-oscuro.css">
 </head>
 
 <body class="cuerpo-inicio">
 
     <div class="contenedor-principal-interfaz">
-        
-
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
 
-
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
+            
+            <!-- Aquí va el contenido de tu inicio -->
 
         </main>
-
     </div>
+
     <script src="/js/ubicacion.js"></script>
 </body>
 </html>

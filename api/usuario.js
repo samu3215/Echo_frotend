@@ -33,3 +33,14 @@ exports.eliminarUsuarios = async (nombreUsuario, token) => {
     return respuesta.data
 }
 
+
+
+
+exports.actualizarConfiguracionApi = async (token, datos) => {
+    return await axios.put('/api/usuario/configuracion/', datos, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+};

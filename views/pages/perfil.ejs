@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,56 +13,49 @@
 <body class="cuerpo-inicio">
 
     <div class="contenedor-principal-interfaz">
-        
 
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
-
 
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
             <div class="contenedor-perfil-tarjeta">
-                
-
+            
                 <% if (usuarioLogueado && usuarioLogueado.nombre_usuario === usuarioPerfil.nombre_usuario) { %>
                     <div class="header-perfil-acciones">
-                        <a href="/configuracion" class="btn-icono-config">
+                        <a href="/configuracion" class="btn-icono-config" title="Configuración">
                             <i class="bi bi-gear-fill icon"></i>
                         </a>
                     </div>
                 <% } %>
-
-
+            
                 <div class="perfil-encabezado">
                     <div class="contenedor-avatar">
                         <% if (usuarioPerfil.foto_perfil) { %>
-                            <img src="<%= usuarioPerfil.foto_perfil %>" class="avatar-perfil">
+                            <img src="<%= usuarioPerfil.foto_perfil %>" alt="Foto de perfil" class="avatar-perfil">
                         <% } else { %>
                             <div class="avatar-placeholder">
                                 <i class="bi bi-person"></i>
                             </div>
                         <% } %>
                     </div>
-
+            
                     <h1 class="nombre-pantalla">
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
                             <%= usuarioPerfil.nombre_negocio || usuarioPerfil.nombre_usuario %>
-                            
                         <% } else { %>
                             <%= usuarioPerfil.nombre %> <%= usuarioPerfil.apellido %>
                         <% } %>
                     </h1>
-
+            
                     <span class="nombre-usuario">@<%= usuarioPerfil.nombre_usuario %></span>
-
-
+            
                     <% if (usuarioPerfil.descripcion) { %>
                         <p class="descripcion-perfil"><%= usuarioPerfil.descripcion %></p>
                     <% } %>
                 </div>
-
-
+            
                 <div class="perfil-estadisticas">
                     <div class="item-estadistica">
                         <span class="numero-estadistica"><%= usuarioPerfil.seguidores_count || 0 %></span>
@@ -72,79 +70,64 @@
                         <span class="etiqueta-estadistica">Seguidos</span>
                     </div>
                 </div>
-
+            
                 <div class="perfil-acciones-principales">
                     <% if (usuarioLogueado && usuarioLogueado.nombre_usuario === usuarioPerfil.nombre_usuario) { %>
-
-                        <a href="#" class="btn-editar-perfil" data-bs-toggle="modal" data-bs-target="#modalEditar">
+                        <button type="button" class="btn-editar-perfil" data-bs-toggle="modal" data-bs-target="#modalEditar">
                             <i class="bi bi-pencil-square"></i> Editar perfil
-                        </a>
-
+                        </button>
                     <% } else { %>
-
-                        <button class="btn-seguir">Seguir</button>
-                        
+                        <button type="button" class="btn-seguir">Seguir</button>
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
-                            <button class="btn-calificar">Calificar</button>
+                            <button type="button" class="btn-calificar">Calificar</button>
                         <% } %>
-
                     <% } %>
                 </div>
-
+            
                 <section class="contenedor-pestanas-perfil">
-                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=publicaciones" class="pestana-perfil pagina">
+                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=publicaciones" class="pestana-perfil pagina <%= (!seccion || seccion === 'publicaciones') ? 'activa' : '' %>">
                         <i class="bi bi-list-task icono-pestana"></i>
                     </a>
-                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=likes" class="pestana-perfil pagina">
+                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=likes" class="pestana-perfil pagina <%= (seccion === 'likes') ? 'activa' : '' %>">
                         <i class="bi bi-heart icono-pestana"></i>
                     </a>
-                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=comunidades" class="pestana-perfil pagina">
+                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=comunidades" class="pestana-perfil pagina <%= (seccion === 'comunidades') ? 'activa' : '' %>">
                         <i class="bi bi-people icono-pestana"></i>
                     </a>
                     <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
-                        <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=calificaciones" class="pestana-perfil pagina">
+                        <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=calificaciones" class="pestana-perfil pagina <%= (seccion === 'calificaciones') ? 'activa' : '' %>">
                             <i class="bi bi-star-fill icono-pestana"></i>
                         </a>
                     <% } %>
                 </section>
-
+            
                 <div id="contenedor-seccion-actual">
                     <% if (seccion === 'likes') { %>
-
                         <%- include('../partials/perfil-likes'); %>
-
                     <% } else if (seccion === 'comunidades') { %>
-
                         <%- include('../partials/perfil-comunidades'); %>
-
                     <% } else if (seccion === 'calificaciones' && usuarioPerfil.tipo_usuario === 'empresarial') { %>
-
                         <%- include('../partials/perfil-calificaciones'); %>
-
                     <% } else { %>
-
                         <%- include('../partials/perfil-publicaciones'); %>
-
                     <% } %>
                 </div>
-
+            
             </div>
-        </main>
-
-    </div>
-
-    <%- include('../partials/modal-editar'); %>
-    <script src="/js/ubicacion.js"></script>
-    <script src="/js/perfil.js"></script>
-
-
-    <% if (typeof error !== 'undefined' && error) { %>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
-                modalEditar.show();
-            });
-        </script>
-    <% } %> 
-</body>
-</html>
+            
+            <%- include('../partials/modal-editar'); %>
+            
+            <script src="/js/ubicacion.js"></script>
+            <script src="/js/perfil.js"></script>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var modalEditarElement = document.getElementById('modalEditar');
+                        if (modalEditarElement) {
+                            var modalEditar = new bootstrap.Modal(modalEditarElement);
+                            modalEditar.show();
+                        }
+                    });
+                </script>
+            <% } %>

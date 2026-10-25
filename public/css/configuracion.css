@@ -1,0 +1,300 @@
+.contenedor-configuracion {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+
+.titulo-configuracion {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #1a1a1a;
+}
+
+.lista-configuraciones {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.item-configuracion {
+    background-color: #ffffff;
+    border: 1.5px solid #dcd0ff !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.tarjeta-fija {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.accordion-button {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 12px 16px;
+    box-shadow: none !important;
+    display: flex;
+    align-items: center;
+}
+
+.accordion-button::after {
+    background-size: 1rem;
+    filter: invert(30%) sepia(80%) saturate(1000%) hue-rotate(250deg);
+}
+
+.contenido-item, .accordion-button {
+    width: 100%;
+}
+
+.icono-item {
+    width: 40px;
+    height: 40px;
+    background-color: #f3efff;
+    color: #7b2cbf;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.titulo-item {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2b2b2b;
+}
+
+.subtitulo-item {
+    font-size: 0.8rem;
+    color: #8c8c8c;
+}
+
+.accordion-body {
+    background-color: #faf8ff;
+    border-top: 1px solid #f0eaff;
+    padding: 15px;
+}
+
+/* Botones inferiores */
+.acciones-inferiores-config {
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-accion-borde {
+    border-radius: 12px !important;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.btn-outline-purple {
+    color: #7b2cbf;
+    border-color: #dcd0ff;
+}
+
+.btn-outline-purple:hover {
+    background-color: #7b2cbf;
+    color: #ffffff;
+}
+
+.btn-primario {
+    background-color: #7b2cbf;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primario:hover {
+    background-color: #6a24a6;
+}
+
+
+/* ==========================================
+   ESTILOS DE AYUDA Y SOPORTE
+========================================== */
+.body-ayuda-soporte {
+    padding: 20px 15px !important;
+    text-align: left;
+    background-color: #faf8ff;
+}
+
+.titulo-soporte {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: #1a1a1a;
+}
+
+.subtitulo-soporte {
+    font-size: 0.85rem;
+    color: #777777;
+    margin-bottom: 20px;
+}
+
+/* Grilla de Chat y Email */
+.grid-contacto-soporte {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.tarjeta-opcion-soporte {
+    background-color: #ffffff;
+    border: 1.5px solid #dcd0ff;
+    border-radius: 14px;
+    padding: 18px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.tarjeta-opcion-soporte:hover {
+    transform: translateY(-2px);
+    border-color: #a855f7;
+}
+
+.icono-soporte.morado {
+    font-size: 1.8rem;
+    color: #8b5cf6;
+    margin-bottom: 8px;
+}
+
+.nombre-opcion {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2b2b2b;
+}
+
+.desc-opcion {
+    font-size: 0.75rem;
+    color: #8c8c8c;
+    margin-top: 2px;
+    text-align: center;
+}
+
+/* Lista de Guías y Tutoriales */
+.encabezado-guias {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.icono-verde {
+    color: #4ade80;
+    font-size: 1.1rem;
+}
+
+.titulo-guias {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2b2b2b;
+}
+
+.lista-guias-soporte {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-guia-soporte {
+    background-color: #ffffff;
+    border: 1.5px solid #dcd0ff;
+    border-radius: 12px;
+    padding: 12px 15px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+
+.item-guia-soporte:hover {
+    border-color: #a855f7;
+}
+
+.titulo-guia {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #2b2b2b;
+}
+
+.desc-guia {
+    font-size: 0.78rem;
+    color: #8c8c8c;
+    margin-top: 3px;
+}
+
+
+
+/* Modales de confirmación */
+.modal-confirmacion-custom {
+    border-radius: 18px !important;
+    border: 1.5px solid #dcd0ff !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.btn-modal-cancelar {
+    border-radius: 10px !important;
+    font-weight: 500;
+    color: #666;
+}
+
+.btn-modal-confirmar {
+    border-radius: 10px !important;
+    font-weight: 600;
+}
+
+
+
+/* Información de la Cuenta */
+.body-info-cuenta {
+    padding: 15px !important;
+    background-color: #faf8ff;
+}
+
+.lista-detalles-cuenta {
+    background-color: #ffffff;
+    border: 1.5px solid #dcd0ff;
+    border-radius: 12px;
+    padding: 5px 15px;
+}
+
+.item-detalle-campo {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0eaff;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.etiqueta-campo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8c8c8c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.valor-campo {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2b2b2b;
+    margin: 2px 0 0 0;
+}
