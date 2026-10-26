@@ -1,35 +1,69 @@
 const usuarioApi = require('../api/usuario');
-const publicacionApi = require('../api/publicaciones')
 const mensajesBakend = require('../utils/mensajes');
 const jwtUtils = require('../utils/jwt');
+const cloudinary = require('../services/cloudinary')
+const publicacionApi = require('../api/publicaciones')
+const publicacionesController = require('../controllers/publicacion.controller')
+const comunidadApi = require('../api/comunidad')
+const comunidadController = require('../controllers/comunidad.controller')
 
 
 exports.mostrarPerfil = async (req, res) => {
     const nombreUsu = req.params.nombre_usuario
+    const token = req.cookies.jwt_echo
+    const seccion = req.query.seccion || 'publicaciones'
+    
 
     try{
+
         const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
-        const seccion = req.query.seccion || 'publicaciones';
+        let publicaciones = []
+        let comunidadesCreadas = []
+        let comunidadesUnidas = []
+        let tieneSiguiente = false  
+
+        if (seccion === 'publicaciones') {
+
+            const respuestaPubs = await publicacionApi.listarPublicacionesUsuario(nombreUsu, 1, token)
+            
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaPubs.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaPubs.data.next ? true : false;
+        }
+
+        if (seccion === 'likes') {
+            const respuestaLikes = await publicacionApi.listarPublicacionesLikesUsuario(nombreUsu, 1, token)
+
+            publicaciones = publicacionesController.formatearPublicaciones(respuestaLikes.data.results || [], res.locals.usuarioLogueado)
+            tieneSiguiente = respuestaLikes.data.next ? true : false;
+        }
+
+        if (seccion === 'comunidades') {
+            const respuestaCreadas = await comunidadApi.listarComunidades({ usuario: nombreUsu }, token);
+            
+            const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true' }, token);
+
+            comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado)
+            comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado)
+        }
 
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
-            exito: req.query.exito || null, 
-            error: req.query.error || null
-        });
+            publicaciones: publicaciones, 
+            tieneSiguiente,
+            comunidadesCreadas: comunidadesCreadas,
+            comunidadesUnidas: comunidadesUnidas,
+            exito: res.locals.exito || null, 
+            error: res.locals.error || null
+        })
 
     }catch(error){
-
-        res.render('pages/perfil',{
-            
-            usuarioPerfil: null,
-            seccion: 'publicaciones',
-            exito: null,
-            error: 'El usuario solicitado no existe'
-        })
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/inicio`)
     }
     
-};
+}
 
 exports.actualizarPerfil = async (req,res) =>{
     const nombreUsuActual = req.params.nombre_usuario
@@ -37,19 +71,21 @@ exports.actualizarPerfil = async (req,res) =>{
     const token = req.cookies.jwt_echo
 
     if (!token) {
-        return res.redirect(`/login?error=Debes iniciar sesión para editar tu perfil`);
+        req.flash('error', 'Debes iniciar sesión para editar tu perfil')
+        return res.redirect(`/inicio`);
     }
 
     try{
 
         if (!cuerpito.password) {
-            delete cuerpito.password;
-            delete cuerpito.confirmar_password;
+            delete cuerpito.password
+            delete cuerpito.confirmar_password
         }
 
         if(req.file){
-            const respuestaMultimedia = await publicacionApi.subirArchivo(req.file, 'perfiles')
-            cuerpito.foto_perfil = respuestaMultimedia.data.url
+            
+            const respuestaMultimedia = await cloudinary.subirArchivoCloudinary(req.file, 'perfiles', true)
+            cuerpito.foto_perfil = respuestaMultimedia
         }
 
         const respuesta = await usuarioApi.actualizarUsuario(nombreUsuActual, cuerpito, token)
@@ -64,17 +100,15 @@ exports.actualizarPerfil = async (req,res) =>{
 
         const nuevoNombre = cuerpito.nombre_usuario || nombreUsuActual
 
-        return res.redirect(`/perfil/${nuevoNombre}?exito=Perfil actualizado con éxito`)
+        req.flash('exito', 'Perfil actualizado con éxito')
+        return res.redirect(`/perfil/${nuevoNombre}`)
 
 
     }catch(error) {
-        const respuesta = error.response ? error.response.data : error;
 
-
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-    
-
-        return res.redirect(`/perfil/${nombreUsuActual}?error=${encodeURIComponent(resultado.mensaje)}`);
+        mensajeError = mensajesBakend.extraerMensajeError(error) || 'algo salio mal intentalo de nuevo'
+        req.flash('error', mensajeError)
+        return res.redirect(`/perfil/${nombreUsuActual}`)
     }
 }
 
@@ -82,18 +116,19 @@ exports.mostrarConfiguracion = async (req, res) => {
     const token = req.cookies.jwt_echo
     const usuarioLogueado = res.locals.usuarioLogueado
 
-    if (!token || !usuarioLogueado || !usuarioLogueado.nombre_usuario){
-        return res.redirect(`/login?error=debes iniciar sesion para acceder a ese sitio`)
+    if (!token){
+        req.flash('error', 'debes iniciar sesion para acceder a ese sitio')
+        return res.redirect(`/inicio`)
     }
 
     try {
         const usuarioCuenta = await usuarioApi.listarUsuario(usuarioLogueado.nombre_usuario)
 
         res.render('pages/configuracion', {
-            usuarioCuenta,
-            exito: res.locals.exito || req.query.exito || null,
-            error: res.locals.error || req.query.error || null
-        });
+            exito: res.locals.exito || null,
+            error: res.locals.error || null
+        })
+
     } catch (error) {
         console.error('No se pudo cargar la información de la cuenta para Configuraciones.', {
             status: error.response && error.response.status,
@@ -106,7 +141,7 @@ exports.mostrarConfiguracion = async (req, res) => {
             error: 'No se pudo cargar la información de tu cuenta. Inténtalo de nuevo más tarde.'
         });
     }
-};
+}
 
 exports.cerrarSesion = async (req,res) => {
     try{
@@ -116,12 +151,12 @@ exports.cerrarSesion = async (req,res) => {
         if (res.locals) {
             res.locals.usuarioLogueado = null;
         }
-        
-        return res.redirect('/login?exito=Sesión cerrada correctamente');
+        req.flash('exito', 'Sesión cerrada correctamente')
+        return res.redirect('/login')
     }
     catch(error){
-
-        return res.redirect('/configuracion?error=Error al cerrar sesión');
+        req.flash('error', 'Error al cerrar sesión')
+        return res.redirect('/configuracion')
     }
 }
 
@@ -131,34 +166,33 @@ exports.eliminarUsuario = async (req,res) =>{
     const usuarioLogueado = res.locals.usuarioLogueado
     
     if (!token || !usuarioLogueado) {
-        return res.redirect(`/login?error=Debes iniciar sesión para editar tu perfil`);
+        req.flash('error', 'Debes iniciar sesión para editar tu perfil')
+        return res.redirect(`/login`)
     }
 
     const usuarioEliminado = usuarioLogueado.nombre_usuario
 
-
     try{
 
         const respuesta = await usuarioApi.eliminarUsuarios(usuarioEliminado, token)
-
         const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta)
         const mensajeRes = resultado.mensaje || 'cuenta eliminada correctamente'
         
         jwtUtils.limpiarTokenCookie(res)
 
         if (res.locals) {
-            res.locals.usuarioLogueado = null;
+            res.locals.usuarioLogueado = null
         }
 
-        return res.redirect(`/login?exito=${encodeURIComponent(mensajeRes)}`)
+        req.flash('exito', mensajeRes)
+        return res.redirect(`/login`)
 
     }
     catch(error){
-        const respuesta = error.response ? error.response.data : error;
-
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-
-        return res.redirect(`/configuracion/?error=${encodeURIComponent(resultado.mensaje)}`)
+        
+        const mensajeError = mensajesBakend.extraerMensajeError(error)
+        req.flash('error', mensajeError)
+        return res.redirect(`/configuracion`)
 
     }
 }

@@ -1,37 +1,36 @@
-const usuarioApi = require('../api/usuario');
-const mensajesBakend = require('../utils/mensajes');
-const jwtUtils = require('../utils/jwt');
-const publicacionesApi = require('../api/publicaciones')
-
+const usuarioApi = require('../api/usuario')
+const mensajesBakend = require('../utils/mensajes')
+const jwtUtils = require('../utils/jwt')
+const cloudinary = require('../services/cloudinary')
 
 
 exports.selecFormulario = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
-        return res.redirect(`/inicio?exito=ya estas registrado`)
+        req.flash('exito', 'ya estas registrado')
+        return res.redirect(`/inicio`)
     }
 
     res.render('pages/registro'); 
-};
+}
 
 exports.mostrarFormulario = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
-        return res.redirect(`/inicio?exito=ya estas resgistrado`)
+        req.flash('exito', 'ya estas resgistrado')
+        return res.redirect(`/inicio`)
     }
     
-    const tipo = req.params.tipo;
+    const tipo = req.params.tipo
     
     if (tipo !== 'usu' && tipo !== 'empres') {
-        return res.redirect('/');
+        return res.redirect('/formulario')
     }
 
     res.render('pages/formulario', { tipo, error: null });
-};
+}
 
 exports.verificarDisponibilidadRegistro = async (req, res) => {
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
@@ -108,7 +107,6 @@ exports.validarAceptacionTerminos = (req, res, next) => {
 };
 
 exports.procesarRegistro = async (req, res) => {
-
     const cuerpito = req.body;
     delete cuerpito.acepta_terminos;
 
@@ -117,14 +115,13 @@ exports.procesarRegistro = async (req, res) => {
     try {
 
         if (req.file) {
-            const respuestaMultimedia = await publicacionesApi.subirArchivo(req.file, 'perfiles');
-            cuerpito.foto_perfil = respuestaMultimedia.data.url;
+            const urlSegura = await cloudinary.subirArchivoCloudinary(req.file, 'perfiles', true)
+            cuerpito.foto_perfil = urlSegura;
         }
 
-
         const respuesta = await usuarioApi.crearUsuario(cuerpito);
-        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-        
+        const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta)
+
         return res.render('pages/login', { 
             exito: resultado.mensaje,
             limpiarBorradorRegistro: ['usu', 'empres'].includes(cuerpito.tipo_url)
@@ -133,21 +130,22 @@ exports.procesarRegistro = async (req, res) => {
         });
 
     } catch (error) {
-        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);
+
+        const resultado = mensajesBakend.extraerMensajeError(error)
         
         return res.render('pages/formulario', { 
             tipo: cuerpito.tipo_url, 
-            error: resultado.mensaje 
-        });
+            error: resultado
+        })
     }
-};
+}
 
 exports.mostrarLogin = (req, res) => {
-
     const token = req.cookies.jwt_echo
 
     if (token){
-        return res.redirect(`/inicio?exito=Ya estas logueado`)
+        req.flash('exito', 'Ya estas logueado')
+        return res.redirect(`/inicio`)
     }
     const error = req.query.error || res.locals.error || null;
     const exito = req.query.exito || res.locals.exito || null;
@@ -282,24 +280,25 @@ exports.restablecerContrasena = async (req, res) => {
 };
 
 exports.procesarLogin = async (req, res) => {
+
     const credenciales = {
         identificador: req.body.nombre_usuario, 
         password: req.body.password
-    };
+    }
 
     try {
-        const respuesta = await usuarioApi.loginUsuario(credenciales);
-        
-        jwtUtils.guardarTokenCookie(res, respuesta.data.token);
 
-        res.redirect('/inicio'); 
+        const respuesta = await usuarioApi.loginUsuario(credenciales)
+        jwtUtils.guardarTokenCookie(res, respuesta.data.token)
+        req.flash('exito', 'logueado con exito')
+        res.redirect('/inicio')
 
     } catch (error) {
-        const resultado = mensajesBakend.normalizarRespuestaBackend(error.response);     
+        const resultado = mensajesBakend.extraerMensajeError(error)  
         
         return res.render('pages/login', { 
             error: resultado.mensaje,
             limpiarBorradorRegistro: null
         });
     }
-};
+}

@@ -1,18 +1,33 @@
-<div class="seccion-bloque">
-    <% if (comunidades && comunidades.length > 0) { %>
-        <% comunidades.forEach(comunidad => { %>
-            <div class="tarjeta tarjeta-resultado d-flex align-items-center justify-content-between p-3 border rounded mb-2 bg-white">
-                <a href="/comunidades/<%= comunidad.id %>" class="text-decoration-none text-dark flex-grow-1">
-                    <span class="titulo fw-bold d-block"><%= comunidad.nombre %></span>
-                    <small class="text-muted"><%= comunidad.descripcion || 'Sin descripción' %></small>
-                </a>
-                <button class="btn btn-outline-primary btn-sm">Unirse</button>
+<% 
+  const catGlobal = (typeof categoriaActual !== 'undefined') ? categoriaActual : ''; 
+  const qGlobal = (typeof queryBuscador !== 'undefined') ? queryBuscador : ''; 
+%>
+
+<div class="contenedor-feed-comunidades">
+    
+    <!-- Chips de categorías con Scroll -->
+    <div class="contenedor-categorias-scroll mb-4">
+        <a href="/buscar?seccion=comunidades&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === '' ? 'activo' : '' %>">Todas</a>
+        <a href="/buscar?seccion=comunidades&categoria=negocios&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'negocios' ? 'activo' : '' %>">Negocios</a>
+        <a href="/buscar?seccion=comunidades&categoria=tecnologia&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'tecnologia' ? 'activo' : '' %>">Tecnología</a>
+        <a href="/buscar?seccion=comunidades&categoria=videojuegos&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'videojuegos' ? 'activo' : '' %>">Videojuegos</a>
+        <a href="/buscar?seccion=comunidades&categoria=arte&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'arte' ? 'activo' : '' %>">Arte y Diseño</a>
+        <a href="/buscar?seccion=comunidades&categoria=musica&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'musica' ? 'activo' : '' %>">Música</a>
+        <a href="/buscar?seccion=comunidades&categoria=deportes&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'deportes' ? 'activo' : '' %>">Deportes</a>
+        <a href="/buscar?seccion=comunidades&categoria=educacion&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'educacion' ? 'activo' : '' %>">Educación</a>
+        <a href="/buscar?seccion=comunidades&categoria=general&q=<%= qGlobal %>" class="chip-categoria text-decoration-none <%= catGlobal === 'general' ? 'activo' : '' %>">General</a>
+    </div>
+
+    <!-- Renderizado de tarjetas de comunidad -->
+    <div class="cuadricula-comunidades">
+        <% if (typeof comunidades !== 'undefined' && comunidades && comunidades.length > 0) { %>
+            <%- include('solo-tarjetas-comunidad', { comunidades: comunidades, filtrosActuales: { categoria: catGlobal, buscar: qGlobal } }) %>
+        <% } else { %>
+            <div class="mensaje-vacio text-center w-100 py-4">
+                <i class="bi bi-people-fill display-4 text-muted mb-2 d-block"></i>
+                <p class="text-muted fw-semibold m-0">No se encontraron comunidades con ese filtro</p>
             </div>
-        <% }); %>
-    <% } else { %>
-        <div class="mensaje-vacio">
-            <i class="bi bi-people-fill display-4 text-muted mb-2 d-block"></i>
-            <p class="text-muted fw-semibold m-0">No hay comunidades de momento</p>
-        </div>
-    <% } %>
+        <% } %>
+    </div>
+
 </div>

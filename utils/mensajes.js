@@ -1,38 +1,43 @@
 exports.normalizarRespuestaBackend = (respuestaBackend) => {
     if (!respuestaBackend) {
-        return { esExito: false, mensaje: 'Error al conectar con el servidor.' };
+        return { esExito: false, mensaje: 'Error al conectar con el servidor.' }
     }
 
-    const data = respuestaBackend.data || respuestaBackend;
+    const data = respuestaBackend.data || respuestaBackend
 
     if (data.mensaje || data.message) {
-        return { esExito: true, mensaje: data.mensaje || data.message };
+        return { esExito: true, mensaje: data.mensaje || data.message }
     }
     if (data.error) {
-        return { esExito: false, mensaje: data.error };
+        return { esExito: false, mensaje: data.error }
     }
     if (data.detail) {
-        return { esExito: false, mensaje: data.detail };
+        return { esExito: false, mensaje: data.detail }
     }
 
     if (typeof data === 'object') {
-        const mensajesExtraidos = [];
+        const mensajesExtraidos = []
 
         for (const campo in data) {
-            const valor = data[campo];
+            const valor = data[campo]
 
             if (Array.isArray(valor)) {
-                mensajesExtraidos.push(...valor);
+                mensajesExtraidos.push(...valor)
             } else if (typeof valor === 'string') {
                 mensajesExtraidos.push(valor);
             }
         }
 
         if (mensajesExtraidos.length > 0) {
-            return { esExito: false, mensaje: mensajesExtraidos.join(' ') };
+            return { esExito: false, mensaje: mensajesExtraidos.join(' ') }
         }
     }
 
-    return { esExito: false, mensaje: 'Ocurrió un error inesperado en la solicitud.' };
-};
+    return { esExito: false, mensaje: 'Ocurrió un error inesperado en la solicitud.' }
+}
 
+exports.extraerMensajeError = (error) => {
+    const dataError = error.response ? error.response.data : error
+    const resultado = exports.normalizarRespuestaBackend(dataError)
+    return resultado.mensaje
+}

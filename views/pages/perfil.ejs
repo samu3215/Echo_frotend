@@ -3,23 +3,22 @@
 <head>
     <%- include('../partials/head-inicio'); %>
     <link rel="stylesheet" href="/css/perfil.css">
+    <link rel="stylesheet" href="/css/tarjeta-publicacion.css">
+    <link rel="stylesheet" href="/css/comunidades.css">
 </head>
 
 <body class="cuerpo-inicio">
 
     <div class="contenedor-principal-interfaz">
-        
-
+    
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
-
 
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
             <div class="contenedor-perfil-tarjeta">
-                
-
+            
                 <% if (usuarioLogueado && usuarioLogueado.nombre_usuario === usuarioPerfil.nombre_usuario) { %>
                     <div class="header-perfil-acciones">
                         <a href="/configuracion" class="btn-icono-config">
@@ -51,12 +50,10 @@
 
                     <span class="nombre-usuario">@<%= usuarioPerfil.nombre_usuario %></span>
 
-
                     <% if (usuarioPerfil.descripcion) { %>
                         <p class="descripcion-perfil"><%= usuarioPerfil.descripcion %></p>
                     <% } %>
                 </div>
-
 
                 <div class="perfil-estadisticas">
                     <div class="item-estadistica">
@@ -134,9 +131,13 @@
     </div>
 
     <%- include('../partials/modal-editar'); %>
+    <%- include('../partials/modal-opciones-post'); %>
+    
     <script src="/js/ubicacion.js"></script>
     <script src="/js/perfil.js"></script>
-
+    <script src="/js/feed.js"></script>
+    <script src="/js/comentarios.js"></script>
+    <script src="/js/comunidades.js"></script>
 
     <% if (typeof error !== 'undefined' && error) { %>
         <script>

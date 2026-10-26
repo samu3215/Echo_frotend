@@ -2,23 +2,82 @@
 <html lang="es">
 <head>
     <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/comunidades.css">
 </head>
 
 <body class="cuerpo-inicio">
 
     <div class="contenedor-principal-interfaz">
-        
 
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
 
-
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
-        </main>
+            <!-- ENVOLTORIO PRINCIPAL: Mismo ancho que las publicaciones (470px) -->
+            <div class="contenedor-feed-comunidades">
+                
+                <!-- 1. Pestañas de Navegación (Estilo Buscar) -->
+                <div class="contenedor-pestañas-comunidad mb-4">
+                    <a href="/comunidades" class="pestaña-comunidad <%= !filtrosActuales.unidas && !filtrosActuales.seccionBuscar ? 'activa' : '' %>">
+                        <span>Inicio</span>
+                    </a>
+                    <a href="/comunidades?unidas=true" class="pestaña-comunidad <%= filtrosActuales.unidas === 'true' ? 'activa' : '' %>">
+                        <span>Mis Comunidades</span>
+                    </a>
+                    <a href="/comunidades?seccionBuscar=true" class="pestaña-comunidad <%= filtrosActuales.seccionBuscar === 'true' || filtrosActuales.buscar || filtrosActuales.categoria ? 'activa' : '' %>">
+                        <span>Buscar</span>
+                    </a>
+                    <a href="/comunidades/crear" class="pestaña-comunidad">
+                        <span>Crear</span>
+                    </a>
+                </div>
 
+                <% if (filtrosActuales.seccionBuscar || filtrosActuales.buscar || filtrosActuales.categoria) { %>
+                    
+                    <%- include('../partials/buscador-global'); %>
+
+                    <form id="form-busqueda-comunidad" action="/comunidades" method="GET" class="mb-4">
+                        <input type="hidden" name="seccionBuscar" value="true">
+                        <% if (filtrosActuales.unidas) { %>
+                            <input type="hidden" name="unidas" value="true">
+                        <% } %>
+
+                        <div class="contenedor-categorias-scroll">
+                            <button type="submit" name="categoria" value="" class="chip-categoria <%= !filtrosActuales.categoria ? 'activo' : '' %>">Todas</button>
+                            <button type="submit" name="categoria" value="negocios" class="chip-categoria <%= filtrosActuales.categoria === 'negocios' ? 'activo' : '' %>">Negocios</button>
+                            <button type="submit" name="categoria" value="tecnologia" class="chip-categoria <%= filtrosActuales.categoria === 'tecnologia' ? 'activo' : '' %>">Tecnología</button>
+                            <button type="submit" name="categoria" value="videojuegos" class="chip-categoria <%= filtrosActuales.categoria === 'videojuegos' ? 'activo' : '' %>">Videojuegos</button>
+                            <button type="submit" name="categoria" value="arte" class="chip-categoria <%= filtrosActuales.categoria === 'arte' ? 'activo' : '' %>">Arte y Diseño</button>
+                            <button type="submit" name="categoria" value="musica" class="chip-categoria <%= filtrosActuales.categoria === 'musica' ? 'activo' : '' %>">Música</button>
+                            <button type="submit" name="categoria" value="deportes" class="chip-categoria <%= filtrosActuales.categoria === 'deportes' ? 'activo' : '' %>">Deportes</button>
+                            <button type="submit" name="categoria" value="educacion" class="chip-categoria <%= filtrosActuales.categoria === 'educacion' ? 'activo' : '' %>">Educación</button>
+                            <button type="submit" name="categoria" value="general" class="chip-categoria <%= filtrosActuales.categoria === 'general' ? 'activo' : '' %>">General</button>
+                        </div>
+                    </form>
+                <% } %>
+
+                <div id="contenedor-comunidades" class="cuadricula-comunidades">
+                    <% if (comunidades && comunidades.length > 0) { %>
+                        <%- include('../partials/solo-tarjetas-comunidad', { comunidades: comunidades, filtrosActuales: filtrosActuales, tieneSiguiente: tieneSiguiente }) %>
+                    <% } else { %>
+                        <div class="seccion-vacia-comunidades">
+                            <i class="bi bi-people display-1 text-muted mb-2"></i>
+                            <h5 class="text-dark fw-bold mb-1">No hay comunidades que mostrar</h5>
+                            <p class="text-muted small">Intenta cambiar los filtros de búsqueda o crea la tuya propia.</p>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div style="height: 90px;"></div>
+            </div>
+
+        </main>
     </div>
+    
     <script src="/js/ubicacion.js"></script>
+    <script src="/js/comunidades.js"></script>
+    <script src="/js/buscador.js"></script>
 </body>
 </html>

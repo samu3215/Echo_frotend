@@ -47,7 +47,6 @@ exports.restablecerContrasena = async (token, datos) => {
 };
 
 
-
 exports.listarUsuario = async(nombreUsuario)=>{
     const respuesta = await api.get(`/usuarios/${nombreUsuario}/`);
     return respuesta.data;

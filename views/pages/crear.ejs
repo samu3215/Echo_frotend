@@ -2,23 +2,175 @@
 <html lang="es">
 <head>
     <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/crear.css">
 </head>
 
 <body class="cuerpo-inicio">
-
     <div class="contenedor-principal-interfaz">
         
-
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
+        
+        <main class="area-contenido-principal d-flex flex-column align-items-center pt-4">
+            <div class="w-100" style="max-width: 650px;">
+                <%- include('../partials/alertas'); %>
+            </div>
+
+            <div class="tarjeta-creador shadow-sm" id="contenedor-tarjeta">
+
+                <div class="creador-header border-bottom d-flex justify-content-between align-items-center p-3">
+                    <button type="button" class="btn btn-link text-dark p-0 text-decoration-none" id="btn-volver" style="display: none;">
+                        <i class="bi bi-arrow-left fs-4 txt"></i>
+                    </button>
+                    <h6 class="m-0 fw-bold mx-auto txt" id="titulo-creador">Crear nueva publicación</h6>
+                    
+                    <button type="button" class="btn btn-link text-primary p-0 fw-bold text-decoration-none txt" id="btn-siguiente" style="display: none;">
+                        Siguiente
+                    </button>
+                    
+                    <button type="button" class="btn btn-link text-primary p-0 fw-bold text-decoration-none txt" id="btn-abrir-modal-crear" style="display: none;">
+                        Compartir
+                    </button>
+                </div>
+
+                <form id="form-publicacion" action="/publicaciones/crear" method="POST" enctype="multipart/form-data" class="m-0 contenedor-form">
+                    
+                    <!-- PASO 1: Subir Archivos -->
+                    <div id="paso-1-upload" class="d-flex flex-column justify-content-center align-items-center p-5 text-center zona-drop flex-grow-1">
+                        <i class="bi bi-images mb-3" style="font-size: 4rem; color: #6c757d;"></i>
+                        <h4 class="mb-4 text-dark fw-normal">Arrastra las fotos y los videos aquí</h4>
+                        <label for="input-archivos" class="btn btn-primario-echo rounded-3 px-4 py-2 fw-semibold cursor-pointer mb-3">
+                            Seleccionar de la computadora
+                        </label>
+                        <input type="file" id="input-archivos" name="archivos" multiple accept="image/*,video/*" class="d-none">
+                        
+                        <div class="mt-2">
+                            <span class="text-muted small">o si lo prefieres</span><br>
+                            <button type="button" id="btn-solo-texto" class="btn btn-link text-primary text-decoration-none fw-semibold p-0 mt-1">
+                                <i class="bi bi-card-text me-1"></i> Crear publicación de solo texto
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CONTENEDOR VISTA PREVIA Y FORMULARIO -->
+                    <div id="paso-contenedor-principal" class="d-none w-100">
+                        <div class="row m-0 w-100 fila-principal">
+                            
+                            <!-- Columna Izquierda: Multimedia -->
+                            <div id="columna-media" class="col-12 p-0 bg-oscuro-media position-relative d-flex flex-column justify-content-between transition-width">
+                                <div id="carruselCrearMedia" class="carousel slide flex-grow-1 d-flex align-items-center w-100" data-bs-interval="false">
+                                    <div class="carousel-inner h-100 w-100" id="contenedor-media-preview">
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carruselCrearMedia" data-bs-slide="prev" id="btn-prev-carrusel">
+                                        <span class="carousel-control-prev-icon shadow-sm rounded-circle p-2 bg-dark bg-opacity-50" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carruselCrearMedia" data-bs-slide="next" id="btn-next-carrusel">
+                                        <span class="carousel-control-next-icon shadow-sm rounded-circle p-2 bg-dark bg-opacity-50" aria-hidden="true"></span>
+                                    </button>
+                                </div>
 
 
-        <main class="area-contenido-principal">
-            <%- include('../partials/alertas'); %>
+                                <div class="gestor-miniaturas p-2 d-flex gap-2 overflow-x-auto align-items-center" id="contenedor-gestor-miniaturas">
+                                    <div class="d-flex gap-2" id="contenedor-miniaturas">
+                                    </div>
+                                    <label for="input-archivos-extra" class="miniatura-btn-add d-flex align-items-center justify-content-center cursor-pointer shadow-sm" title="Añadir más">
+                                        <i class="bi bi-plus-lg fs-4 text-white"></i>
+                                    </label>
+                                    <input type="file" id="input-archivos-extra" multiple accept="image/*,video/*" class="d-none">
+                                </div>
+                            </div>
 
+                            <!-- Columna Derecha: Formulario -->
+                            <div id="columna-formulario" class="col-md-5 p-0 d-none flex-column bg-white columna-detalles transition-width">
+                                <div class="p-3 d-flex align-items-center gap-2 border-bottom">
+                                    <img src="<%= (typeof usuarioLogueado !== 'undefined' && usuarioLogueado.foto_perfil) ? usuarioLogueado.foto_perfil : '/img/avatar.webp' %>" class="avatar-sm rounded-circle" alt="Avatar">
+                                    <span class="fw-bold text-dark"><%= (typeof usuarioLogueado !== 'undefined') ? usuarioLogueado.nombre_usuario : 'Usuario' %></span>
+                                </div>
+                                
+                                <div class="p-3 d-flex flex-column">
+                                    <textarea name="descripcion" id="input-descripcion" class="form-control border-0 p-0 shadow-none" placeholder="Escribe tu publicación..." maxlength="2200"></textarea>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-2 border-bottom pb-3 text-muted small">
+                                        <span id="contador-caracteres">0/2200</span>
+                                    </div>
+
+                                    <div class="py-3 d-flex justify-content-between align-items-center">
+                                        <label for="desactivar_comentarios" class="mb-0 fw-semibold text-dark">Desactivar comentarios</label>
+                                        <div class="form-check form-switch m-0">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="desactivar_comentarios" name="desactivar_comentarios">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
         </main>
-
     </div>
+
+    <!-- Modal de confirmación para Descartar Publicación -->
+    <div class="modal fade" id="modalConfirmarDescarte" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-body text-center p-4">
+                    <h5 class="fw-bold mb-3">¿Descartar publicación?</h5>
+                    <p class="text-muted mb-4 small">Si sales ahora, se perderá tu progreso y los archivos seleccionados.</p>
+                    <button type="button" class="btn btn-danger w-100 mb-2 rounded-3 fw-semibold txt1" id="btn-confirmar-descarte">Descartar</button>
+                    <button type="button" class="btn btn-light w-100 rounded-3 fw-semibold text-dark border" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmarDescarte" tabindex="-1" aria-hidden="true">
+        
+    </div>
+
+    <!-- NUEVO: Modal de confirmación para Quitar un Archivo Específico -->
+    <div class="modal fade" id="modalConfirmarEliminarArchivo" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-body text-center p-4">
+                    <h5 class="fw-bold mb-3">¿Quitar archivo?</h5>
+                    <p class="text-muted mb-4 small">Este archivo se eliminará de la selección de tu publicación.</p>
+                    <button type="button" class="btn btn-danger w-100 mb-2 rounded-3 fw-semibold txt1" id="btn-confirmar-eliminar-archivo">Quitar</button>
+                    <button type="button" class="btn btn-light w-100 rounded-3 fw-semibold text-dark border" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Error de Validación -->
+    <div class="modal fade" id="modalErrorValidacion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-circle text-danger mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="fw-bold mb-3">Límite alcanzado</h5>
+                    <p class="text-muted mb-4 small" id="texto-error-validacion"></p>
+                    <button type="button" class="btn btn-dark w-100 rounded-3 fw-semibold" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal de confirmación para Crear Publicación -->
+    <div class="modal fade" id="modalConfirmarCrear" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow p-3 text-center">
+                <h6 class="fw-bold mb-3 mt-2">¿Publicar ahora?</h6>
+                <p class="small text-muted mb-4">¿Estás seguro de que quieres compartir esta publicación en tu perfil?</p>
+                <div class="d-flex justify-content-center gap-2 mb-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-bold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="form-publicacion" class="btn btn-sm text-white rounded-pill px-4 fw-bold shadow-none btn-confirmar-crear" style="background-color: #8338ec;">Compartir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/crear.js"></script>
     <script src="/js/ubicacion.js"></script>
 </body>
 </html>
