@@ -149,12 +149,12 @@ exports.mostrarLogin = (req, res) => {
     if (token){
         return res.redirect(`/inicio?exito=Ya estas logueado`)
     }
-    const error = req.query.error || null;
-    const exito = req.query.exito || null;
+    const error = req.query.error || res.locals.error || null;
+    const exito = req.query.exito || res.locals.exito || null;
 
     res.render('pages/login', { 
-        error: error,
-        exito: exito,
+        error,
+        exito,
         limpiarBorradorRegistro: null
     });
 };

@@ -91,8 +91,8 @@ exports.mostrarConfiguracion = async (req, res) => {
 
         res.render('pages/configuracion', {
             usuarioCuenta,
-            exito: req.query.exito || null,
-            error: req.query.error || null
+            exito: res.locals.exito || req.query.exito || null,
+            error: res.locals.error || req.query.error || null
         });
     } catch (error) {
         console.error('No se pudo cargar la información de la cuenta para Configuraciones.', {

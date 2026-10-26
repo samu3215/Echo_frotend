@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     let formActual = null;
 
-    document.getElementById('modalConfirmacion')?.addEventListener('show.bs.modal', (e) => {
-        formActual = e.relatedTarget.closest('form');
-    });
+    document.querySelectorAll('.modal-confirmacion').forEach((modal) => {
+        modal.addEventListener('show.bs.modal', (evento) => {
+            formActual = evento.relatedTarget?.closest('form') || null;
+        });
 
-    document.getElementById('btnConfirmarEliminacion')?.addEventListener('click', () => {
-        if (formActual) formActual.submit();
+        modal.querySelector('[data-confirmar-formulario]')?.addEventListener('click', () => {
+            if (formActual) formActual.submit();
+        });
     });
 });
