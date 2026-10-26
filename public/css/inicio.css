@@ -57,6 +57,25 @@ body.cuerpo-inicio {
   gap: 0.5rem;
 }
 
+.enlace-cambio-contrasena {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  border-radius: 50rem;
+  background-color: var(--morado-principal);
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.enlace-cambio-contrasena:hover,
+.enlace-cambio-contrasena:focus {
+  background-color: var(--morado-hover);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 .opcion-menu-lateral {
   color: #ffffff;
   text-decoration: none;
@@ -154,5 +173,4 @@ body.cuerpo-inicio {
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(131, 56, 236, 0.3);
 }
-
 

@@ -3,39 +3,140 @@
 <head>
     <%- include('../partials/head-inicio'); %>
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/configuracion.css">
+    <link rel="stylesheet" href="/css/terminos.css">
 </head>
 
 <body class="cuerpo-inicio">
 
     <div class="contenedor-principal-interfaz">
         
-
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
 
-
-        <main class="area-contenido-principal">
+        <main class="area-contenido-principal configuraciones-main">
+            <div id="vista-configuracion" data-terminos-origen>
             <%- include('../partials/alertas'); %>
 
+            <section class="configuraciones-header">
+                <h1 class="configuraciones-titulo">Configuraciones</h1>
+            </section>
+
+            <section class="configuraciones-lista">
+                <details class="configuracion-acordeon">
+                    <summary class="configuracion-card">
+                        <div class="configuracion-card-icono">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div class="configuracion-card-info">
+                            <div class="configuracion-card-titulo">Seguridad de la Cuenta</div>
+                            <div class="configuracion-card-subtitulo">Protección e inicio de sesión</div>
+                        </div>
+                        <div class="configuracion-card-flecha">
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </summary>
+
+                    <div class="seguridad-cuenta">
+                        <p class="seguridad-cuenta-descripcion">
+                            Actualiza tu contraseña mediante el proceso seguro de verificación de correo.
+                        </p>
+                        <a href="/cambio-contrasena" class="btn-cambiar-contrasena">
+                            <i class="bi bi-key" aria-hidden="true"></i>
+                            Cambiar contraseña
+                        </a>
+                    </div>
+                </details>
+
+                <details class="configuracion-acordeon">
+                    <summary class="configuracion-card">
+                        <div class="configuracion-card-icono">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="configuracion-card-info">
+                            <div class="configuracion-card-titulo">Información de la Cuenta</div>
+                            <div class="configuracion-card-subtitulo">Cuenta Personal</div>
+                        </div>
+                        <div class="configuracion-card-flecha">
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </summary>
+
+                    <div class="informacion-cuenta">
+                        <p class="informacion-cuenta-aviso">
+                            Para modificar tu información personal, dirígete a tu
+                            <a href="/perfil/<%= usuarioCuenta ? usuarioCuenta.nombre_usuario : usuarioLogueado.nombre_usuario %>">Apartado de Perfil</a>.
+                        </p>
+
+                        <dl class="informacion-cuenta-lista">
+                            <div class="informacion-cuenta-campo">
+                                <dt>NOMBRE</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.nombre ? usuarioCuenta.nombre : 'No disponible' %></dd>
+                            </div>
+                            <div class="informacion-cuenta-campo">
+                                <dt>APELLIDO</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.apellido ? usuarioCuenta.apellido : 'No disponible' %></dd>
+                            </div>
+                            <div class="informacion-cuenta-campo">
+                                <dt>USUARIO</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.nombre_usuario ? `@${usuarioCuenta.nombre_usuario}` : 'No disponible' %></dd>
+                            </div>
+                            <div class="informacion-cuenta-campo">
+                                <dt>TELÉFONO / CONTACTO</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.telefono ? usuarioCuenta.telefono : 'No disponible' %></dd>
+                            </div>
+                            <div class="informacion-cuenta-campo">
+                                <dt>CORREO ELECTRÓNICO</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.email ? usuarioCuenta.email : 'No disponible' %></dd>
+                            </div>
+                            <div class="informacion-cuenta-campo">
+                                <dt>DESCRIPCIÓN</dt>
+                                <dd><%= usuarioCuenta && usuarioCuenta.descripcion ? usuarioCuenta.descripcion : 'Sin descripción' %></dd>
+                            </div>
+                        </dl>
+                    </div>
+                </details>
+
+                <button type="button" class="configuracion-card configuracion-terminos" data-terminos-abrir>
+                    <div class="configuracion-card-icono">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div class="configuracion-card-info">
+                        <div class="configuracion-card-titulo">Términos y Condiciones</div>
+                        <div class="configuracion-card-subtitulo">Políticas de uso y privacidad</div>
+                    </div>
+                    <div class="configuracion-card-flecha">
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                </button>
+
+            </section>
+
             <% if(usuarioLogueado) { %>
-                <form action="/logout/" method="POST">
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
-                        Cerrar Sesion
-                    </button>
-                </form>
-                <form action="/eliminar-cuenta" method="POST">
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
-                        Eliminar Cuenta
-                    </button>
-                </form>
+                <section class="configuraciones-botones">
+                    <form action="/logout/" method="POST" class="w-100">
+                        <button type="button" class="btn-configuracion-peligro" data-bs-toggle="modal" data-bs-target="#modalConfirmacionCerrar">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                    <form action="/eliminar-cuenta" method="POST" class="w-100">
+                        <button type="button" class="btn-configuracion-peligro" data-bs-toggle="modal" data-bs-target="#modalConfirmacionEliminar">
+                            Eliminar cuenta
+                        </button>
+                    </form>
+                </section>
             <% } %>
 
+            </div>
         </main>
+
+        <%- include('../partials/terminos-panel', { vistaIntegrada: true }); %>
 
     </div>
 
     <%- include('../partials/modal-confirmacion') %>
     <script src="/js/ubicacion.js"></script>
     <script src="/js/confirmacion.js"></script>
+    <script src="/js/terminos-vista.js"></script>
 </body>
 </html>

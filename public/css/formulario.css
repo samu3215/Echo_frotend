@@ -60,6 +60,81 @@ body.cuerpo-autenticacion {
   margin-bottom: 1.5rem;
 }
 
+.icono-seguridad {
+  color: var(--morado-principal);
+  font-size: 2rem;
+}
+
+.paso-visible {
+  animation: entrada-paso 0.3s ease both;
+}
+
+@keyframes entrada-paso {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paso-visible {
+    animation: none;
+  }
+}
+
+.aviso-expiracion {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 14px;
+  background-color: var(--fondo-pagina);
+  color: var(--texto-etiqueta);
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.aviso-expiracion strong {
+  color: var(--morado-principal);
+  font-variant-numeric: tabular-nums;
+}
+
+.aviso-expiracion-vencido {
+  background-color: #fff1f2;
+  color: #9f1239;
+}
+
+.aviso-expiracion-vencido strong {
+  color: #9f1239;
+}
+
+.campo-entrada.campo-codigo {
+  text-align: center;
+  letter-spacing: 0.2em;
+  font-size: 1.1rem;
+}
+
+.formulario-reenvio {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.boton-enlace {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.boton-enlace:disabled {
+  color: #9a91aa;
+  cursor: not-allowed;
+  opacity: 0.65;
+  text-decoration: none;
+}
+
 .grupo-campo {
   margin-bottom: 1rem;
 }
@@ -85,6 +160,30 @@ body.cuerpo-autenticacion {
 .campo-entrada:focus {
   border-color: var(--morado-principal);
   box-shadow: 0 0 0 0.25rem rgba(131, 56, 236, 0.15);
+}
+
+.campo-entrada.is-invalid {
+  border-color: #b42336;
+  box-shadow: 0 0 0 0.2rem rgba(180, 35, 54, 0.12);
+}
+
+.campo-entrada.is-valid {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.1);
+}
+
+.mensaje-error-campo {
+  margin: 0.35rem 0 0 0.75rem;
+  color: #b42336;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.mensaje-estado-campo {
+  margin: 0.35rem 0 0 0.75rem;
+  color: #198754;
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 .contenedor-botones-seleccion {
@@ -113,6 +212,12 @@ body.cuerpo-autenticacion {
   background-color: var(--morado-hover);
   color: #ffffff;
   transform: translateY(-1px);
+}
+
+.boton-principal:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .enlace-principal {
@@ -220,6 +325,53 @@ body.cuerpo-autenticacion {
   display: flex;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.registro-terminos {
+  margin-top: 1.25rem;
+}
+
+.registro-terminos-link {
+  border: none;
+  background: transparent;
+  color: var(--morado-principal);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.registro-terminos-link:hover,
+.registro-terminos-link:focus-visible {
+  color: var(--morado-hover);
+}
+
+.registro-terminos-aceptacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.registro-terminos-aceptacion input {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+  accent-color: var(--morado-principal);
+}
+
+.registro-terminos-aceptacion label {
+  color: var(--texto-etiqueta);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.registro-terminos-error {
+  margin: 0.35rem 0 0;
+  color: #b42336;
+  font-size: 0.8rem;
 }
 
 .boton-secundario {

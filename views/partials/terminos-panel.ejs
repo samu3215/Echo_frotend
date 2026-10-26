@@ -1,0 +1,61 @@
+<% const integrarVista = typeof vistaIntegrada !== 'undefined' && vistaIntegrada; %>
+<% if (integrarVista) { %>
+<section class="terminos-vista" id="vista-terminos" aria-hidden="true" hidden>
+<% } %>
+    <div class="terminos-main">
+        <article class="terminos-tarjeta">
+            <header class="terminos-encabezado">
+                <span class="terminos-icono" aria-hidden="true">
+                    <i class="bi bi-file-earmark-text"></i>
+                </span>
+                <p class="terminos-etiqueta">Echo</p>
+                <h1 id="titulo-terminos">Términos y Condiciones</h1>
+                <p class="terminos-introduccion">
+                    Estas condiciones describen las reglas básicas para participar en la plataforma.
+                </p>
+            </header>
+
+            <section class="terminos-seccion">
+                <h2>Libertad de expresión y contenido permitido</h2>
+                <p>
+                    En Echo se permite compartir una amplia variedad de ideas, opiniones y contenido.
+                    Puedes expresarte libremente siempre que lo que publiques y las actividades que
+                    realices en la plataforma no infrinjan la ley ni incluyan contenido o actividades
+                    ilegales.
+                </p>
+                <p>
+                    Cada usuario es responsable de lo que publica y de asegurarse de que su contenido
+                    cumpla con las leyes aplicables. El contenido ilegal no está permitido y podrá ser
+                    retirado, y la cuenta relacionada podrá estar sujeta a medidas conforme a la ley y
+                    a las necesidades de seguridad de la plataforma.
+                </p>
+            </section>
+
+            <section class="terminos-seccion">
+                <h2>Uso responsable</h2>
+                <p>
+                    Al utilizar Echo, te comprometes a respetar la legislación aplicable y a no usar la
+                    plataforma para facilitar, promover o distribuir contenido o actividades ilegales.
+                    Si detectas contenido que consideras ilegal, evita interactuar con él y comunícalo
+                    a través de los canales disponibles en la plataforma.
+                </p>
+            </section>
+
+            <footer class="terminos-pie">
+                <% if (integrarVista) { %>
+                    <button type="button" class="terminos-volver" data-terminos-volver>
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                        Volver
+                    </button>
+                <% } else { %>
+                    <a href="<%= terminosVolver || '/configuracion/' %>" class="terminos-volver">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                        <%= textoVolver || 'Volver' %>
+                    </a>
+                <% } %>
+            </footer>
+        </article>
+    </div>
+<% if (integrarVista) { %>
+</section>
+<% } %>

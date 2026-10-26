@@ -39,7 +39,6 @@ app.use((req, res, next) => {
 const datosLogueado = require('./middlewares/token')
 
 app.use(datosLogueado.datosUsuarioLogueado)
-console.log(datosLogueado.datosUsuarioLogueado)
 
 const usuarioRouter = require('./routes/echo.router')
 

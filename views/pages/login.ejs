@@ -33,7 +33,7 @@
 
         <div class="seccion-enlaces-pie">
             <div class="mb-2">
-                <a href="#" class="texto-secundario text-decoration-none">¿Olvidaste tu contraseña?</a>
+                <a href="/cambio-contrasena" class="texto-secundario text-decoration-none">¿Olvidaste tu contraseña?</a>
             </div>
             <div>
                 <span class="texto-secundario">¿No tienes cuenta?</span>
@@ -42,5 +42,10 @@
         </div>
     </main>
 
+    <% if (typeof limpiarBorradorRegistro !== 'undefined' && limpiarBorradorRegistro) { %>
+        <script>
+            sessionStorage.removeItem('echo:registro:borrador:<%= limpiarBorradorRegistro %>');
+        </script>
+    <% } %>
 </body>
 </html>

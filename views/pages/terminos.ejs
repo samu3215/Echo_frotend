@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head'); %>
+    <link rel="stylesheet" href="/css/terminos.css">
+</head>
+
+<body class="cuerpo-autenticacion">
+    <main class="terminos-pagina">
+        <%- include('../partials/terminos-panel', {
+            vistaIntegrada: false,
+            terminosVolver,
+            textoVolver
+        }); %>
+    </main>
+</body>
+</html>

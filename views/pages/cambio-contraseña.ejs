@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="cuerpo-autenticacion">
+
+    <main class="tarjeta-autenticacion">
+        <div class="contenedor-logo-aplicacion">
+            <img src="/img/echo.png" alt="Echo" class="imagen-logo-aplicacion">
+        </div>
+
+        <div class="text-center mb-3" aria-hidden="true">
+            <i class="bi bi-shield-lock icono-seguridad"></i>
+        </div>
+
+        <div class="indicador-pasos" aria-label="Progreso de recuperación">
+            <span class="paso-bullet activo" data-indicador-paso="1">1</span>
+            <span class="linea-paso"></span>
+            <span class="paso-bullet" data-indicador-paso="2">2</span>
+            <span class="linea-paso"></span>
+            <span class="paso-bullet" data-indicador-paso="3">3</span>
+        </div>
+
+        <div id="mensaje-recuperacion" class="alert d-none" role="alert" aria-live="polite"></div>
+
+        <section data-paso="1">
+            <h1 class="titulo-autenticacion">Recuperar contraseña</h1>
+            <p class="subtitulo-autenticacion">
+                Ingresa el correo asociado a tu cuenta y te enviaremos un código de verificación.
+            </p>
+
+            <form id="form-solicitar-codigo">
+                <div class="grupo-campo">
+                    <label for="email" class="etiqueta-campo">Correo electrónico</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="campo-entrada"
+                        placeholder="nombre@correo.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="boton-principal">
+                    Enviar código de verificación
+                </button>
+            </form>
+        </section>
+
+        <section data-paso="2" hidden>
+            <h1 class="titulo-autenticacion">Verifica tu correo</h1>
+            <p class="subtitulo-autenticacion">
+                Ingresa el código de 6 dígitos que enviamos a <strong id="correo-destino"></strong>.
+            </p>
+
+            <div class="aviso-expiracion" role="status" aria-live="polite">
+                <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
+                El código vence en <strong id="temporizador-codigo">--:--</strong>
+            </div>
+
+            <form id="form-verificar-codigo">
+                <div class="grupo-campo">
+                    <label for="codigo" class="etiqueta-campo">Código de verificación</label>
+                    <input
+                        type="text"
+                        id="codigo"
+                        name="codigo"
+                        class="campo-entrada campo-codigo"
+                        placeholder="000000"
+                        autocomplete="one-time-code"
+                        inputmode="numeric"
+                        pattern="[0-9]{6}"
+                        maxlength="6"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="boton-principal">Verificar código</button>
+            </form>
+
+            <button type="button" id="reenviar-codigo" class="enlace-principal boton-enlace formulario-reenvio" disabled>
+                Enviar un código nuevo
+            </button>
+        </section>
+
+        <section data-paso="3" hidden>
+            <h1 class="titulo-autenticacion">Crea una contraseña nueva</h1>
+            <p class="subtitulo-autenticacion">Tu correo fue verificado. Elige una contraseña segura.</p>
+
+            <form id="form-restablecer-contrasena">
+                <div class="grupo-campo">
+                    <label for="nueva-password" class="etiqueta-campo">Nueva contraseña</label>
+                    <input
+                        type="password"
+                        id="nueva-password"
+                        name="nueva_password"
+                        class="campo-entrada"
+                        placeholder="Mínimo 8 caracteres"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="confirmar-password" class="etiqueta-campo">Confirmar contraseña</label>
+                    <input
+                        type="password"
+                        id="confirmar-password"
+                        name="confirmar_password"
+                        class="campo-entrada"
+                        placeholder="Escribe de nuevo tu contraseña"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <p class="texto-secundario small mb-3">
+                    <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>
+                    La contraseña se validará y protegerá de forma segura en el servidor.
+                </p>
+
+                <button type="submit" class="boton-principal">Guardar nueva contraseña</button>
+            </form>
+        </section>
+
+        <div class="seccion-enlaces-pie">
+            <a href="/login" class="enlace-principal">
+                <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
+                Volver al inicio de sesión
+            </a>
+        </div>
+    </main>
+
+    <script src="/js/recuperacion-contrasena.js"></script>
+</body>
+</html>

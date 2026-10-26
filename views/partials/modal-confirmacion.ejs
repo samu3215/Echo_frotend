@@ -1,23 +1,32 @@
-<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content modal-eliminar-content">
-      <div class="modal-body modal-eliminar-body">
-        
-        <p class="modal-eliminar-texto">
-          ¿Estás seguro de que deseas realizar esta acción? Esta acción no se puede deshacer.
-        </p>
+<% [
+  {
+    id: 'modalConfirmacionCerrar',
+    texto: '¿Estás seguro de que deseas cerrar sesión?',
+    accion: 'cerrar'
+  },
+  {
+    id: 'modalConfirmacionEliminar',
+    texto: '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
+    accion: 'eliminar'
+  }
+].forEach((confirmacion) => { %>
+  <div class="modal fade modal-confirmacion" id="<%= confirmacion.id %>" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-eliminar-content">
+        <div class="modal-body modal-eliminar-body">
+          <p class="modal-eliminar-texto"><%= confirmacion.texto %></p>
 
-        <div class="modal-eliminar-acciones">
-          <button type="button" class="btn btn-secondary btn-cancelar" data-bs-dismiss="modal">
-            Cancelar
-          </button>
+          <div class="modal-eliminar-acciones">
+            <button type="button" class="btn btn-secondary btn-cancelar" data-bs-dismiss="modal">
+              Cancelar
+            </button>
 
-          <button type="button" class="btn btn-danger btn-eliminar" id="btnConfirmarEliminacion">
-            Confirmar
-          </button>
+            <button type="button" class="btn btn-danger btn-eliminar" data-confirmar-formulario="<%= confirmacion.accion %>">
+              Confirmar
+            </button>
+          </div>
         </div>
-
       </div>
     </div>
   </div>
-</div>
+<% }); %>
