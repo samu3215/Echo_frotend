@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/info-comunidad.css">
+</head>
+<body class="cuerpo-inicio">
+
+    <div class="contenedor-principal-interfaz">
+        
+        <!-- Menús de Navegación Nativos de tu App -->
+        <%- include('../partials/navegacion-escritorio'); %>
+        <%- include('../partials/navegacion-movil'); %>
+
+        <main class="area-contenido-principal">
+            <%- include('../partials/alertas'); %>
+            
+            <div class="contenedor-feed-comunidades">
+                
+                <!-- HEADER (Adaptado al estilo de la app general) -->
+                <div class="d-flex align-items-center mb-4 mt-2">
+                    <a href="/comunidades/<%= comunidad.id %>/chat" class="text-dark text-decoration-none me-3">
+                        <i class="bi bi-arrow-left fs-4" style="color: #8338ec; font-weight: bold;"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0 text-dark">Información</h5>
+                </div>
+
+                <!-- CONTENEDOR ÚNICO PRINCIPAL -->
+                <div class="tarjeta-unica-info bg-white rounded-4 shadow-sm border border-light overflow-hidden mb-5">
+                    
+                    <!-- PORTADA Y DESCRIPCIÓN CENTRADAS -->
+                    <div class="cabecera-comunidad-info p-4 text-center">
+                        <div class="contenedor-imagen-portada mx-auto mb-3">
+                            <% if (tienePortada) { %>
+                                <img src="<%= comunidad.fotoSegura %>" class="imagen-portada-info" alt="Portada">
+                            <% } else { %>
+                                <div class="placeholder-portada-info">
+                                    <i class="bi bi-people" style="color: #8338ec; font-size: 3.5rem;"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <h4 class="titulo-comunidad-info fw-bold text-dark m-0"><%= comunidad.nombre %></h4>
+                        <p class="subtitulo-comunidad-info text-muted small mt-1 mb-2">Comunidad • <%= miembros.length %> miembros</p>
+                        
+                        <% if (comunidad.descripcion) { %>
+                            <p class="descripcion-comunidad-info text-dark small mx-auto mt-3"><%= comunidad.descripcion %></p>
+                        <% } %>
+                    </div>
+
+                    <!-- PESTAÑAS DE NAVEGACIÓN CENTRADAS -->
+                    <div class="contenedor-pestanas d-flex justify-content-center border-bottom border-light">
+                        <button class="btn-pestana activa" data-tab="tab-miembros">Miembros</button>
+                        <% if (esDueno) { %>
+                            <button class="btn-pestana" data-tab="tab-ajustes">Ajustes</button>
+                        <% } %>
+                    </div>
+
+                    <!-- CONTENIDO: MIEMBROS -->
+                    <div id="tab-miembros" class="contenido-pestana activo p-4">
+                        <div class="contenedor-contenido-centrado mx-auto">
+                            <% miembros.forEach(miembro => { %>
+                                <div class="fila-miembro d-flex align-items-center mb-3 pb-3 border-bottom border-light">
+                                    <img src="<%= miembro.foto_perfil || '/img/avatar.webp' %>" class="foto-perfil-miembro me-3">
+                                    <div class="info-miembro flex-grow-1 text-start">
+                                        <h6 class="nombre-miembro m-0 fw-semibold text-dark"><%= miembro.nombre_usuario %></h6>
+                                        <% if (miembro.es_administrador) { %>
+                                            <span class="badge-admin mt-1 d-inline-block">Admin</span>
+                                        <% } %>
+                                    </div>
+
+                                    <% if (esDueno && !miembro.es_administrador) { %>
+                                        <button class="btn-opcion-miembro btn-abrir-modal-expulsar" 
+                                                data-id="<%= miembro.id %>" 
+                                                data-nombre="<%= miembro.nombre_usuario %>">
+                                            <i class="bi bi-person-x-fill text-danger fs-5"></i>
+                                        </button>
+                                    <% } %>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+
+                    <!-- CONTENIDO: AJUSTES -->
+                    <% if (esDueno) { %>
+                        <div id="tab-ajustes" class="contenido-pestana p-4">
+                            <div class="contenedor-contenido-centrado mx-auto">
+                                
+                                <a href="/comunidades/<%= comunidad.id %>/editar" class="opcion-ajuste text-decoration-none text-dark d-flex align-items-center mb-3 pb-3 border-bottom border-light">
+                                    <div class="icono-ajuste me-3"><i class="bi bi-pencil-fill"></i></div>
+                                    <span class="texto-ajuste fw-semibold text-start flex-grow-1">Editar Comunidad</span>
+                                    <i class="bi bi-chevron-right text-muted"></i>
+                                </a>
+
+                                <% if (comunidad.categoria !== 'negocios') { %>
+                                    <button class="opcion-ajuste border-0 bg-transparent w-100 d-flex align-items-center btn-abrir-modal-dueno">
+                                        <div class="icono-ajuste me-3"><i class="bi bi-person-gear"></i></div>
+                                        <div class="texto-ajuste-contenedor text-start flex-grow-1">
+                                            <span class="texto-ajuste d-block fw-semibold">Cambiar de Dueño</span>
+                                            <span class="subtexto-ajuste text-muted small">Traspasar permisos a otro miembro</span>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </button>
+                                <% } %>
+                                
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                </div>
+                
+                <div style="height: 90px;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL 1: Buscar Nuevo Dueño (Con Filtro Empresarial) -->
+    <% if (esDueno && comunidad.categoria !== 'negocios') { %>
+        <div class="modal fade" id="modalBuscarNuevoDueno" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header border-0 pb-0">
+                        <h6 class="fw-bold m-0 text-dark">Transferir Propiedad</h6>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-3">
+                        <div class="buscador-modal d-flex align-items-center bg-light rounded-3 p-2 mb-3">
+                            <i class="bi bi-search text-muted ms-2"></i>
+                            <input type="text" id="input-buscar-admin" class="form-control border-0 bg-transparent shadow-none" placeholder="Buscar miembro...">
+                        </div>
+                        <div class="lista-miembros-transferir">
+                            <% miembros.forEach(miembro => { %>
+                                <% if (!miembro.es_administrador && miembro.tipo_usuario !== 'empresarial') { %>
+                                    <div class="fila-miembro-transferir d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-light">
+                                        <div class="d-flex align-items-center">
+                                            <img src="<%= miembro.foto_perfil || '/img/avatar.webp' %>" class="rounded-circle object-fit-cover me-2" style="width: 35px; height: 35px;">
+                                            <span class="nombre-miembro-buscar text-dark fw-semibold small"><%= miembro.nombre_usuario %></span>
+                                        </div>
+                                        <button class="btn btn-sm btn-seleccionar-admin fw-bold" 
+                                                style="color: #8338ec; background-color: #f1e8ff; border-radius: 8px;"
+                                                data-id="<%= miembro.id %>" 
+                                                data-nombre="<%= miembro.nombre_usuario %>">
+                                            Elegir
+                                        </button>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 2: Confirmar Transferencia -->
+        <div class="modal fade" id="modalConfirmarTransferencia" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content border-0 shadow-lg text-center p-4 rounded-4">
+                    <h6 class="fw-bold mb-3 text-dark">¿Estás seguro?</h6>
+                    <p class="small text-muted mb-4">
+                        Pasarás los permisos a <strong id="nombre-nuevo-admin-texto" class="text-dark"></strong>. Ya no serás el dueño.
+                    </p>
+                    <form action="/comunidades/<%= comunidad.id %>/transferir" method="POST">
+                        <input type="hidden" name="nuevo_dueno_id" id="input-nuevo-dueno-id">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-morado-echo text-white btn-sm rounded-pill px-4 fw-semibold shadow-none" style="background-color: #8338ec;">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- MODAL 3: Confirmar Expulsión -->
+    <% if (esDueno) { %>
+        <div class="modal fade" id="modalConfirmarExpulsion" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content border-0 shadow-lg text-center p-4 rounded-4">
+                    <h6 class="fw-bold mb-3 text-dark">¿Expulsar usuario?</h6>
+                    <p class="small text-muted mb-4">
+                        ¿Estás seguro de que deseas expulsar a <strong id="nombre-expulsar-texto" class="text-dark"></strong>?
+                    </p>
+                    <form action="/comunidades/<%= comunidad.id %>/expulsar" method="POST">
+                        <input type="hidden" name="usuario_id" id="input-expulsar-id">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-semibold shadow-none">Expulsar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <script src="/js/info-comunidad.js"></script>
+</body>
+</html>

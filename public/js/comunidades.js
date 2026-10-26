@@ -68,44 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: false });
     }
 
-    // --- FILTRADO DE TARJETAS EN TIEMPO REAL ---
-    const inputBuscarComunidad = document.getElementById('input-buscar-comunidad');
-    const inputBuscadorGlobal = document.getElementById('buscador');
 
-    const filtrarTarjetasComunidades = (texto) => {
-        const query = texto.toLowerCase().trim();
-        const tarjetas = document.querySelectorAll('.tarjeta-comunidad');
-
-        tarjetas.forEach(tarjeta => {
-            const nombre = tarjeta.querySelector('.nombre-comunidad')?.textContent.toLowerCase() || '';
-            const descripcion = tarjeta.querySelector('.descripcion-comunidad')?.textContent.toLowerCase() || '';
-
-            if (nombre.includes(query) || descripcion.includes(query)) {
-                tarjeta.style.display = ''; 
-            } else {
-                tarjeta.style.display = 'none'; 
-            }
-        });
-    };
-
-    if (inputBuscarComunidad) {
-        // Evita que pulsar Enter en el input recargue la página, sin bloquear los botones de categorías
-        inputBuscarComunidad.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-            }
-        });
-
-        inputBuscarComunidad.addEventListener('input', (e) => filtrarTarjetasComunidades(e.target.value));
-    }
-
-    if (inputBuscadorGlobal) {
-        inputBuscadorGlobal.addEventListener('input', (e) => {
-            if (document.querySelector('.tarjeta-comunidad')) {
-                filtrarTarjetasComunidades(e.target.value);
-            }
-        });
-    }
+    
 });
 
 // --- LÓGICA DE CROPPER ---

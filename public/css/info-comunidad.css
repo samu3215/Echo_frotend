@@ -1,0 +1,116 @@
+/* CENTRADO DE CONTENIDOS DENTRO DE LA TARJETA */
+.contenedor-imagen-portada {
+    width: 100%;
+    max-width: 400px; /* Limita el ancho de la portada para centrarla elegantemente */
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e0e4e8;
+}
+
+.descripcion-comunidad-info {
+    max-width: 400px;
+    text-align: center;
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.4;
+}
+
+.contenedor-contenido-centrado {
+    max-width: 400px; /* Centra las listas de ajustes y miembros */
+    width: 100%;
+}
+
+.imagen-portada-info {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.placeholder-portada-info {
+    width: 100%;
+    height: 100%;
+    background-color: #f1e8ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* SISTEMA DE PESTAÑAS (TABS) */
+.btn-pestana {
+    background: transparent;
+    border: none;
+    padding: 12px 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-pestana:hover {
+    color: #3b3b3b;
+}
+
+.btn-pestana.activa {
+    color: #8338ec;
+    border-bottom: 3px solid #8338ec;
+}
+
+.contenido-pestana {
+    display: none;
+}
+.contenido-pestana.activo {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ESTILOS DE ELEMENTOS DE LISTA */
+.foto-perfil-miembro {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e0e4e8;
+}
+
+.badge-admin {
+    background-color: #f1e8ff;
+    color: #8338ec;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.icono-ajuste {
+    width: 40px;
+    height: 40px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b3b3b;
+    font-size: 1.1rem;
+}
+
+.btn-opcion-miembro, .btn-abrir-modal-dueno {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background: transparent;
+    border: none;
+}
+
+.btn-opcion-miembro:hover, .btn-abrir-modal-dueno:hover {
+    transform: scale(1.05);
+}
+

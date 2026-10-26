@@ -40,7 +40,7 @@ exports.mostrarPerfil = async (req, res) => {
         if (seccion === 'comunidades') {
             const respuestaCreadas = await comunidadApi.listarComunidades({ usuario: nombreUsu }, token);
             
-            const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true', usuario: nombreUsu }, token);
+            const respuestaUnidas = await comunidadApi.listarComunidades({ unidas: 'true' }, token);
 
             comunidadesCreadas = comunidadController.formatearComunidades(respuestaCreadas.data.results || [], res.locals.usuarioLogueado)
             comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado)

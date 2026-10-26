@@ -18,9 +18,15 @@
             <div class="contenedor-feed-comunidades">
                 
                 <div class="d-flex align-items-center mb-4">
+                <% if (modo === 'editar') { %>
+                    <a href="/comunidades/<%= comunidad.id %>/info" class="text-dark text-decoration-none me-3">
+                        <i class="bi bi-arrow-left fs-4"></i>
+                    </a>
+                <% } else { %>
                     <a href="/comunidades" class="text-dark text-decoration-none me-3">
                         <i class="bi bi-arrow-left fs-4"></i>
                     </a>
+                <% } %>
                     <h5 class="fw-bold mb-0 text-dark">
                         <%= modo === 'editar' ? 'Editar Comunidad' : 'Crear Nueva Comunidad' %>
                     </h5>

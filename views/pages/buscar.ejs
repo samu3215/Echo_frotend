@@ -15,10 +15,8 @@
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
-            <div class="contenedor-buscador mb-4">
-                <i class="bi bi-search icono-lupa"></i>
-                <input type="text" id="buscador" placeholder="Buscar..." class="campo-entrada-buscador" autocomplete="off">
-            </div>
+            
+            <%- include('../partials/buscador-global'); %>
 
             <div class="contenedor-pestañas mb-4">
                 <a href="/buscar?seccion=publicaciones" class="pagina">

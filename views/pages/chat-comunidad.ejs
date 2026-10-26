@@ -4,18 +4,21 @@
     <%- include('../partials/head-inicio'); %>
     <link rel="stylesheet" href="/css/chat-comunidad.css">
 </head>
-<body class="cuerpo-chat">
+<body class="cuerpo-chat" 
+      data-usuario-logueado="<%= usuarioLogueado ? usuarioLogueado.nombre_usuario : '' %>" 
+      data-usuario-id="<%= usuarioLogueado ? (usuarioLogueado.id || usuarioLogueado.user_id) : '' %>"
+      data-es-dueno="<%= typeof esDueno !== 'undefined' ? esDueno : 'false' %>">
 
     <div class="contenedor-principal-chat shadow">
         
-        <!-- HEADER DEL CHAT (Con separación visual) -->
+        <!-- HEADER --> 
         <header class="header-chat d-flex align-items-center p-3">
             <a href="/comunidades" class="btn-interactivo me-2 text-decoration-none">
                 <i class="bi bi-chevron-left" style="color: #8338ec; font-size: 1.5rem; -webkit-text-stroke: 1px;"></i>
             </a>
             
             <a href="/comunidades/<%= comunidad.id %>/info" class="d-flex align-items-center text-decoration-none flex-grow-1 seccion-info-header">
-                <% if (comunidad.fotoSegura && comunidad.fotoSegura !== '/img/avatar.webp' && comunidad.fotoSegura !== '/img/default-comunidad.webp') { %>
+                <% if (comunidad.fotoSegura && comunidad.fotoSegura !== '/img/avatar.webp') { %>
                     <img src="<%= comunidad.fotoSegura %>" class="portada-chat-completa me-3" alt="Portada">
                 <% } else { %>
                     <div class="portada-chat-placeholder me-3 d-flex align-items-center justify-content-center">
@@ -27,81 +30,211 @@
                 </div>
             </a>
             
-            <!-- Menú Desplegable -->
-            <div class="dropdown">
-                <button class="btn-interactivo dropdown-toggle-hide" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical" style="color: #8338ec; font-size: 1.5rem;"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 rounded-3">
-                    <% if (estoyUnido && !esDueno) { %>
-                        <li>
-                            <!-- El botón ahora llama al modal sin que el dropdown lo bloquee -->
-                            <button type="button" class="dropdown-item fw-semibold py-2 btn-abrir-modal-salir">
-                                <i class="bi bi-box-arrow-right me-2" style="color: #8338ec;"></i> Salir de la comunidad
-                            </button>
-                        </li>
-                    <% } else if (esDueno) { %>
-                        <li>
-                            <a class="dropdown-item text-secondary fw-semibold py-2" href="/comunidades/<%= comunidad.id %>/info">
-                                <i class="bi bi-gear me-2"></i> Ajustes
-                            </a>
-                        </li>
-                    <% } %>
-                </ul>
-            </div>
+            <% if (estoyUnido) { %>
+                <div class="dropdown">
+                    <button class="btn-interactivo dropdown-toggle-hide" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical" style="color: #8338ec; font-size: 1.5rem;"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 rounded-3">
+                        <% if (!esDueno) { %>
+                            <li>
+                                <button type="button" class="dropdown-item fw-semibold py-2 btn-abrir-modal-salir">
+                                    <i class="bi bi-box-arrow-right me-2" style="color: #8338ec;"></i> Salir de la comunidad
+                                </button>
+                            </li>
+                        <% } else { %>
+                            <li>
+                                <a class="dropdown-item text-secondary fw-semibold py-2" href="/comunidades/<%= comunidad.id %>/info">
+                                    <i class="bi bi-gear me-2"></i> Ajustes
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            <% } %>
         </header>
 
         <!-- ÁREA DE MENSAJES -->
         <main class="area-mensajes-chat oculta-scroll p-3" id="contenedor-mensajes">
-            <!-- La IA inyectará las burbujas dinámicas aquí -->
+            <div id="contenedor-alertas-chat"></div>
+
+            <% if (typeof historialMensajes !== 'undefined' && historialMensajes.length > 0) { %>
+                <% historialMensajes.forEach(mensaje => { %>
+                    <% 
+                       let esMio = false; 
+                       if (usuarioLogueado && mensaje.usuario.nombre_usuario === usuarioLogueado.nombre_usuario) esMio = true;
+                       let esAdminMsg = (mensaje.usuario.nombre_usuario === comunidad.usuario.nombre_usuario);
+                    %>
+                    <div class="mensaje-fila <%= esMio ? 'propio' : 'ajeno' %>" id="msj-<%= mensaje.id %>">
+                        <div class="burbuja-mensaje shadow-sm">
+                            
+                            <!-- Menú de Opciones (Flecha visible) -->
+                            <div class="dropdown menu-opciones-msj">
+                                <button class="btn-icono-opcion" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                                    <li><button class="dropdown-item fw-semibold btn-responder" data-id="<%= mensaje.id %>" data-autor="<%= mensaje.usuario.nombre_usuario %>" data-texto="<%= mensaje.contenido || 'Multimedia' %>" data-img="<% if(mensaje.archivos && mensaje.archivos.length > 0 && mensaje.archivos[0].tipo_media === 'imagen'){ %><%= mensaje.archivos[0].url_media %><% } %>">Responder</button></li>
+                                    <% if (esMio) { %>
+                                        <li><button class="dropdown-item fw-semibold btn-editar" data-id="<%= mensaje.id %>" data-texto="<%= mensaje.contenido %>">Editar</button></li>
+                                    <% } %>
+                                    <% if (esMio || esDueno) { %>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><button class="dropdown-item text-danger fw-semibold btn-eliminar" data-id="<%= mensaje.id %>">Eliminar</button></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+
+                            <!-- Nombre y Etiqueta Admin -->
+                            <% if (!esMio) { %>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="nombre-autor m-0">~<%= mensaje.usuario.nombre_usuario %></span>
+                                    <% if (esAdminMsg) { %>
+                                        <span class="ms-1 fw-bold" style="font-size: 0.75rem; color: #8338ec;">Admin</span>
+                                    <% } %>
+                                </div>
+                            <% } %>
+
+                            <!-- Cajita de Mensaje Respondido (Estilo WhatsApp con miniatura) -->
+                            <% if (mensaje.mensaje_respondido) { %>
+                                <% 
+                                    let msjPadre = historialMensajes.find(m => m.id === mensaje.mensaje_respondido);
+                                    let autorPadre = msjPadre ? msjPadre.usuario.nombre_usuario : 'Usuario';
+                                    let textoPadre = msjPadre ? msjPadre.contenido : 'Mensaje adjunto';
+                                    let imgPadre = (msjPadre && msjPadre.archivos && msjPadre.archivos.length > 0 && msjPadre.archivos[0].tipo_media === 'imagen') ? msjPadre.archivos[0].url_media : null;
+                                %>
+                                <div class="caja-cita-burbuja d-flex justify-content-between align-items-stretch cursor-pointer" onclick="document.getElementById('msj-<%= mensaje.mensaje_respondido %>')?.scrollIntoView({behavior: 'smooth', block: 'center'});">
+                                    <div class="info-cita overflow-hidden pe-2 d-flex flex-column justify-content-center">
+                                        <div class="cita-autor fw-bold text-morado text-truncate"><%= autorPadre %></div>
+                                        <div class="cita-texto text-truncate small"><%= textoPadre || 'Multimedia' %></div>
+                                    </div>
+                                    <% if (imgPadre) { %>
+                                        <img src="<%= imgPadre %>" class="img-cita-miniatura ms-1">
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            
+                            <!-- Imágenes Ocupando todo el ancho -->
+                            <% if (mensaje.archivos && mensaje.archivos.length > 0) { %>
+                                <div class="contenedor-multimedia-grid">
+                                    <% mensaje.archivos.forEach(archivo => { %>
+                                        <% if (archivo.tipo_media === 'imagen') { %>
+                                            <img src="<%= archivo.url_media %>" class="img-fluida-chat rounded-3 shadow-sm">
+                                        <% } else if (archivo.tipo_media === 'video') { %>
+                                            <video src="<%= archivo.url_media %>" controls class="img-fluida-chat rounded-3 shadow-sm"></video>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
+                            <% } %>
+
+                            <% if (mensaje.contenido) { %>
+                                <div class="texto-mensaje" id="texto-<%= mensaje.id %>"><%= mensaje.contenido %></div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-center text-muted small mt-4" id="mensaje-chat-vacio">Aún no hay mensajes.</div>
+            <% } %>
         </main>
 
-        <!-- FOOTER: INPUT DE TEXTO (Con separación visual) -->
         <footer class="footer-chat p-2 px-3">
             <% if (estoyUnido) { %>
+                
+                <!-- UI Previa de Respondiendo o Editando -->
+                <div id="caja-previa-accion" class="d-none mb-2 px-3 py-2 rounded-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex flex-grow-1 overflow-hidden align-items-center">
+                        <div class="info-cita overflow-hidden flex-grow-1 pe-2">
+                            <span class="fw-bold d-block text-morado text-truncate" id="accion-titulo" style="font-size: 0.85rem;"></span>
+                            <span class="text-muted small text-truncate d-block" id="accion-texto"></span>
+                        </div>
+                        <img id="accion-img" src="" class="img-cita-miniatura d-none ms-2">
+                    </div>
+                    <button type="button" class="border-0 bg-transparent text-muted ms-2" id="btn-cancelar-accion"><i class="bi bi-x-lg"></i></button>
+                </div>
+
+                <div id="contenedor-preview-archivos" class="d-none d-flex gap-2 mb-2 p-2 bg-light rounded-3 overflow-auto border border-light"></div>
+
                 <form id="form-chat" class="form-chat-alineado">
-                    
-                    <button type="button" class="btn-interactivo btn-adjuntar-icono">
+                    <input type="file" id="input-archivos-chat" accept="image/*,video/*" multiple class="d-none">
+
+                    <button type="button" class="btn-interactivo btn-adjuntar-icono" id="btn-trigger-archivos">
                         <i class="bi bi-plus-circle-fill" style="color: #8338ec; font-size: 1.8rem;"></i>
                     </button>
                     
-                    <!-- Contenedor con borde morado y sombra sutil -->
                     <div class="contenedor-input-blanco">
                         <textarea id="input-mensaje" class="form-control border-0 shadow-none oculta-scroll" 
-                                  placeholder="Mensaje" rows="1"></textarea>
+                                  placeholder="Escribe un mensaje" rows="1"></textarea>
                     </div>
                     
                     <button type="submit" class="btn-interactivo btn-enviar-icono" id="btn-enviar-msg">
-                        <i class="bi bi-send-fill text-muted" style="font-size: 1.5rem;"></i>
+                        <i class="bi bi-send-fill text-muted" id="icono-enviar" style="font-size: 1.5rem;"></i>
                     </button>
                 </form>
             <% } else { %>
                 <div class="text-center w-100 py-3 bg-white rounded-3 text-muted small fw-semibold shadow-sm border border-light">
-                    Debes unirte a la comunidad para participar en el chat.
+                    Debes unirte a la comunidad para participar.
                 </div>
             <% } %>
         </footer>
-
     </div>
 
-    <!-- Modal Salir de la Comunidad (Colocado fuera del flujo para evitar problemas de z-index) -->
-    <% if (estoyUnido && !esDueno) { %>
-        <div class="modal fade" id="modalSalirComunidad" tabindex="-1" aria-hidden="true" data-bs-backdrop="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
-                <div class="modal-content border-0 shadow-lg p-3 text-center rounded-4">
-                    <h6 class="fw-bold mb-3 mt-2 text-dark">¿Salir de la comunidad?</h6>
-                    <p class="small text-muted mb-4">Dejarás de recibir mensajes y deberás unirte de nuevo para participar.</p>
-                    <form action="/comunidades/<%= comunidad.id %>/unirse" method="POST">
-                        <div class="d-flex justify-content-center gap-2 mb-2">
-                            <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-semibold shadow-none">Salir</button>
-                        </div>
-                    </form>
+    <!-- Modales de Interfaz -->
+    
+    <!-- Modal Límite de Archivos -->
+    <div class="modal fade" id="modalErrorArchivos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center p-3 rounded-4">
+                <i class="bi bi-exclamation-circle text-danger mb-2" style="font-size: 2.5rem;"></i>
+                <h6 class="fw-bold text-dark">No permitido</h6>
+                <p class="small text-muted mb-4" id="texto-modal-archivos">Has superado el límite permitido.</p>
+                <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none w-100" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Acción General (Eliminar) -->
+    <div class="modal fade" id="modalConfirmarAccion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg p-4 text-center rounded-4">
+                <h6 class="fw-bold mb-3 text-dark">¿Estás seguro?</h6>
+                <p class="small text-muted mb-4" id="texto-confirmar-accion">Esta acción no se puede deshacer.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-4 fw-semibold shadow-none" id="btn-confirmar-accion-ok">Sí, eliminar</button>
                 </div>
             </div>
         </div>
-    <% } %>
+    </div>
 
+    <!-- Modal Salir -->
+    <div class="modal fade" id="modalSalirComunidad" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg p-3 text-center rounded-4">
+                <h6 class="fw-bold mb-3 mt-2 text-dark">¿Salir de la comunidad?</h6>
+                <p class="small text-muted mb-4">Dejarás de recibir mensajes.</p>
+                <form action="/comunidades/<%= comunidad.id %>/unirse" method="POST">
+                    <div class="d-flex justify-content-center gap-2 mb-2">
+                        <button type="button" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold shadow-none" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-semibold shadow-none">Salir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEvacuacion" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center p-4 rounded-4">
+                <i class="bi bi-info-circle mb-3" style="font-size: 2.5rem; color: #8338ec;"></i>
+                <h6 class="fw-bold mb-2 text-dark" id="titulo-evacuacion">Atención</h6>
+                <p class="small text-muted mb-4" id="texto-evacuacion"></p>
+                <a href="/comunidades" class="btn btn-morado-echo text-white btn-sm rounded-pill px-4 fw-semibold shadow-none w-100" style="background-color: #8338ec;">
+                    Entendido
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script src="/js/chat-comunidad.js"></script>
 </body>

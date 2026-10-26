@@ -35,20 +35,14 @@
                 </div>
 
                 <% if (filtrosActuales.seccionBuscar || filtrosActuales.buscar || filtrosActuales.categoria) { %>
+                    
+                    <%- include('../partials/buscador-global'); %>
+
                     <form id="form-busqueda-comunidad" action="/comunidades" method="GET" class="mb-4">
                         <input type="hidden" name="seccionBuscar" value="true">
                         <% if (filtrosActuales.unidas) { %>
                             <input type="hidden" name="unidas" value="true">
                         <% } %>
-
-                        <div class="contenedor-buscador-comunidad mb-3">
-                            <i class="bi bi-search icono-lupa-comunidad"></i>
-                            <input type="text" id="input-buscar-comunidad" name="buscar" 
-                                   placeholder="Buscar comunidad..." 
-                                   class="campo-entrada-comunidad" 
-                                   autocomplete="off" 
-                                   value="<%= filtrosActuales.buscar || '' %>">
-                        </div>
 
                         <div class="contenedor-categorias-scroll">
                             <button type="submit" name="categoria" value="" class="chip-categoria <%= !filtrosActuales.categoria ? 'activo' : '' %>">Todas</button>
@@ -84,5 +78,6 @@
     
     <script src="/js/ubicacion.js"></script>
     <script src="/js/comunidades.js"></script>
+    <script src="/js/buscador.js"></script>
 </body>
 </html>
