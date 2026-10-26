@@ -57,7 +57,7 @@
 
                 <div class="perfil-estadisticas">
                     <div class="item-estadistica">
-                        <span class="numero-estadistica"><%= usuarioPerfil.seguidores_count || 0 %></span>
+                        <span class="numero-estadistica" id="contador-seguidores"><%= usuarioPerfil.seguidores_count || 0 %></span>
                         <span class="etiqueta-estadistica">Seguidores</span>
                     </div>
                     <div class="item-estadistica">
@@ -79,10 +79,27 @@
 
                     <% } else { %>
 
-                        <button class="btn-seguir">Seguir</button>
+                        <!-- Botón de seguir con las clases y atributos necesarios para JS -->
+                        <button type="button" 
+                            class="btn-seguir btn-seguir-generico <%= usuarioPerfil.lo_sigo ? 'btn-siguiendo' : '' %>" 
+                            data-usuario="<%= usuarioPerfil.nombre_usuario %>">
+                            <%= usuarioPerfil.lo_sigo ? 'Siguiendo' : 'Seguir' %>
+                        </button>
                         
+                        <!-- Lógica del botón calificar para negocios (Protegida contra errores) -->
                         <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
-                            <button class="btn-calificar">Calificar</button>
+                            <% 
+                            let yaCalifico = false;
+                            if (usuarioLogueado && usuarioPerfil.calificaciones_recibidas && Array.isArray(usuarioPerfil.calificaciones_recibidas)) {
+                                yaCalifico = usuarioPerfil.calificaciones_recibidas.some(c => 
+                                    c && c.usuario_califica && c.usuario_califica.nombre_usuario === usuarioLogueado.nombre_usuario
+                                );
+                            }
+                            %>
+                            
+                            <% if (!yaCalifico) { %>
+                                <button class="btn-calificar" data-bs-toggle="modal" data-bs-target="#modalCalificar">Calificar</button>
+                            <% } %>
                         <% } %>
 
                     <% } %>
@@ -117,7 +134,7 @@
                     <% } else if (seccion === 'calificaciones' && usuarioPerfil.tipo_usuario === 'empresarial') { %>
 
                         <%- include('../partials/perfil-calificaciones'); %>
-
+                    
                     <% } else { %>
 
                         <%- include('../partials/perfil-publicaciones'); %>
@@ -132,6 +149,7 @@
 
     <%- include('../partials/modal-editar'); %>
     <%- include('../partials/modal-opciones-post'); %>
+    <%- include('../partials/modal-calificar'); %>
     
     <script src="/js/ubicacion.js"></script>
     <script src="/js/perfil.js"></script>
@@ -139,13 +157,5 @@
     <script src="/js/comentarios.js"></script>
     <script src="/js/comunidades.js"></script>
 
-    <% if (typeof error !== 'undefined' && error) { %>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
-                modalEditar.show();
-            });
-        </script>
-    <% } %> 
 </body>
 </html>

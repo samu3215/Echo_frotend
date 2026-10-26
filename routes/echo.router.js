@@ -5,6 +5,7 @@ const usuarioController = require('../controllers/usuario.controller');
 const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
+const calificacionController = require('../controllers/calificacion.controller');
 
 // routes formulario y login
 router.get('/formulario', formularioController.selecFormulario);
@@ -56,6 +57,14 @@ router.post('/comunidades/:id/eliminar', comunidadController.eliminarComunidad);
 
 router.post('/comunidades/:id/unirse', comunidadController.unirseOAbandonarComunidad);
 router.get('/comunidades/:id/chat', comunidadController.mostrarChat);
+
+// routes calificaciones
+
+router.post('/perfil/:nombre_usuario/calificar', calificacionController.procesarCalificacion);
+router.post('/perfil/:nombre_usuario/calificaciones/:id/eliminar', calificacionController.eliminarCalificacion);
+router.post('/perfil/:nombre_usuario/calificaciones/:id/editar', calificacionController.editarCalificacion);
+
+router.post('/perfil/:nombre_usuario/seguir', usuarioController.toggleSeguir);
 
 router.get('/', (req,res) => {
     res.redirect('/inicio')

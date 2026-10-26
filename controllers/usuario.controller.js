@@ -16,7 +16,7 @@ exports.mostrarPerfil = async (req, res) => {
 
     try{
 
-        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
+        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu, token)
         let publicaciones = []
         let comunidadesCreadas = []
         let comunidadesUnidas = []
@@ -187,3 +187,19 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
 }
+
+exports.toggleSeguir = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+    const nombreUsuario = req.params.nombre_usuario;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Debes iniciar sesión para seguir a un usuario' });
+    }
+
+    try {
+        const data = await usuarioApi.seguirUsuario(nombreUsuario, token);
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(400).json({ error: 'Error al procesar la solicitud' });
+    }
+};

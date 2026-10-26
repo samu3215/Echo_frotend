@@ -131,3 +131,62 @@ function quitarImagenSeleccionada() {
 
     cancelarRecorte();
 }
+
+// NUEVO: Manejo del modal de edición de reseñas
+
+document.addEventListener('click', function(e) {
+    const btnEditarResena = e.target.closest('.btn-abrir-editar-resena');
+    
+    if (btnEditarResena) {
+        const idCalificacion = btnEditarResena.getAttribute('data-id');
+        const puntuacion = btnEditarResena.getAttribute('data-puntuacion');
+        const descripcion = btnEditarResena.getAttribute('data-descripcion');
+        const nombreUsuarioPerfil = btnEditarResena.getAttribute('data-usuario-perfil');
+
+        const formEditar = document.getElementById('formEditarCalificacion');
+        formEditar.action = `/perfil/${nombreUsuarioPerfil}/calificaciones/${idCalificacion}/editar`;
+
+        document.getElementById('edit-descripcion-calificacion').value = descripcion;
+
+        const radioEstrella = document.getElementById(`edit-star${puntuacion}`);
+        if (radioEstrella) {
+            radioEstrella.checked = true;
+        }
+
+        const modalEdicion = new bootstrap.Modal(document.getElementById('modalEditarCalificacion'));
+        modalEdicion.show();
+    }
+});
+
+document.addEventListener('click', async function(e) {
+    if (e.target && e.target.classList.contains('btn-seguir-generico')) {
+        const btn = e.target;
+        const nombreUsuario = btn.getAttribute('data-usuario');
+        
+        try {
+            const respuesta = await fetch(`/perfil/${nombreUsuario}/seguir`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (respuesta.status === 401) {
+                window.location.href = '/login'; 
+                return;
+            }
+
+            const data = await respuesta.json();
+
+            if (respuesta.ok) {
+                if (data.siguiendo) {
+                    btn.innerText = 'Siguiendo';
+                    btn.classList.add('btn-siguiendo');
+                } else {
+                    btn.innerText = 'Seguir';
+                    btn.classList.remove('btn-siguiendo');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+});

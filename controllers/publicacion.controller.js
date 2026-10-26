@@ -282,7 +282,7 @@ exports.mostrarBusqueda = async (req, res) => {
     const seccion = req.query.seccion || 'publicaciones'
 
     try {
-        const listUsuarios = await usuarioApi.listarUsuarios();
+        const listUsuarios = await usuarioApi.listarUsuarios(token);
         const usuarios = listUsuarios.filter(u => u.tipo_usuario === 'normal')
         const negocios = listUsuarios.filter(u => u.tipo_usuario === 'empresarial')
         const queryBuscador = req.query.q || ''
@@ -447,7 +447,40 @@ exports.eliminarComentario = async (req, res) => {
     }
 }
 
-exports.mostrarNotificaciones = (req, res) => {
-    res.render('pages/notificaciones')
-}
+exports.mostrarNotificaciones = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+    
+    if (!token) {
+        req.flash('error', 'Debes iniciar sesión para ver tus notificaciones');
+        return res.redirect('/login');
+    }
 
+    try {
+        const notificaciones = await usuarioApi.obtenerNotificaciones(token);
+        
+        // Formatear los datos para la vista
+        const notificacionesFormateadas = notificaciones.map(notif => {
+            const fechaObj = new Date(notif.fecha);
+            // Formato de hora (Ej: 14:30) y fecha (Ej: 26 oct)
+            const horaStr = fechaObj.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+            const fechaStr = fechaObj.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+            
+            return {
+                ...notif,
+                tiempo_formateado: `${fechaStr}, ${horaStr}`,
+                fotoSegura: notif.foto_perfil || '/img/avatar.webp'
+            };
+        });
+
+        res.render('pages/notificaciones', {
+            notificaciones: notificacionesFormateadas,
+            error: res.locals.error || null
+        });
+
+    } catch (error) {
+        res.render('pages/notificaciones', {
+            notificaciones: [],
+            error: 'No se pudieron cargar las notificaciones'
+        });
+    }
+};
