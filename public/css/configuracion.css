@@ -1,0 +1,296 @@
+.configuraciones-main {
+    padding: 2.5rem 1.5rem;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.configuraciones-header {
+    margin-bottom: 1.75rem;
+}
+
+.configuraciones-titulo {
+    font-size: clamp(1.85rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: #1f1730;
+    margin: 0;
+    letter-spacing: -0.04em;
+}
+
+.configuraciones-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.configuracion-card {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    background: #ffffff;
+    border: 1px solid #eeeaf3;
+    border-radius: 16px;
+    padding: 1rem 1.15rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 3px 12px rgba(31, 23, 48, 0.045);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.configuracion-acordeon {
+    min-width: 0;
+}
+
+.configuracion-acordeon > summary {
+    list-style: none;
+}
+
+.configuracion-acordeon > summary::-webkit-details-marker {
+    display: none;
+}
+
+.configuracion-acordeon[open] > summary {
+    border-radius: 16px 16px 0 0;
+    border-bottom-color: transparent;
+    box-shadow: 0 3px 12px rgba(31, 23, 48, 0.045);
+    transform: none;
+}
+
+.configuracion-acordeon[open] > summary .configuracion-card-flecha {
+    color: #7333c7;
+    transform: rotate(180deg);
+}
+
+.informacion-cuenta {
+    padding: 0 1.15rem 1.15rem;
+    background: #ffffff;
+    border: 1px solid #eeeaf3;
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 3px 12px rgba(31, 23, 48, 0.045);
+}
+
+.seguridad-cuenta {
+    padding: 0 1.15rem 1.15rem;
+    background: #ffffff;
+    border: 1px solid #eeeaf3;
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 3px 12px rgba(31, 23, 48, 0.045);
+}
+
+.seguridad-cuenta-descripcion {
+    margin: 0 0 1rem;
+    color: #777180;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.btn-cambiar-contrasena {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #7333c7;
+    border-radius: 12px;
+    background: #7333c7;
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-cambiar-contrasena:hover {
+    border-color: #5f27aa;
+    background: #5f27aa;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(95, 39, 170, 0.2);
+}
+
+.btn-cambiar-contrasena:focus-visible {
+    outline: 3px solid rgba(131, 56, 236, 0.35);
+    outline-offset: 3px;
+}
+
+.informacion-cuenta-aviso {
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #c7e3ff;
+    border-radius: 12px;
+    background: #eaf5ff;
+    color: #24527a;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.informacion-cuenta-aviso a {
+    color: #155ca0;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.informacion-cuenta-lista {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+}
+
+.informacion-cuenta-campo {
+    min-width: 0;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid #f0edf4;
+    border-radius: 11px;
+    background: #fcfbfd;
+}
+
+.informacion-cuenta-campo dt {
+    margin-bottom: 0.25rem;
+    color: #777180;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+}
+
+.informacion-cuenta-campo dd {
+    margin: 0;
+    color: #211b2b;
+    font-size: 0.92rem;
+    overflow-wrap: anywhere;
+}
+
+.configuracion-card:hover {
+    border-color: #d9c9f3;
+    box-shadow: 0 8px 22px rgba(67, 35, 112, 0.09);
+    transform: translateY(-2px);
+    color: inherit;
+}
+
+.configuracion-card:focus-visible {
+    outline: 3px solid rgba(131, 56, 236, 0.35);
+    outline-offset: 3px;
+}
+
+.configuracion-card-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    color: #7333c7;
+    background: #f4edff;
+    border-radius: 14px;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.configuracion-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.configuracion-card-titulo {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #211b2b;
+    margin-bottom: 0.2rem;
+}
+
+.configuracion-card-subtitulo {
+    font-size: 0.84rem;
+    color: #777180;
+}
+
+.configuracion-card-flecha {
+    display: flex;
+    align-items: center;
+    color: #a7a0b0;
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.configuracion-card:hover .configuracion-card-flecha {
+    color: #7333c7;
+    transform: translateX(2px);
+}
+
+.configuracion-acordeon[open] > summary:hover {
+    transform: none;
+}
+
+.configuracion-acordeon[open] > summary:hover .configuracion-card-flecha {
+    transform: rotate(180deg);
+}
+
+.configuraciones-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+}
+
+.btn-configuracion-peligro {
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid #d93445;
+    color: #c92b3c;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    font-size: 0.96rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-configuracion-peligro:hover {
+    background-color: #c92b3c;
+    border-color: #c92b3c;
+    color: #ffffff;
+}
+
+.btn-configuracion-peligro:focus-visible {
+    outline: 3px solid rgba(217, 52, 69, 0.28);
+    outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+    .configuraciones-main {
+        padding: 1.75rem 1rem 5.5rem;
+    }
+
+    .configuracion-card {
+        padding: 0.9rem;
+        gap: 0.85rem;
+    }
+
+    .informacion-cuenta {
+        padding: 0 0.9rem 0.9rem;
+    }
+
+    .seguridad-cuenta {
+        padding: 0 0.9rem 0.9rem;
+    }
+
+    .btn-cambiar-contrasena {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .configuracion-card,
+    .configuracion-card-flecha,
+    .btn-configuracion-peligro,
+    .btn-cambiar-contrasena {
+        transition: none;
+    }
+
+    .configuracion-card:hover {
+        transform: none;
+    }
+}

@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
     <%- include('../partials/head'); %>
+    <link rel="stylesheet" href="/css/terminos.css">
 </head>
 
 <body class="cuerpo-autenticacion">
-    <main class="tarjeta-autenticacion">
+    <main class="tarjeta-autenticacion" id="vista-registro" data-terminos-origen>
         <div class="contenedor-logo-aplicacion">
             <img src="/img/echo.png" alt="Echo Logo" class="imagen-logo-aplicacion">
         </div>
@@ -60,7 +61,7 @@
 
                 <div class="grupo-campo">
                     <label class="etiqueta-campo">Teléfono</label>
-                    <input type="text" name="telefono" class="campo-entrada" placeholder="+57 300 1234 4567" <%= tipo === 'empres' ? 'required' : '' %>>
+                    <input type="tel" name="telefono" class="campo-entrada" placeholder="10 dígitos" required inputmode="numeric" autocomplete="tel">
                 </div>
 
                 <div class="grupo-campo">
@@ -70,17 +71,18 @@
 
                 <div class="grupo-campo">
                     <label class="etiqueta-campo">Contraseña</label>
-                    <input type="password" name="password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required>
+                    <input type="password" name="password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
                 </div>
 
                 <div class="grupo-campo">
                     <label class="etiqueta-campo">Verificar Contraseña</label>
-                    <input type="password" name="confirmar_password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required>
+                    <input type="password" name="confirmar_password" class="campo-entrada" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
                 </div>
 
-                <button type="button" class="boton-principal" onclick="siguientePaso()">
+                <button type="button" class="boton-principal" onclick="siguientePaso()" disabled>
                     Siguiente
                 </button>
+                <p id="error-disponibilidad-registro" class="mensaje-error-campo" role="alert" hidden></p>
             </div>
 
             <!-- PASO 2 -->
@@ -102,6 +104,26 @@
                     <label class="etiqueta-campo">Descripción</label>
                     <textarea name="descripcion" class="campo-entrada campo-textarea" rows="3" placeholder="Añade una breve biografía o descripción..."></textarea>
                 </div>
+
+                <section class="registro-terminos">
+                    <div class="registro-terminos-aceptacion">
+                        <input
+                            type="checkbox"
+                            id="acepta-terminos"
+                            name="acepta_terminos"
+                            value="aceptado"
+                            required
+                            aria-describedby="error-acepta-terminos"
+                        >
+                        <label for="acepta-terminos">
+                            He leído y acepto los
+                        </label>
+                        <button type="button" class="registro-terminos-link" data-terminos-abrir>
+                            Términos y Condiciones
+                        </button>
+                    </div>
+                    <p id="error-acepta-terminos" class="registro-terminos-error" aria-live="polite"></p>
+                </section>
 
                 <div class="contenedor-botones-pasos">
                     <button type="button" class="boton-secundario" onclick="anteriorPaso()">
@@ -133,6 +155,9 @@
         </div>
     </main>
 
+    <%- include('../partials/terminos-panel', { vistaIntegrada: true }); %>
+
     <script src="/js/formulario.js"></script>
+    <script src="/js/terminos-vista.js"></script>
 </body>
 </html>
