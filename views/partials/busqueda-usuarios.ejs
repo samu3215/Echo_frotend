@@ -11,7 +11,13 @@
                         <small class="username text-truncate">@<%= usuario.nombre_usuario %></small>
                     </div>
                 </a>
-                <button class="btn-accion-busqueda">Seguir</button>
+                <% if (usuarioLogueado && usuarioLogueado.nombre_usuario !== usuario.nombre_usuario) { %>
+                    <button type="button" 
+                        class="btn-accion-busqueda btn-seguir btn-seguir-generico <%= usuario.lo_sigo ? 'btn-siguiendo' : '' %>" 
+                        data-usuario="<%= usuario.nombre_usuario %>">
+                        <%= usuario.lo_sigo ? 'Siguiendo' : 'Seguir' %>
+                    </button>
+                <% } %>
             </div>
         <% }); %>
     <% } else { %>

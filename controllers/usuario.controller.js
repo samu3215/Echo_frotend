@@ -16,15 +16,16 @@ exports.mostrarPerfil = async (req, res) => {
 
     try{
 
-        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu)
+        const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu, token)
         let publicaciones = []
         let comunidadesCreadas = []
         let comunidadesUnidas = []
         let tieneSiguiente = false  
 
-        if (seccion === 'publicaciones') {
+        const respuestaPubs = await publicacionApi.listarPublicacionesUsuario(nombreUsu, 1, token)
+        const conteoPublicaciones = (respuestaPubs.data && respuestaPubs.data.count) ? respuestaPubs.data.count : 0;
 
-            const respuestaPubs = await publicacionApi.listarPublicacionesUsuario(nombreUsu, 1, token)
+        if (seccion === 'publicaciones') {
             
             publicaciones = publicacionesController.formatearPublicaciones(respuestaPubs.data.results || [], res.locals.usuarioLogueado)
             tieneSiguiente = respuestaPubs.data.next ? true : false;
@@ -53,6 +54,7 @@ exports.mostrarPerfil = async (req, res) => {
             tieneSiguiente,
             comunidadesCreadas: comunidadesCreadas,
             comunidadesUnidas: comunidadesUnidas,
+            conteoPublicaciones: conteoPublicaciones,
             exito: res.locals.exito || null, 
             error: res.locals.error || null
         })
@@ -187,3 +189,19 @@ exports.eliminarUsuario = async (req,res) =>{
 
     }
 }
+
+exports.toggleSeguir = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+    const nombreUsuario = req.params.nombre_usuario;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Debes iniciar sesión para seguir a un usuario' });
+    }
+
+    try {
+        const data = await usuarioApi.seguirUsuario(nombreUsuario, token);
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(400).json({ error: 'Error al procesar la solicitud' });
+    }
+};

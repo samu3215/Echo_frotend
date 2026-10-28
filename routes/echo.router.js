@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const formularioController = require('../controllers/formulario.controller')
-const usuarioController = require('../controllers/usuario.controller');
+const usuarioController = require('../controllers/usuario.controller')
 const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
+const calificacionController = require('../controllers/calificacion.controller')
 const sse = require('../utils/sse')
 
 // routes formulario y login
@@ -64,6 +65,14 @@ router.post('/comunidades/:id/transferir', comunidadController.transferirPropied
 router.post('/comunidades/:id/mensajes', cargarArchivo.array('archivos', 4), comunidadController.enviarMensajeChat)
 router.delete('/mensajes/:id', comunidadController.eliminarMensajeChat)
 router.patch('/mensajes/:id', comunidadController.editarMensajeChat)
+
+// routes calificaciones
+router.post('/perfil/:nombre_usuario/calificar', calificacionController.procesarCalificacion)
+router.post('/perfil/:nombre_usuario/calificaciones/:id/eliminar', calificacionController.eliminarCalificacion)
+router.post('/perfil/:nombre_usuario/calificaciones/:id/editar', calificacionController.editarCalificacion)
+
+router.post('/perfil/:nombre_usuario/seguir', usuarioController.toggleSeguir)
+router.get('/api/notificaciones/conteo', publicacionController.obtenerConteoNotificaciones);
 
 router.get('/comunidades/:id/stream', (req, res) => {
     sse.suscribirCliente(req, res, req.params.id);

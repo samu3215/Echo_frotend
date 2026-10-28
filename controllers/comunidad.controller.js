@@ -313,8 +313,8 @@ exports.mostrarInfo = async (req, res) => {
     const idComunidad = req.params.id
 
     if (!token) {
-        req.flash('error', 'Debes iniciar sesión')
-        return res.redirect('/login')
+        req.flash('error', 'Debes iniciar sesión para ver esta informacion')
+        return res.redirect('/comunidades')
     }
 
     try {

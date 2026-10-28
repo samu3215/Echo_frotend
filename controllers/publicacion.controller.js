@@ -280,13 +280,13 @@ exports.mostrarBusqueda = async (req, res) => {
 
     const token = req.cookies.jwt_echo
     const seccion = req.query.seccion || 'publicaciones'
-
+    const queryBuscador = req.query.q || ''
+    const categoriaActual = req.query.categoria || ''
     try {
-        const listUsuarios = await usuarioApi.listarUsuarios();
+        const listUsuarios = await usuarioApi.listarUsuarios(token)
         const usuarios = listUsuarios.filter(u => u.tipo_usuario === 'normal')
         const negocios = listUsuarios.filter(u => u.tipo_usuario === 'empresarial')
-        const queryBuscador = req.query.q || ''
-        const categoriaActual = req.query.categoria || ''
+        
         
         let publicaciones = []
         let comunidades = []
@@ -447,7 +447,67 @@ exports.eliminarComentario = async (req, res) => {
     }
 }
 
-exports.mostrarNotificaciones = (req, res) => {
-    res.render('pages/notificaciones')
+exports.mostrarNotificaciones = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+    
+    if (!token) {
+        req.flash('error', 'Debes iniciar sesión para ver tus notificaciones');
+        return res.redirect('/inicio');
+    }
+
+    try {
+        const respuestaBackend = await usuarioApi.obtenerNotificaciones(token);
+        const notificaciones = respuestaBackend.lista || [];
+        
+        const notificacionesFormateadas = notificaciones.map(notif => {
+            const fechaObj = new Date(notif.fecha_creacion);
+            const horaStr = fechaObj.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+            const fechaStr = fechaObj.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })
+            
+            const autor = notif.usuario_origen || {};
+            
+            return {
+                ...notif,
+                tipo: notif.tipo, 
+                puntuacion: notif.puntuacion || 0,
+                tiempo_formateado: `${fechaStr}, ${horaStr}`,
+                fotoSegura: autor.foto_perfil || '/img/avatar.webp',
+                usuario_origen: autor.nombre_usuario 
+            }
+        })
+
+        res.render('pages/notificaciones', {
+            notificaciones: notificacionesFormateadas,
+            error: res.locals.error || null,
+            exito:res.locals.exito || null
+        })
+
+        if (respuestaBackend.sin_leer > 0) {
+            try {
+                await require('../api/usuario').marcarNotificacionesLeidas(token)
+            } catch (err) {
+                console.log('Error silencioso al marcar notificaciones')
+            }
+        }
+
+    } catch (error) {
+        res.render('pages/notificaciones', {
+            notificaciones: [],
+            error: 'No se pudieron cargar las notificaciones'
+        })
+    }
 }
 
+exports.obtenerConteoNotificaciones = async (req, res) => {
+    const token = req.cookies.jwt_echo;
+    if (!token) return res.status(401).json({ sin_leer: 0 })
+
+    try {
+
+        const respuesta = await usuarioApi.obtenerNotificaciones(token)
+        return res.status(200).json({ sin_leer: respuesta.sin_leer || 0 })
+
+    } catch (error) {
+        return res.status(500).json({ sin_leer: 0 })
+    }
+}

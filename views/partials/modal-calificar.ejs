@@ -1,0 +1,60 @@
+<!-- Modal Crear Calificación -->
+<div class="modal fade" id="modalCalificar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Calificar Negocio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>/calificar" method="POST">
+                <div class="modal-body text-center">
+                    <input type="hidden" name="usuario_calificado_id" value="<%= usuarioPerfil.id %>">
+                    
+                    <label class="form-label fw-semibold mb-2">Tu Puntuación</label>
+                    <div class="estrellas-interactivas mb-3">
+                        <input type="radio" id="star5" name="puntuacion" value="5" required /><label for="star5" class="bi bi-star-fill"></label>
+                        <input type="radio" id="star4" name="puntuacion" value="4" /><label for="star4" class="bi bi-star-fill"></label>
+                        <input type="radio" id="star3" name="puntuacion" value="3" /><label for="star3" class="bi bi-star-fill"></label>
+                        <input type="radio" id="star2" name="puntuacion" value="2" /><label for="star2" class="bi bi-star-fill"></label>
+                        <input type="radio" id="star1" name="puntuacion" value="1" /><label for="star1" class="bi bi-star-fill"></label>
+                    </div>
+
+                    <textarea class="form-control" name="descripcion" placeholder="Opcional: detalla tu experiencia" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Enviar Calificación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Calificación -->
+<div class="modal fade" id="modalEditarCalificacion" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Editar Reseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- La acción del form se inyectará por JS -->
+            <form id="formEditarCalificacion" method="POST">
+                <div class="modal-body text-center">
+                    <label class="form-label fw-semibold mb-2">Tu Puntuación</label>
+                    <div class="estrellas-interactivas mb-3">
+                        <input type="radio" id="edit-star5" name="puntuacion" value="5" required /><label for="edit-star5" class="bi bi-star-fill"></label>
+                        <input type="radio" id="edit-star4" name="puntuacion" value="4" /><label for="edit-star4" class="bi bi-star-fill"></label>
+                        <input type="radio" id="edit-star3" name="puntuacion" value="3" /><label for="edit-star3" class="bi bi-star-fill"></label>
+                        <input type="radio" id="edit-star2" name="puntuacion" value="2" /><label for="edit-star2" class="bi bi-star-fill"></label>
+                        <input type="radio" id="edit-star1" name="puntuacion" value="1" /><label for="edit-star1" class="bi bi-star-fill"></label>
+                    </div>
+
+                    <textarea class="form-control" id="edit-descripcion-calificacion" name="descripcion" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

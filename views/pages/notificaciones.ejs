@@ -2,20 +2,54 @@
 <html lang="es">
 <head>
     <%- include('../partials/head-inicio'); %>
+    <link rel="stylesheet" href="/css/perfil.css">
 </head>
-
 <body class="cuerpo-inicio">
-
     <div class="contenedor-principal-interfaz">
-        
-
         <%- include('../partials/navegacion-escritorio'); %>
         <%- include('../partials/navegacion-movil'); %>
-
 
         <main class="area-contenido-principal">
             <%- include('../partials/alertas'); %>
 
+            <div class="contenedor-perfil-tarjeta">
+                <h3 class="fw-bold mb-4 px-2">Notificaciones</h3>
+                
+                <div class="list-group">
+                    <% if (notificaciones && notificaciones.length > 0) { %>
+                        <% notificaciones.forEach(notif => { %>
+                            <a href="/perfil/<%= notif.usuario_origen %>" class="list-group-item list-group-item-action d-flex align-items-center p-3 mb-2 border rounded bg-white shadow-sm gap-3 text-decoration-none">
+                                <img src="<%= notif.fotoSegura %>" alt="Avatar" class="rounded-circle object-fit-cover" width="50" height="50">
+                                <div class="flex-grow-1">
+                                    
+                                    <% if (notif.tipo === 'seguir') { %>
+                                        <p class="mb-1 text-dark">
+                                            <span class="fw-bold">@<%= notif.usuario_origen %></span> ha empezado a seguirte.
+                                        </p>
+                                    <% } else if (notif.tipo === 'dejar_seguir') { %>
+                                        <p class="mb-1 text-dark">
+                                            <span class="fw-bold">@<%= notif.usuario_origen %></span> ha dejado de seguirte.
+                                        </p>
+                                    <% } else if (notif.tipo === 'calificacion') { %>
+                                        <p class="mb-1 text-dark">
+                                            <span class="fw-bold">@<%= notif.usuario_origen %></span> te ha calificado con <%= notif.puntuacion %> <i class="bi bi-star-fill text-warning"></i> estrellas.
+                                        </p>
+                                    <% } %>
+
+                                    <small class="text-muted fw-semibold">
+                                        <i class="bi bi-clock"></i> <%= notif.tiempo_formateado %>
+                                    </small>
+                                </div>
+                            </a>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="text-center mt-5 text-muted">
+                            <i class="bi bi-bell-slash fs-1 d-block mb-3"></i>
+                            <h5>No tienes notificaciones</h5>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
         </main>
 
     </div>

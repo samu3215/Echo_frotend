@@ -375,3 +375,34 @@
 .btn-opcion-cancelar:focus {
     background-color: #f8f9fa;
 }
+
+.estrellas-interactivas {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.estrellas-interactivas input {
+    display: none;
+}
+.estrellas-interactivas label {
+    font-size: 2.5rem;
+    color: #e4e5e9;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.estrellas-interactivas input:checked ~ label,
+.estrellas-interactivas label:hover,
+.estrellas-interactivas label:hover ~ label {
+    color: #ffc107;
+}
+
+.btn-siguiendo {
+    background-color: #f3f4f6;
+    color: var(--color-texto-principal);
+    border: 1px solid #e5e7eb;
+}
+.btn-siguiendo:hover {
+    background-color: #e5e7eb;
+    color: var(--color-texto-principal);
+}

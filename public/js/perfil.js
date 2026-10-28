@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners (sin onclicks/onchange en el HTML)
     const inputFoto = document.getElementById('foto_perfil');
     const btnQuitarFoto = document.getElementById('btn-quitar-foto');
-    const btnCancelarRecorte = document.getElementById('btn-cancelar-recorte');
-    const btnConfirmarRecorte = document.getElementById('btn-confirmar-recorte');
+    const btnCancelarRecorte = document.getElementById('btn-cancelar-recorte-perfil');
+    const btnConfirmarRecorte = document.getElementById('btn-confirmar-recorte-perfil');
     const modalElemento = document.getElementById('modalEditar');
 
     if (inputFoto) {
@@ -30,11 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (btnCancelarRecorte) {
-        btnCancelarRecorte.addEventListener('click', cancelarRecorte);
+        btnCancelarRecorte.addEventListener('click', cancelarRecortePerfil);
     }
 
     if (btnConfirmarRecorte) {
-        btnConfirmarRecorte.addEventListener('click', confirmarRecorte);
+        btnConfirmarRecorte.addEventListener('click', confirmarRecortePerfil);
     }
 
     if (modalElemento) {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quitarImagenSeleccionada();
         });
     }
+    
 });
 
 function iniciarEditorImagen(evento) {
@@ -80,7 +81,7 @@ function iniciarEditorImagen(evento) {
     }
 }
 
-function confirmarRecorte() {
+function confirmarRecortePerfil() {
     if (!cropper) return;
 
     const canvas = cropper.getCroppedCanvas({
@@ -101,11 +102,11 @@ function confirmarRecorte() {
 
         document.getElementById('contenedor-btn-quitar').classList.remove('d-none');
 
-        cancelarRecorte();
+        cancelarRecortePerfil();
     });
 }
 
-function cancelarRecorte() {
+function cancelarRecortePerfil() {
     if (cropper) {
         cropper.destroy();
         cropper = null;
@@ -129,5 +130,70 @@ function quitarImagenSeleccionada() {
         contenedorBtnQuitar.classList.add('d-none');
     }
 
-    cancelarRecorte();
+    cancelarRecortePerfil();
 }
+
+// NUEVO: Manejo del modal de edición de reseñas
+
+document.addEventListener('click', function(e) {
+    const btnEditarResena = e.target.closest('.btn-abrir-editar-resena');
+    
+    if (btnEditarResena) {
+        const idCalificacion = btnEditarResena.getAttribute('data-id');
+        const puntuacion = btnEditarResena.getAttribute('data-puntuacion');
+        const descripcion = btnEditarResena.getAttribute('data-descripcion');
+        const nombreUsuarioPerfil = btnEditarResena.getAttribute('data-usuario-perfil');
+
+        const formEditar = document.getElementById('formEditarCalificacion');
+        formEditar.action = `/perfil/${nombreUsuarioPerfil}/calificaciones/${idCalificacion}/editar`;
+
+        document.getElementById('edit-descripcion-calificacion').value = descripcion;
+
+        const radioEstrella = document.getElementById(`edit-star${puntuacion}`);
+        if (radioEstrella) {
+            radioEstrella.checked = true;
+        }
+
+        const modalEdicion = new bootstrap.Modal(document.getElementById('modalEditarCalificacion'));
+        modalEdicion.show();
+    }
+});
+
+document.addEventListener('click', async function(e) {
+    if (e.target && e.target.classList.contains('btn-seguir-generico')) {
+        const btn = e.target;
+        const nombreUsuario = btn.getAttribute('data-usuario');
+        
+        try {
+            const respuesta = await fetch(`/perfil/${nombreUsuario}/seguir`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (respuesta.status === 401) {
+                window.location.href = '/inicio'; 
+                return;
+            }
+
+            const data = await respuesta.json();
+
+            if (respuesta.ok) {
+                // Seleccionamos el contenedor del número de seguidores (asumiendo que es el primer 'numero-estadistica' en el DOM del perfil)
+                const contadorSeguidores = document.querySelector('.item-estadistica:first-child .numero-estadistica');
+                let numSeguidores = contadorSeguidores ? parseInt(contadorSeguidores.innerText) : 0;
+
+                if (data.siguiendo) {
+                    btn.innerText = 'Siguiendo';
+                    btn.classList.add('btn-siguiendo');
+                    if (contadorSeguidores) contadorSeguidores.innerText = numSeguidores + 1; // Suma visualmente
+                } else {
+                    btn.innerText = 'Seguir';
+                    btn.classList.remove('btn-siguiendo');
+                    if (contadorSeguidores) contadorSeguidores.innerText = numSeguidores > 0 ? numSeguidores - 1 : 0; // Resta visualmente
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+});

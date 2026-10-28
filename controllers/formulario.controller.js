@@ -73,7 +73,7 @@ exports.mostrarLogin = (req, res) => {
 
     res.render('pages/login', { 
         error: res.locals.error || null,
-        exito:  res.locals.exito || null 
+        exito: res.locals.exito || null 
     })
 }
 

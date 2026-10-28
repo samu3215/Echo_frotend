@@ -49,9 +49,9 @@ exports.enviarMensaje = async (datosMensaje, token) => {
     return await api.post(`/mensajes-comunidad/`, datosMensaje, envioToken(token))
 }
 exports.eliminarMensaje = async (idMensaje, token) => {
-    return await api.delete(`/mensajes-comunidad/${idMensaje}/`, envioToken(token));
-};
+    return await api.delete(`/mensajes-comunidad/${idMensaje}/`, envioToken(token))
+}
 
 exports.editarMensaje = async (idMensaje, datos, token) => {
-    return await api.patch(`/mensajes-comunidad/${idMensaje}/`, datos, envioToken(token));
-};
+    return await api.patch(`/mensajes-comunidad/${idMensaje}/`, datos, envioToken(token))
+}
