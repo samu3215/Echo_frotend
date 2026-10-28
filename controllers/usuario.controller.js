@@ -125,6 +125,7 @@ exports.mostrarConfiguracion = async (req, res) => {
         const usuarioCuenta = await usuarioApi.listarUsuario(usuarioLogueado.nombre_usuario)
 
         res.render('pages/configuracion', {
+            usuarioCuenta,
             exito: res.locals.exito || null,
             error: res.locals.error || null
         })

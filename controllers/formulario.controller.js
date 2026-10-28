@@ -147,8 +147,8 @@ exports.mostrarLogin = (req, res) => {
         req.flash('exito', 'Ya estas logueado')
         return res.redirect(`/inicio`)
     }
-    const error = req.query.error || res.locals.error || null;
-    const exito = req.query.exito || res.locals.exito || null;
+    const error = res.locals.error || null;
+    const exito = res.locals.exito || null;
 
     res.render('pages/login', { 
         error,
