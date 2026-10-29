@@ -80,9 +80,6 @@
             <% } %>
 
             <div class="d-flex flex-column align-items-center">
-                <!-- <button class="btn btn-link text-dark p-0 shadow-none text-decoration-none" title="Compartir">
-                    <i class="bi bi-send fs-4"></i>
-                </button> -->
             </div>
         </div>
 
@@ -100,18 +97,19 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content bg-white text-dark flex-lg-row overflow-hidden shadow" style="height: 85vh; max-height: 85vh; border-radius: 12px;">
             
-            <div class="w-lg-60 d-flex align-items-center justify-content-center position-relative">
-                <% if (post.archivos && post.archivos.length > 0) { %>
-                    <div id="carrusel-modal-<%= post.id %>" class="carousel slide w-100 h-100 d-flex align-items-center position-relative" data-bs-touch="true" data-bs-ride="false" data-bs-wrap="false">
-                        <div class="carousel-inner h-100 d-flex align-items-center">
+            <% if (post.archivos && post.archivos.length > 0) { %>
+                <div class="w-lg-60 d-flex align-items-center justify-content-center position-relative bg-black">
+                    <div id="carrusel-modal-<%= post.id %>" class="carousel slide w-100 h-100 position-relative" data-bs-touch="true" data-bs-ride="false" data-bs-wrap="false">
+                        <div class="carousel-inner h-100">
                             <% post.archivos.sort((a, b) => a.orden - b.orden).forEach((archivo, index) => { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %> w-100 h-100 d-flex justify-content-center align-items-center">
-                                    <% if (archivo.tipo_media === 'video') { %>
-                                       
-                                        <video src="<%= archivo.url_media %>" class="media-modal" autoplay muted loop playsinline controls></video>
-                                    <% } else { %>
-                                        <img src="<%= archivo.url_media %>" class="media-modal" alt="Media">
-                                    <% } %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %> w-100 h-100">
+                                    <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                                        <% if (archivo.tipo_media === 'video') { %>
+                                            <video src="<%= archivo.url_media %>" class="media-modal" autoplay muted loop playsinline controls></video>
+                                        <% } else { %>
+                                            <img src="<%= archivo.url_media %>" class="media-modal" alt="Media">
+                                        <% } %>
+                                    </div>
                                 </div>
                             <% }); %>
                         </div>
@@ -127,12 +125,10 @@
                             </button>
                         <% } %>
                     </div>
-                <% } else { %>
-                    <div class="text-dark text-center w-100">Publicación de solo texto</div>
-                <% } %>
-            </div>
+                </div>
+            <% } %>
 
-            <div class="w-lg-40 d-flex flex-column bg-white border-start position-relative">
+            <div class="<%= (post.archivos && post.archivos.length > 0) ? 'w-lg-40 border-start' : 'w-100 h-100' %> d-flex flex-column bg-white position-relative">
                 
                 <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3 d-none d-lg-block" data-bs-dismiss="modal" aria-label="Close"></button>
 
@@ -152,7 +148,7 @@
                                 <a href="/perfil/<%= nomUsuario %>">
                                     <img src="<%= (comentario.usuario && comentario.usuario.foto_perfil) ? comentario.usuario.foto_perfil : '/img/avatar.webp' %>" class="avatar-post rounded-circle me-2 mt-1" style="width: 32px; height: 32px; object-fit: cover;">
                                 </a>
-                                <div class="bg-light p-2 rounded-3 w-100 position-relative">
+                                <div class=" p-2 rounded-3 d-inline-block position-relative pe-5" style="max-width: 100%; background-color: #f3e8ff;">
                                     
                                     <% if (esMiComentario) { %>
                                         <button class="btn btn-link text-muted p-0 position-absolute top-0 end-0 m-2 shadow-none btn-abrir-opciones-com" data-id="<%= comentario.id %>">
@@ -162,8 +158,7 @@
 
                                     <div class="vista-texto-comentario" id="vista-com-<%= comentario.id %>">
                                         <a href="/perfil/<%= nomUsuario %>" class="fw-bold text-dark text-decoration-none small mb-1 d-block pe-3"><%= nomUsuario %></a>
-                                        
-                                        <div class="small text-dark texto-comentario-real" data-contenido="<%= comentario.contenido %>"><%= comentario.contenido %></div>
+                                        <div class="small text-dark texto-comentario-real text-break" data-contenido="<%= comentario.contenido %>"><%= comentario.contenido %></div>
                                     </div>
 
                                 </div>
@@ -189,16 +184,13 @@
                             </button>
                         </div>
                         <div class="d-flex flex-column align-items-center">
-                            <button class="btn btn-link text-dark p-0 shadow-none text-decoration-none">
-                                <i class="bi bi-send fs-4"></i>
-                            </button>
                         </div>
                     </div>
                     
                     <div class="fw-bold small mb-2 text-dark"><span class="contador-likes"><%= post.likes_publicacion ? post.likes_publicacion.length : 0 %></span> Me gusta</div>
 
                     <% if (post.comentarios_activados) { %>
-                        <form class="form-comentario d-flex align-items-end mt-2 tarjeta-publicacion w-100 m-0" data-post-id="<%= post.id %>">
+                        <form class="form-comentario d-flex align-items-end mt-2 w-100 m-0" data-post-id="<%= post.id %>">
                             <textarea class="form-control text-dark border shadow-sm px-3 py-2 input-comentario flex-grow-1" placeholder="Agrega un comentario..." rows="1" style="resize: none; overflow: hidden; border-radius: 20px;"></textarea>
                             <button type="submit" class="btn btn-link fw-bold text-decoration-none p-0 ms-2 mb-1 btn-publicar-comentario text-morado-echo" disabled>Publicar</button>
                         </form>
@@ -209,18 +201,17 @@
     </div>
 </div>
 
-<!-- Modal Elegir Opciones -->
 <div class="modal fade" id="modalOpcionesComentario" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.5); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow">
-            <div class="list-group list-group-flush text-center w-100">
-                <button type="button" class="list-group-item list-group-item-action fw-semibold text-dark shadow-none" id="btn-modal-editar-com">
+        <div class="modal-content border-0 shadow rounded-4 p-2">
+            <div class="list-group text-center w-100">
+                <button type="button" class="list-group-item list-group-item-action fw-semibold text-dark shadow-none border-0 rounded-3 py-3 mb-1" id="btn-modal-editar-com">
                     Editar comentario
                 </button>
-                <button type="button" class="list-group-item list-group-item-action fw-bold text-danger shadow-none" id="btn-modal-eliminar-com">
+                <button type="button" class="list-group-item list-group-item-action fw-bold text-danger shadow-none border-0 rounded-3 py-3 mb-1" id="btn-modal-eliminar-com">
                     Eliminar comentario
                 </button>
-                <button type="button" class="list-group-item list-group-item-action text-muted shadow-none" id="btn-modal-cancelar-opciones">
+                <button type="button" class="list-group-item list-group-item-action text-muted shadow-none border-0 rounded-3 py-3" id="btn-modal-cancelar-opciones">
                     Cancelar
                 </button>
             </div>
@@ -231,7 +222,7 @@
 <!-- Modal Confirmar Eliminar -->
 <div class="modal fade" id="modalConfirmarEliminarCom" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.6); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow p-3 text-center">
+        <div class="modal-content border-0 shadow p-4 text-center rounded-4">
             <h6 class="fw-bold mb-3 mt-2">¿Eliminar comentario?</h6>
             <p class="small text-muted mb-4">Esta acción no se puede deshacer.</p>
             <div class="d-flex justify-content-center gap-2 mb-2">
@@ -242,10 +233,9 @@
     </div>
 </div>
 
-<!-- Modal Editar Comentario -->
 <div class="modal fade" id="modalEditarComentario" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.6); z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow p-3">
+        <div class="modal-content border-0 shadow p-4 rounded-4">
             <h6 class="fw-bold mb-3 mt-1 text-center">Editar comentario</h6>
             <textarea class="form-control text-dark border shadow-sm px-3 py-2 mb-3" id="input-modal-editar-com" rows="2" style="resize: none; border-radius: 12px; font-size: 0.9rem;"></textarea>
             <div class="d-flex justify-content-end gap-2">

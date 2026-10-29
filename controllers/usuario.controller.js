@@ -17,8 +17,10 @@ exports.mostrarPerfil = async (req, res) => {
     try{
 
         const usuarioPerfil = await usuarioApi.listarUsuario(nombreUsu, token)
+        const estadisticasCalificacion = obtenerEstadisticasCalificacion(usuarioPerfil)
         let publicaciones = []
         let comunidadesCreadas = []
+        let listaUsuariosInteraccion = []
         let comunidadesUnidas = []
         let tieneSiguiente = false  
 
@@ -47,6 +49,14 @@ exports.mostrarPerfil = async (req, res) => {
             comunidadesUnidas = comunidadController.formatearComunidades(respuestaUnidas.data.results || [], res.locals.usuarioLogueado)
         }
 
+        if (seccion === 'seguidores') {
+            listaUsuariosInteraccion = await usuarioApi.listarSeguidores(nombreUsu, token)
+        }
+
+        if (seccion === 'seguidos') {
+            listaUsuariosInteraccion = await usuarioApi.listarSeguidos(nombreUsu, token)
+        }
+
         res.render('pages/perfil', {
             usuarioPerfil,
             seccion: seccion,
@@ -54,7 +64,9 @@ exports.mostrarPerfil = async (req, res) => {
             tieneSiguiente,
             comunidadesCreadas: comunidadesCreadas,
             comunidadesUnidas: comunidadesUnidas,
+            listaUsuariosInteraccion: listaUsuariosInteraccion,
             conteoPublicaciones: conteoPublicaciones,
+            estadisticasCalificacion: estadisticasCalificacion,
             exito: res.locals.exito || null, 
             error: res.locals.error || null
         })
@@ -214,4 +226,29 @@ exports.toggleSeguir = async (req, res) => {
     } catch (error) {
         return res.status(400).json({ error: 'Error al procesar la solicitud' });
     }
-};
+}
+
+const obtenerEstadisticasCalificacion = (usuarioPerfil) => {
+    let stats = {
+        promedio: 0,
+        total: 0,
+        estrellasHTML: '<i class="bi bi-star"></i> '.repeat(5) 
+    }
+
+    if (usuarioPerfil.tipo_usuario === 'empresarial' && Array.isArray(usuarioPerfil.calificaciones_recibidas)) {
+        stats.total = usuarioPerfil.calificaciones_recibidas.length;
+        
+        if (stats.total > 0) {
+            const suma = usuarioPerfil.calificaciones_recibidas.reduce((acc, cal) => acc + (cal.puntuacion || 0), 0)
+            stats.promedio = parseFloat((suma / stats.total).toFixed(1));
+
+            stats.estrellasHTML = Array.from({ length: 5 }, (_, index) => {
+                const valorEstrella = index + 1;
+                if (stats.promedio >= valorEstrella) return '<i class="bi bi-star-fill"></i>'
+                if (stats.promedio >= valorEstrella - 0.5) return '<i class="bi bi-star-half"></i>'
+                return '<i class="bi bi-star"></i>'
+            }).join(' ')
+        }
+    }
+    return stats
+}

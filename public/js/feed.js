@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <a href="/perfil/${nombreUsuario}">
                                 <img src="${fotoPerfil}" class="avatar-post rounded-circle me-2 mt-1" style="width: 32px; height: 32px; object-fit: cover;">
                             </a>
-                            <div class="bg-light p-2 rounded-3 w-100 position-relative">
+                            <div class="p-2 rounded-3 w-100 position-relative pe-5" style="max-width: 100%; background-color: #f3e8ff;">
                                 
                                 <button class="btn btn-link text-muted p-0 position-absolute top-0 end-0 m-2 shadow-none btn-abrir-opciones-com" data-id="${idComentario}">
                                     <i class="bi bi-three-dots"></i>
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                 <div class="vista-texto-comentario" id="vista-com-${idComentario}">
                                     <a href="/perfil/${nombreUsuario}" class="fw-bold text-dark text-decoration-none small mb-1 d-block pe-3">${nombreUsuario}</a>
-                                    <div class="small text-dark texto-comentario-real" data-contenido="${contenido}">${contenido}</div>
+                                    <div class="small text-dark texto-comentario-real text-break" data-contenido="${contenido}">${contenido}</div>
                                 </div>
 
                             </div>

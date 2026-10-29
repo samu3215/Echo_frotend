@@ -55,19 +55,43 @@
                     <% } %>
                 </div>
 
+                <% if (usuarioPerfil.tipo_usuario === 'empresarial') { %>
+                    <div class="promedio-calificaciones-contenedor text-center mb-3">
+                        
+                        <div class="estrellas-promedio" style="color: #ffc107; font-size: 1.25rem;">
+                            <%- estadisticasCalificacion.estrellasHTML %>
+                            
+                            <span class="text-dark ms-1 fw-bold fs-6">
+                                <%= estadisticasCalificacion.promedio > 0 ? estadisticasCalificacion.promedio : 'Nuevo' %>
+                            </span>
+                        </div>
+                        
+                        <small class="text-muted" style="font-size: 0.85rem;">
+                            <%= estadisticasCalificacion.total %> <%= estadisticasCalificacion.total === 1 ? 'calificación' : 'calificaciones' %>
+                        </small>
+                        
+                    </div>
+                <% } %>
+
                 <div class="perfil-estadisticas">
-                    <div class="item-estadistica">
+
+                    
+                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=seguidores" class="item-estadistica text-decoration-none">
                         <span class="numero-estadistica"><%= usuarioPerfil.seguidores_count || 0 %></span>
                         <span class="etiqueta-estadistica">Seguidores</span>
-                    </div>
+                    </a>
+
                     <div class="item-estadistica">
                         <span class="numero-estadistica"><%= conteoPublicaciones || 0 %></span>
                         <span class="etiqueta-estadistica">Publicaciones</span>
                     </div>
-                    <div class="item-estadistica">
+
+                   
+                    <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=seguidos" class="item-estadistica text-decoration-none">
                         <span class="numero-estadistica"><%= usuarioPerfil.seguidos_count || 0 %></span>
                         <span class="etiqueta-estadistica">Seguidos</span>
-                    </div>
+                    </a>
+
                 </div>
 
                 <div class="perfil-acciones-principales">
@@ -132,6 +156,10 @@
                     <% } else if (seccion === 'calificaciones' && usuarioPerfil.tipo_usuario === 'empresarial') { %>
 
                         <%- include('../partials/perfil-calificaciones'); %>
+
+                    <% } else if (seccion === 'seguidores' || seccion === 'seguidos') { %>
+
+                        <%- include('../partials/perfil-red'); %>
 
                     <% } else { %>
 

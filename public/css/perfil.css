@@ -406,3 +406,19 @@
     background-color: #e5e7eb;
     color: var(--color-texto-principal);
 }
+
+.item-estadistica {
+    display: flex;
+    flex-direction: column;
+    color: inherit; 
+    transition: transform 0.2s ease;
+}
+
+.item-estadistica:hover {
+    transform: scale(1.05); 
+}
+
+.header-red-usuarios {
+    border-bottom: 1px solid var(--color-primario-suave);
+    padding-bottom: 10px;
+}

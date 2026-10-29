@@ -8,7 +8,7 @@ exports.procesarCalificacion = async (req, res) => {
 
     if (!token) {
         req.flash('error', 'Debes iniciar sesión para calificar')
-        return res.redirect('/login')
+        return res.redirect(`${rutaDestino}`)
     }
 
     try {
@@ -44,7 +44,6 @@ exports.editarCalificacion = async (req, res) => {
     const { nombre_usuario, id } = req.params;
     const rutaDestino = `/perfil/${nombre_usuario}?seccion=calificaciones`
 
-    // Validación de usuario logueado
     if (!token) {
         req.flash('error', 'Debes iniciar sesión para editar una reseña')
         return res.redirect('/login')

@@ -2,30 +2,48 @@
     <% if (usuarioPerfil.calificaciones_recibidas && usuarioPerfil.calificaciones_recibidas.length > 0) { %>
         <% usuarioPerfil.calificaciones_recibidas.forEach(calificacion => { %>
             <div class="tarjeta-publicacion p-3 mb-3 border rounded bg-white shadow-sm">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="fw-bold m-0"><i class="bi bi-star-fill text-warning"></i> <%= calificacion.puntuacion || 0 %></h6>
-                        
-                        <p class="text-muted small mb-1">@<%= (calificacion.usuario_califica && calificacion.usuario_califica.nombre_usuario) ? calificacion.usuario_califica.nombre_usuario : 'Usuario' %></p>
-                    </div>
+                
+                <div class="d-flex align-items-start">
                     
-                    <% if (usuarioLogueado && calificacion.usuario_califica && usuarioLogueado.nombre_usuario === calificacion.usuario_califica.nombre_usuario) { %>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-sm btn-outline-primary btn-abrir-editar-resena" 
-                                data-id="<%= calificacion.id %>"
-                                data-puntuacion="<%= calificacion.puntuacion %>"
-                                data-descripcion="<%= calificacion.descripcion || '' %>"
-                                data-usuario-perfil="<%= usuarioPerfil.nombre_usuario %>">
-                                <i class="bi bi-pencil"></i>
-                            </button>
+                    <a href="/perfil/<%= calificacion.usuario_califica ? calificacion.usuario_califica.nombre_usuario : '#' %>" class="flex-shrink-0 me-3 text-decoration-none">
+                        <img src="<%= (calificacion.usuario_califica && calificacion.usuario_califica.foto_perfil) ? calificacion.usuario_califica.foto_perfil : '/img/avatar.webp' %>" alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover;">
+                    </a>
+                    
+                    <div class="flex-grow-1">
+                        
+                        <div class="d-flex justify-content-between align-items-start">
+                            <a href="/perfil/<%= calificacion.usuario_califica ? calificacion.usuario_califica.nombre_usuario : '#' %>" class="text-decoration-none" style="color: inherit;">
+                                <h6 class="fw-bold m-0 text-dark"><i class="bi bi-star-fill text-warning"></i> <%= calificacion.puntuacion || 0 %></h6>
+                                <small class="text-muted">@<%= (calificacion.usuario_califica && calificacion.usuario_califica.nombre_usuario) ? calificacion.usuario_califica.nombre_usuario : 'Usuario' %></small>
+                            </a>
+                            
+                            <% if (usuarioLogueado && calificacion.usuario_califica && usuarioLogueado.nombre_usuario === calificacion.usuario_califica.nombre_usuario) { %>
+                                <div class="d-flex gap-2 ms-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary btn-abrir-editar-resena" 
+                                        data-id="<%= calificacion.id %>"
+                                        data-puntuacion="<%= calificacion.puntuacion %>"
+                                        data-descripcion="<%= calificacion.descripcion || '' %>"
+                                        data-usuario-perfil="<%= usuarioPerfil.nombre_usuario %>">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
 
-                            <form action="/perfil/<%= usuarioPerfil.nombre_usuario %>/calificaciones/<%= calificacion.id %>/eliminar" method="POST" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar esta reseña?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                            </form>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalEliminarResena"
+                                            data-action="/perfil/<%= usuarioPerfil.nombre_usuario %>/calificaciones/<%= calificacion.id %>/eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
                         </div>
-                    <% } %>
+                        
+                        <% if (calificacion.descripcion) { %>
+                            <p class="mb-0 mt-2 text-break text-dark"><%= calificacion.descripcion %></p>
+                        <% } %>
+                        
+                    </div>
                 </div>
-                <p class="mb-0 mt-2 text-break"><%= calificacion.descripcion || '' %></p>
+                
             </div>
         <% }) %>
     <% } else { %>
@@ -35,3 +53,38 @@
         </div>
     <% } %>
 </div>
+
+<div class="modal fade" id="modalEliminarResena" tabindex="-1" aria-labelledby="modalEliminarResenaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalEliminarResenaLabel">Eliminar Reseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pb-4">
+                <i class="bi bi-exclamation-circle text-danger mb-3 d-block" style="font-size: 3.5rem;"></i>
+                <p class="mb-0 fs-6 text-dark">¿Estás seguro de que deseas eliminar esta reseña? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer border-0 pt-0 d-flex justify-content-center gap-2">
+                <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formConfirmarEliminarResena" method="POST" action="" class="m-0">
+                    <button type="submit" class="btn btn-danger px-4 rounded-pill">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalEliminar = document.getElementById('modalEliminarResena')
+        if (modalEliminar) {
+            modalEliminar.addEventListener('show.bs.modal', function (event) {
+                const boton = event.relatedTarget
+                const urlEliminacion = boton.getAttribute('data-action')
+                const formEliminar = document.getElementById('formConfirmarEliminarResena')
+                formEliminar.action = urlEliminacion
+            })
+        }
+    })
+</script>
