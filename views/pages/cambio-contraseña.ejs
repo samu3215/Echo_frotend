@@ -24,108 +24,69 @@
 
         <div id="mensaje-recuperacion" class="alert d-none" role="alert" aria-live="polite"></div>
 
-        <section data-paso="1">
+        <section id="paso-1" class="bloque-paso">
             <h1 class="titulo-autenticacion">Recuperar contraseña</h1>
-            <p class="subtitulo-autenticacion">
-                Ingresa el correo asociado a tu cuenta y te enviaremos un código de verificación.
-            </p>
+            <p class="subtitulo-autenticacion">Ingresa el correo asociado a tu cuenta para recibir un código.</p>
 
             <form id="form-solicitar-codigo">
-                <div class="grupo-campo">
-                    <label for="email" class="etiqueta-campo">Correo electrónico</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="campo-entrada"
-                        placeholder="nombre@correo.com"
-                        autocomplete="email"
-                        required
-                    >
-                </div>
-
-                <button type="submit" class="boton-principal">
-                    Enviar código de verificación
-                </button>
+                <% if (locals.usuarioLogueado && locals.usuarioLogueado.email) { %>
+                    <input type="hidden" id="email" value="<%= usuarioLogueado.email %>">
+                    <div class="aviso-expiracion mb-4 text-center">
+                        <i class="bi bi-envelope-check me-2" style="font-size: 1.2rem;"></i>
+                        Enviaremos el código a:<br>
+                        <strong class="mt-1 d-block"><%= usuarioLogueado.email %></strong>
+                    </div>
+                    <!-- Botón para cerrar sesión si el usuario quiere usar otra cuenta -->
+                    <p class="text-center small"><a href="/logout">¿No eres tú? Cerrar sesión</a></p>
+                <% } else { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Correo electrónico</label>
+                        <input type="email" id="email" class="campo-entrada" placeholder="nombre@correo.com" required>
+                    </div>
+                <% } %>
+                <p id="error-solicitud" class="text-danger small text-center" hidden></p>
+                <button type="submit" class="boton-principal" id="btn-solicitar">Enviar código</button>
             </form>
         </section>
 
-        <section data-paso="2" hidden>
+        <section id="paso-2" class="bloque-paso d-none">
             <h1 class="titulo-autenticacion">Verifica tu correo</h1>
-            <p class="subtitulo-autenticacion">
-                Ingresa el código de 6 dígitos que enviamos a <strong id="correo-destino"></strong>.
-            </p>
-
-            <div class="aviso-expiracion" role="status" aria-live="polite">
-                <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
-                El código vence en <strong id="temporizador-codigo">--:--</strong>
-            </div>
+            <p class="subtitulo-autenticacion">Ingresa el código de 6 dígitos que enviamos a <strong id="correo-destino"></strong></p>
 
             <form id="form-verificar-codigo">
-                <div class="grupo-campo">
-                    <label for="codigo" class="etiqueta-campo">Código de verificación</label>
-                    <input
-                        type="text"
-                        id="codigo"
-                        name="codigo"
-                        class="campo-entrada campo-codigo"
-                        placeholder="000000"
-                        autocomplete="one-time-code"
-                        inputmode="numeric"
-                        pattern="[0-9]{6}"
-                        maxlength="6"
-                        minlength="6"
-                        required
-                    >
+                <div class="grupo-campo text-center">
+                    <input type="text" id="codigo" class="campo-entrada campo-codigo mx-auto" placeholder="000000" maxlength="6" inputmode="numeric" style="max-width: 200px; letter-spacing: 0.2em; font-size: 1.2rem;" required>
                 </div>
-
-                <button type="submit" class="boton-principal">Verificar código</button>
+                <p id="error-verificacion" class="text-danger small text-center" hidden></p>
+                
+                <div class="contenedor-botones-pasos mt-4">
+                    <% if (!locals.usuarioLogueado) { %>
+                        <!-- Si NO está logueado, le dejamos volver a escribir el correo -->
+                        <button type="button" class="boton-secundario" onclick="volverAlPaso1()">Atrás</button>
+                    <% } else { %>
+                        <!-- Si ESTÁ logueado, el botón reenvía el código al correo fijo -->
+                        <button type="button" class="boton-secundario" onclick="reenviarCodigo()">Reenviar</button>
+                    <% } %>
+                    <button type="submit" class="boton-principal" id="btn-verificar">Verificar código</button>
+                </div>
             </form>
-
-            <button type="button" id="reenviar-codigo" class="enlace-principal boton-enlace formulario-reenvio" disabled>
-                Enviar un código nuevo
-            </button>
         </section>
 
-        <section data-paso="3" hidden>
-            <h1 class="titulo-autenticacion">Crea una contraseña nueva</h1>
-            <p class="subtitulo-autenticacion">Tu correo fue verificado. Elige una contraseña segura.</p>
+        <section id="paso-3" class="bloque-paso d-none">
+            <h1 class="titulo-autenticacion">Nueva contraseña</h1>
+            <p class="subtitulo-autenticacion">Crea una nueva contraseña segura.</p>
 
             <form id="form-restablecer-contrasena">
                 <div class="grupo-campo">
-                    <label for="nueva-password" class="etiqueta-campo">Nueva contraseña</label>
-                    <input
-                        type="password"
-                        id="nueva-password"
-                        name="nueva_password"
-                        class="campo-entrada"
-                        placeholder="Mínimo 8 caracteres"
-                        autocomplete="new-password"
-                        minlength="8"
-                        required
-                    >
+                    <label class="etiqueta-campo">Nueva Contraseña</label>
+                    <input type="password" id="nueva-password" class="campo-entrada" required minlength="8">
                 </div>
-
                 <div class="grupo-campo">
-                    <label for="confirmar-password" class="etiqueta-campo">Confirmar contraseña</label>
-                    <input
-                        type="password"
-                        id="confirmar-password"
-                        name="confirmar_password"
-                        class="campo-entrada"
-                        placeholder="Escribe de nuevo tu contraseña"
-                        autocomplete="new-password"
-                        minlength="8"
-                        required
-                    >
+                    <label class="etiqueta-campo">Confirmar Contraseña</label>
+                    <input type="password" id="confirmar-password" class="campo-entrada" required minlength="8">
                 </div>
-
-                <p class="texto-secundario small mb-3">
-                    <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>
-                    La contraseña se validará y protegerá de forma segura en el servidor.
-                </p>
-
-                <button type="submit" class="boton-principal">Guardar nueva contraseña</button>
+                <p id="error-restablecer" class="text-danger small text-center" hidden></p>
+                <button type="submit" class="boton-principal" id="btn-restablecer">Guardar contraseña</button>
             </form>
         </section>
 

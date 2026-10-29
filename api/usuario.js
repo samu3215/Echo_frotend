@@ -88,3 +88,12 @@ exports.listarSeguidos = async (nombreUsuario, token = null) => {
     const respuesta = await api.get(`/usuarios/${nombreUsuario}/seguidos/`, envioToken(token))
     return respuesta.data;
 }
+
+exports.enviarCodigoRegistro = async (email) => {
+    const respuesta = await api.post('registro/enviar-codigo/', { email });
+    return respuesta.data;
+};
+exports.verificarCodigoRegistro = async (email, codigo) => {
+    const respuesta = await api.post('registro/verificar-codigo/', { email, codigo });
+    return respuesta.data;
+};

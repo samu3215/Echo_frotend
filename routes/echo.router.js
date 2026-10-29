@@ -6,6 +6,7 @@ const publicacionController = require('../controllers/publicacion.controller')
 const comunidadController = require('../controllers/comunidad.controller')
 const cargarArchivo = require('../middlewares/subir')
 const calificacionController = require('../controllers/calificacion.controller')
+const recuperacionController = require('../controllers/recuperacion.controller');
 const sse = require('../utils/sse')
 
 // routes formulario y login
@@ -16,11 +17,9 @@ router.post('/registro/verificar-disponibilidad', formularioController.verificar
 router.post('/registro', cargarArchivo.single('foto_perfil'), formularioController.validarAceptacionTerminos, formularioController.procesarRegistro);
 router.get('/login', formularioController.mostrarLogin)
 router.post('/login', formularioController.procesarLogin)
-router.get('/cambio-contrasena', formularioController.mostrarCambioContrasena)
 router.get('/terminos-y-condiciones', formularioController.mostrarTerminos)
-router.post('/cambio-contrasena/solicitar-codigo', formularioController.solicitarCodigoRecuperacion)
-router.post('/cambio-contrasena/verificar-codigo', formularioController.verificarCodigoRecuperacion)
-router.post('/cambio-contrasena/restablecer', formularioController.restablecerContrasena)
+router.post('/registro/enviar-codigo', formularioController.enviarCodigoRegistro);
+router.post('/registro/verificar-codigo', formularioController.verificarCodigoRegistro);
 
 // routes  usuarios
 
@@ -80,6 +79,12 @@ router.post('/perfil/:nombre_usuario/calificaciones/:id/editar', calificacionCon
 
 router.post('/perfil/:nombre_usuario/seguir', usuarioController.toggleSeguir)
 router.get('/api/notificaciones/conteo', publicacionController.obtenerConteoNotificaciones);
+
+// routes Cambio de contraseña
+router.get('/cambio-contrasena', (req, res) => res.render('pages/cambio-contraseña'));
+router.post('/cambio-contrasena/solicitar-codigo', recuperacionController.solicitarCodigo);
+router.post('/cambio-contrasena/verificar-codigo', recuperacionController.verificarCodigo);
+router.post('/cambio-contrasena/restablecer', recuperacionController.restablecerContrasena);
 
 router.get('/comunidades/:id/stream', (req, res) => {
     sse.suscribirCliente(req, res, req.params.id);

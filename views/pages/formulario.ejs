@@ -58,10 +58,19 @@
                     </div>
                 <% } %>
 
-                <div class="grupo-campo">
-                    <label class="etiqueta-campo">Teléfono</label>
-                    <input type="tel" name="telefono" class="campo-entrada" placeholder="10 dígitos" required inputmode="numeric" autocomplete="tel">
-                </div>
+                <% if (tipo === 'empres') { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Teléfono</label>
+                        <input type="tel" name="telefono" class="campo-entrada" placeholder="10 dígitos" required inputmode="numeric" autocomplete="tel">
+                    </div>
+                <% } %>
+
+                <% if (tipo === 'usu') { %>
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo">Teléfono</label>
+                        <input type="tel" name="telefono" class="campo-entrada" placeholder="10 dígitos" inputmode="numeric" autocomplete="tel">
+                    </div>
+                <% } %>
 
                 <div class="grupo-campo">
                     <label class="etiqueta-campo">Correo electrónico</label>
@@ -82,6 +91,22 @@
                     Siguiente
                 </button>
                 <p id="error-disponibilidad-registro" class="mensaje-error-campo" role="alert" hidden></p>
+            </div>
+
+            <!-- PASO 1.5 -->
+            <div id="paso-verificacion" class="bloque-paso d-none">
+                <p class="subtitulo-autenticacion">Hemos enviado un código a <strong id="correo-enviado"></strong></p>
+                
+                <div class="grupo-campo text-center">
+                    <label class="etiqueta-campo">Código de verificación</label>
+                    <input type="text" id="codigo-registro" class="campo-entrada campo-codigo" placeholder="000000" maxlength="6" inputmode="numeric">
+                    <p id="error-codigo-registro" class="mensaje-error-campo" hidden></p>
+                </div>
+
+                <div class="contenedor-botones-pasos mt-3">
+                    <button type="button" class="boton-secundario" onclick="volverDesdeVerificacion()">Atrás</button>
+                    <button type="button" class="boton-principal" id="btn-verificar" onclick="verificarCodigo()">Verificar Código</button>
+                </div>
             </div>
 
             <!-- PASO 2 -->

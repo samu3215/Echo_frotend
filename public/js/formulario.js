@@ -180,7 +180,6 @@ async function siguientePaso() {
     const valoresVerificados = {
         email: formularioRegistro.elements.email.value.trim(),
         nombre_usuario: formularioRegistro.elements.nombre_usuario.value.trim(),
-        telefono: formularioRegistro.elements.telefono.value.trim()
     };
 
     try {
@@ -196,8 +195,7 @@ async function siguientePaso() {
         }
         if (!resultado.duplicados
             || typeof resultado.duplicados.email !== 'boolean'
-            || typeof resultado.duplicados.nombre_usuario !== 'boolean'
-            || typeof resultado.duplicados.telefono !== 'boolean') {
+            || typeof resultado.duplicados.nombre_usuario !== 'boolean'){
             throw new Error('El servidor devolvió una respuesta de disponibilidad inválida. Inténtalo de nuevo.');
         }
         const cambiaronDatos = Object.entries(valoresVerificados).some(([nombre, valor]) =>
@@ -240,16 +238,72 @@ async function siguientePaso() {
             return;
         }
 
+        botonSiguiente.textContent = 'Enviando código...';
+        const respuestaEnvio = await fetch('/registro/enviar-codigo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: valoresVerificados.email })
+        });
+        const resultadoEnvio = await respuestaEnvio.json();
+
+        if (!respuestaEnvio.ok) throw new Error(resultadoEnvio.error || 'Error al enviar el código de verificación.');
+
+        document.getElementById('correo-enviado').textContent = valoresVerificados.email;
         paso1.classList.add('d-none');
-        document.getElementById('paso-2').classList.remove('d-none');
-        document.getElementById('bullet-1').classList.remove('activo');
-        document.getElementById('bullet-2').classList.add('activo');
+        document.getElementById('paso-verificacion').classList.remove('d-none');
+
     } catch (error) {
         errorDisponibilidad.textContent = error.message || 'No se pudo verificar la disponibilidad de los datos. Inténtalo de nuevo.';
         errorDisponibilidad.hidden = false;
     } finally {
         botonSiguiente.textContent = 'Siguiente';
         validarPasoUno(true);
+    }
+}
+
+function volverDesdeVerificacion() {
+    document.getElementById('paso-verificacion').classList.add('d-none');
+    document.getElementById('paso-1').classList.remove('d-none');
+    document.getElementById('error-codigo-registro').hidden = true;
+}
+
+async function verificarCodigo() {
+    const codigo = document.getElementById('codigo-registro').value.trim();
+    const email = document.getElementById('correo-enviado').textContent;
+    const btnVerificar = document.getElementById('btn-verificar');
+    const mensajeError = document.getElementById('error-codigo-registro');
+
+    if (codigo.length !== 6) {
+        mensajeError.textContent = "El código debe tener 6 dígitos.";
+        mensajeError.hidden = false;
+        return;
+    }
+
+    try {
+        btnVerificar.disabled = true;
+        btnVerificar.textContent = 'Verificando...';
+        mensajeError.hidden = true;
+
+        const respuesta = await fetch('/registro/verificar-codigo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, codigo })
+        });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) throw new Error(resultado.error || 'Código incorrecto.');
+
+        document.getElementById('paso-verificacion').classList.add('d-none');
+        document.getElementById('paso-2').classList.remove('d-none');
+        document.getElementById('bullet-1').classList.remove('activo');
+        document.getElementById('bullet-2').classList.add('activo');
+
+    } catch (error) {
+        mensajeError.textContent = error.message;
+        mensajeError.hidden = false;
+    } finally {
+        btnVerificar.disabled = false;
+        btnVerificar.textContent = 'Verificar Código';
     }
 }
 

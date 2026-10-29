@@ -34,14 +34,10 @@ exports.mostrarFormulario = (req, res) => {
 
 exports.verificarDisponibilidadRegistro = async (req, res) => {
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
-    const nombreUsuario = typeof req.body.nombre_usuario === 'string'
-        ? req.body.nombre_usuario.trim().toLowerCase()
-        : '';
-    const telefono = typeof req.body.telefono === 'string'
-        ? req.body.telefono.replace(/\D/g, '')
-        : '';
+    const nombreUsuario = typeof req.body.nombre_usuario === 'string' ? req.body.nombre_usuario.trim().toLowerCase() : '';
+    const telefono = typeof req.body.telefono === 'string' ? req.body.telefono.replace(/\D/g, '') : '';
 
-    if (!email || !nombreUsuario || !telefono) {
+    if (!email || !nombreUsuario) {
         return res.status(400).json({ error: 'Completa correo, usuario y teléfono para verificar disponibilidad.' });
     }
 
@@ -73,12 +69,7 @@ exports.verificarDisponibilidadRegistro = async (req, res) => {
                 && typeof usuario.nombre_usuario === 'string'
                 && usuario.nombre_usuario.trim().toLowerCase() === nombreUsuario
             ),
-            telefono: usuarios.some(usuario =>
-                usuario
-                && usuario.telefono !== undefined
-                && usuario.telefono !== null
-                && String(usuario.telefono).replace(/\D/g, '').slice(-10) === telefono.slice(-10)
-            )
+            telefono: telefono ? usuarios.some(u => u?.telefono && String(u.telefono).replace(/\D/g, '').slice(-10) === telefono.slice(-10)) : false
         };
 
         return res.json({ duplicados });
@@ -90,6 +81,24 @@ exports.verificarDisponibilidadRegistro = async (req, res) => {
         return res.status(502).json({
             error: 'No se pudo verificar la disponibilidad de los datos. Inténtalo de nuevo.'
         });
+    }
+};
+
+exports.enviarCodigoRegistro = async (req, res) => {
+    try {
+        await usuarioApi.enviarCodigoRegistro(req.body.email);
+        return res.json({ exito: true });
+    } catch (error) {
+        return res.status(400).json({ error: error.response?.data?.error || 'Error al enviar código' });
+    }
+};
+
+exports.verificarCodigoRegistro = async (req, res) => {
+    try {
+        await usuarioApi.verificarCodigoRegistro(req.body.email, req.body.codigo);
+        return res.json({ exito: true });
+    } catch (error) {
+        return res.status(400).json({ error: error.response?.data?.error || 'Código inválido' });
     }
 };
 
@@ -157,10 +166,6 @@ exports.mostrarLogin = (req, res) => {
     });
 };
 
-exports.mostrarCambioContrasena = (req, res) => {
-    res.render('pages/cambio-contraseña');
-};
-
 exports.mostrarTerminos = (req, res) => {
     const tipoRegistro = ['usu', 'empres'].includes(req.query.tipo) ? req.query.tipo : null;
     const desdeRegistro = req.query.from === 'registro' && tipoRegistro;
@@ -169,114 +174,6 @@ exports.mostrarTerminos = (req, res) => {
         terminosVolver: desdeRegistro ? `/registro/${tipoRegistro}` : '/configuracion/',
         textoVolver: desdeRegistro ? 'Volver al registro' : 'Volver a Configuraciones'
     });
-};
-
-const responderErrorRecuperacion = (res, error) => {
-    const respuesta = error.response ? error.response.data : error;
-    const resultado = mensajesBakend.normalizarRespuestaBackend(respuesta);
-
-    return res.status(error.response ? error.response.status : 502).json({
-        error: error.response
-            ? resultado.mensaje
-            : 'No se pudo conectar con el servidor. Inténtalo de nuevo.'
-    });
-};
-
-exports.solicitarCodigoRecuperacion = async (req, res) => {
-    const email = typeof req.body.email === 'string' ? req.body.email.trim() : '';
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ error: 'Ingresa un correo electrónico válido.' });
-    }
-
-    try {
-        const respuesta = await usuarioApi.solicitarCodigoRecuperacion(email);
-        const expiresIn = Number(respuesta && respuesta.expira_en);
-
-        if (!Number.isSafeInteger(expiresIn) || expiresIn <= 0) {
-            return res.status(502).json({
-                error: 'El servidor no devolvió un tiempo de expiración válido para el código.'
-            });
-        }
-
-        return res.json({
-            expira_en: expiresIn,
-            mensaje: respuesta.mensaje || 'Si el correo está asociado a una cuenta, recibirás un código de verificación.'
-        });
-    } catch (error) {
-        console.error('Error al solicitar el código de recuperación en Django.', {
-            method: error.config && error.config.method,
-            baseURL: error.config && error.config.baseURL,
-            url: error.config && error.config.url,
-            code: error.code,
-            status: error.response && error.response.status,
-            message: error.message
-        });
-        return responderErrorRecuperacion(res, error);
-    }
-};
-
-exports.verificarCodigoRecuperacion = async (req, res) => {
-    const email = typeof req.body.email === 'string' ? req.body.email.trim() : '';
-    const codigo = typeof req.body.codigo === 'string' ? req.body.codigo.trim() : '';
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^\d{6}$/.test(codigo)) {
-        return res.status(400).json({ error: 'Ingresa el correo y un código de 6 dígitos.' });
-    }
-
-    try {
-        const respuesta = await usuarioApi.verificarCodigoRecuperacion(email, codigo);
-        const resetToken = respuesta && (
-            respuesta.token
-            || respuesta.access_token
-            || respuesta.temp_token
-            || respuesta.reset_token
-        );
-
-        if (typeof resetToken !== 'string' || !resetToken) {
-            return res.status(502).json({
-                error: 'El servidor no devolvió el token temporal de recuperación.'
-            });
-        }
-
-        return res.json({ reset_token: resetToken });
-    } catch (error) {
-        return responderErrorRecuperacion(res, error);
-    }
-};
-
-exports.restablecerContrasena = async (req, res) => {
-    const resetToken = [req.body.token, req.body.temp_token, req.body.reset_token]
-        .find((valor) => typeof valor === 'string' && valor);
-    const nuevaPassword = [req.body.password, req.body.nueva_password]
-        .find((valor) => typeof valor === 'string') || '';
-    const confirmarPassword = [req.body.confirmar_password, req.body.confirm_password]
-        .find((valor) => typeof valor === 'string') || '';
-
-    if (!resetToken) {
-        return res.status(400).json({ error: 'La verificación expiró. Solicita un nuevo código.' });
-    }
-
-    if (nuevaPassword.length < 8) {
-        return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres.' });
-    }
-
-    if (nuevaPassword !== confirmarPassword) {
-        return res.status(400).json({ error: 'Las contraseñas no coinciden.' });
-    }
-
-    try {
-        await usuarioApi.restablecerContrasena(resetToken, {
-            token: resetToken,
-            password: nuevaPassword,
-            confirmar_password: confirmarPassword
-        });
-
-        jwtUtils.limpiarTokenCookie(res);
-        return res.json({ message: 'Contraseña restablecida correctamente.' });
-    } catch (error) {
-        return responderErrorRecuperacion(res, error);
-    }
 };
 
 exports.procesarLogin = async (req, res) => {
