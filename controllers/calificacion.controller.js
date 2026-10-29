@@ -8,7 +8,7 @@ exports.procesarCalificacion = async (req, res) => {
 
     if (!token) {
         req.flash('error', 'Debes iniciar sesión para calificar')
-        return res.redirect('/login')
+        return res.redirect(`${rutaDestino}`)
     }
 
     try {

@@ -1,0 +1,47 @@
+<div class="contenedor-red-usuarios">
+    <div class="header-red-usuarios d-flex align-items-center mb-3">
+
+        <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>" 
+           class="btn btn-sm me-3 btn-volver-perfil" 
+           style="background-color: var(--color-primario); color: white; border: none;" 
+           title="Volver al perfil">
+            <i class="bi bi-arrow-left text-white"></i> Volver
+        </a>
+        
+        <h4 class="m-0 flex-grow-1 text-center"><%= seccion === 'seguidores' ? 'Seguidores' : 'Seguidos' %></h4>
+        <div style="width: 70px;"></div> 
+
+    </div>
+
+    <div class="lista-usuarios-interaccion list-group">
+        <% if (listaUsuariosInteraccion && listaUsuariosInteraccion.length > 0) { %>
+            <% listaUsuariosInteraccion.forEach(usuario => { %>
+                <div class="list-group-item d-flex align-items-center py-3" style="background-color: transparent; border-color: var(--color-primario-suave);">
+                    
+                    <a href="/perfil/<%= usuario.nombre_usuario %>" class="d-flex align-items-center flex-grow-1 text-decoration-none" style="color: inherit;">
+                        <img src="<%= usuario.foto_perfil || '/img/avatar.webp' %>" alt="Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div>
+                            <h6 class="mb-0 fw-bold">
+                                <%= usuario.tipo_usuario === 'empresarial' ? (usuario.nombre_negocio || usuario.nombre_usuario) : (usuario.nombre + ' ' + usuario.apellido) %>
+                            </h6>
+                            <small class="text-muted">@<%= usuario.nombre_usuario %></small>
+                        </div>
+                    </a>
+
+                    <% if (typeof usuarioLogueado !== 'undefined' && usuarioLogueado && usuarioLogueado.nombre_usuario !== usuario.nombre_usuario) { %>
+                        <button type="button" 
+                            class="btn-seguir btn-seguir-generico <%= usuario.lo_sigo ? 'btn-siguiendo' : '' %> ms-2" 
+                            data-usuario="<%= usuario.nombre_usuario %>">
+                            <%= usuario.lo_sigo ? 'Siguiendo' : 'Seguir' %>
+                        </button>
+                    <% } %>
+
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="text-center text-muted py-4 w-100">
+                <%= seccion === 'seguidores' ? 'Aún no tiene seguidores.' : 'Aún no sigue a nadie.' %>
+            </div>
+        <% } %>
+    </div>
+</div>

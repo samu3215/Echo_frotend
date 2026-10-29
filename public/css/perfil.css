@@ -406,3 +406,20 @@
     background-color: #e5e7eb;
     color: var(--color-texto-principal);
 }
+
+/* Agrega al final de perfil.css */
+.item-estadistica {
+    display: flex;
+    flex-direction: column;
+    color: inherit; /* Asegura que el enlace no cambie de color por defecto */
+    transition: transform 0.2s ease;
+}
+
+.item-estadistica:hover {
+    transform: scale(1.05); /* Pequeño efecto al pasar el mouse por el número */
+}
+
+.header-red-usuarios {
+    border-bottom: 1px solid var(--color-primario-suave);
+    padding-bottom: 10px;
+}

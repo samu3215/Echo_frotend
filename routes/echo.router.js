@@ -22,12 +22,12 @@ router.post('/perfil/:nombre_usuario', cargarArchivo.single('foto_perfil'), usua
 router.get('/configuracion/', usuarioController.mostrarConfiguracion)
 router.post('/logout/', usuarioController.cerrarSesion)
 router.post('/eliminar-cuenta', usuarioController.eliminarUsuario)
+router.post('/perfil/:nombre_usuario/seguir', usuarioController.toggleSeguir)
 
 // routes publicaciones
 
 router.get('/inicio', publicacionController.mostrarInicio)
 router.get('/buscar', publicacionController.mostrarBusqueda)
-
 
 router.get('/crear', publicacionController.mostrarCreacionPublicaciones)
 router.post('/publicaciones/crear', cargarArchivo.array('archivos', 8), publicacionController.crearPublicacion)
@@ -71,7 +71,6 @@ router.post('/perfil/:nombre_usuario/calificar', calificacionController.procesar
 router.post('/perfil/:nombre_usuario/calificaciones/:id/eliminar', calificacionController.eliminarCalificacion)
 router.post('/perfil/:nombre_usuario/calificaciones/:id/editar', calificacionController.editarCalificacion)
 
-router.post('/perfil/:nombre_usuario/seguir', usuarioController.toggleSeguir)
 router.get('/api/notificaciones/conteo', publicacionController.obtenerConteoNotificaciones);
 
 router.get('/comunidades/:id/stream', (req, res) => {
