@@ -114,8 +114,9 @@ exports.actualizarPerfil = async (req,res) =>{
     }
 }
 
-exports.mostrarConfiguracion = (req, res) => {
+exports.mostrarConfiguracion = async (req, res) => {
     const token = req.cookies.jwt_echo
+    const usuarioLogueado = res.locals.usuarioLogueado
 
     if (!token){
         req.flash('error', 'debes iniciar sesion para acceder a ese sitio')
@@ -123,16 +124,25 @@ exports.mostrarConfiguracion = (req, res) => {
     }
 
     try {
+        const usuarioCuenta = await usuarioApi.listarUsuario(usuarioLogueado.nombre_usuario)
+
         res.render('pages/configuracion', {
+            usuarioCuenta,
             exito: res.locals.exito || null,
             error: res.locals.error || null
         })
 
     } catch (error) {
-        res.redender('pages/perfil',{
+        console.error('No se pudo cargar la información de la cuenta para Configuraciones.', {
+            status: error.response && error.response.status,
+            message: error.message
+        });
+
+        return res.status(502).render('pages/configuracion', {
+            usuarioCuenta: null,
             exito: null,
-            error:'no se pudo cargar la configuracion'
-        })
+            error: 'No se pudo cargar la información de tu cuenta. Inténtalo de nuevo más tarde.'
+        });
     }
 }
 

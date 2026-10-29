@@ -12,8 +12,15 @@ const sse = require('../utils/sse')
 router.get('/formulario', formularioController.selecFormulario)
 router.get('/registro/:tipo', formularioController.mostrarFormulario)
 router.post('/registro', cargarArchivo.single('foto_perfil'), formularioController.procesarRegistro);
+router.post('/registro/verificar-disponibilidad', formularioController.verificarDisponibilidadRegistro)
+router.post('/registro', cargarArchivo.single('foto_perfil'), formularioController.validarAceptacionTerminos, formularioController.procesarRegistro);
 router.get('/login', formularioController.mostrarLogin)
 router.post('/login', formularioController.procesarLogin)
+router.get('/cambio-contrasena', formularioController.mostrarCambioContrasena)
+router.get('/terminos-y-condiciones', formularioController.mostrarTerminos)
+router.post('/cambio-contrasena/solicitar-codigo', formularioController.solicitarCodigoRecuperacion)
+router.post('/cambio-contrasena/verificar-codigo', formularioController.verificarCodigoRecuperacion)
+router.post('/cambio-contrasena/restablecer', formularioController.restablecerContrasena)
 
 // routes  usuarios
 
