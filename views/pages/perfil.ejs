@@ -76,10 +76,7 @@
 
                 <div class="perfil-estadisticas">
 
-                    <!-- <div class="item-estadistica">
-                        <span class="numero-estadistica"><%= usuarioPerfil.seguidores_count || 0 %></span>
-                        <span class="etiqueta-estadistica">Seguidores</span>
-                    </div> -->
+                    
                     <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=seguidores" class="item-estadistica text-decoration-none">
                         <span class="numero-estadistica"><%= usuarioPerfil.seguidores_count || 0 %></span>
                         <span class="etiqueta-estadistica">Seguidores</span>
@@ -90,10 +87,7 @@
                         <span class="etiqueta-estadistica">Publicaciones</span>
                     </div>
 
-                    <!-- <div class="item-estadistica">
-                        <span class="numero-estadistica"><%= usuarioPerfil.seguidos_count || 0 %></span>
-                        <span class="etiqueta-estadistica">Seguidos</span>
-                    </div> -->
+                   
                     <a href="/perfil/<%= usuarioPerfil.nombre_usuario %>?seccion=seguidos" class="item-estadistica text-decoration-none">
                         <span class="numero-estadistica"><%= usuarioPerfil.seguidos_count || 0 %></span>
                         <span class="etiqueta-estadistica">Seguidos</span>
