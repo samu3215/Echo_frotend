@@ -59,14 +59,15 @@
         <% } %>
 
         <div class="d-flex align-items-start mb-2 mt-2">
-            <% if (!post.esDueno) { %>
+
                 <div class="d-flex flex-column align-items-center me-4">
-                    <button class="btn btn-link text-dark p-0 btn-like text-decoration-none shadow-none" data-id="<%= post.id %>" title="Me gusta">
+                    <button class="btn btn-link text-dark p-0 <%= !post.esDueno ? 'btn-like' : '' %> text-decoration-none shadow-none" 
+                        data-id="<%= post.id %>" 
+                        title="<%= post.esDueno ? 'Me gustas de tu publicación' : 'Me gusta' %>">
                         <i class="bi <%= post.tieneMiLike ? 'bi-heart-fill text-morado-echo' : 'bi-heart' %> fs-4 icono-like"></i>
                     </button>
                     <span class="fw-bold small mt-1 contador-likes" style="font-size: 0.8rem;"><%= post.likes_publicacion ? post.likes_publicacion.length : 0 %></span>
                 </div>
-            <% } %>
 
             <% if (post.comentarios_activados) { %>
                 <div class="d-flex flex-column align-items-center me-4">
