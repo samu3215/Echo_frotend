@@ -13,6 +13,7 @@ app.use(express.urlencoded({extended:false}))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
 
+app.set('trust proxy', 1)
 app.use(session({
     secret: process.env.SECRET_KEY || 'sdfghjkl123',
     resave: false,

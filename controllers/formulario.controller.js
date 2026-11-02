@@ -191,10 +191,11 @@ exports.procesarLogin = async (req, res) => {
         res.redirect('/inicio')
 
     } catch (error) {
-        const resultado = mensajesBakend.extraerMensajeError(error)  
+        const mensajeError = mensajesBakend.extraerMensajeError(error)  
         
         return res.render('pages/login', { 
-            error: resultado.mensaje 
+            error: mensajeError,
+            exito: null,
         })
     }
 }

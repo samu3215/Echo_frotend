@@ -50,7 +50,7 @@ exports.restablecerContrasena = async (token, datos) => {
 
 exports.listarUsuario = async(nombreUsuario, token = null )=>{
     const respuesta = await api.get(`/usuarios/${nombreUsuario}/`,envioToken(token))
-    return respuesta.data;
+    return respuesta.data
 }
 
 exports.actualizarUsuario = async (nombreUsuario, datos, token) => {
@@ -66,12 +66,12 @@ exports.eliminarUsuarios = async (nombreUsuario, token) => {
 
 exports.seguirUsuario = async (nombreUsuario, token) => {
     const respuesta = await api.post(`/usuarios/${nombreUsuario}/seguir/`, {}, envioToken(token))
-    return respuesta.data;
+    return respuesta.data
 }
 
 exports.obtenerNotificaciones = async (token) => {
     const respuesta = await api.get('/usuarios/notificaciones/', envioToken(token))
-    return respuesta.data;
+    return respuesta.data
 }
 
 exports.marcarNotificacionesLeidas = async (token) => {
